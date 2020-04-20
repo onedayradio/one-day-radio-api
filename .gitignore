@@ -1,0 +1,25 @@
+# package directories
+node_modules
+
+# Serverless directories
+.serverless
+
+# IDE files
+.vscode
+
+# typescript build files
+.build
+
+# log files
+*.log
+
+.env
+.env-prd
+
+.nyc_output
+
+.terraform
+
+coverage
+
+TODO
