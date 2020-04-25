@@ -51,4 +51,13 @@ describe('UsersService', () => {
       expect(error.message).to.equal(`User with id ${badId} not found in the database`)
     }
   })
+
+  it('should throw error if trying to update an unexisting user', async () => {
+    const badId = new mongodb.ObjectID() + ''
+    try {
+      await usersService.updateUser(badId, { email: 'someEmail', firstname: 'some' })
+    } catch (error) {
+      expect(error.message).to.equal(`User with id ${badId} not found in the database`)
+    }
+  })
 })

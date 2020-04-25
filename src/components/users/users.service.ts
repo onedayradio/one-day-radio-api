@@ -38,12 +38,22 @@ export class UsersService {
     return user
   }
 
+  async updateUser(userId: string, updateData: User): Promise<DBUser> {
+    delete updateData.email
+    const dbUser = await this.usersDao.getDetailById(userId)
+    if (!dbUser) {
+      throw new ApolloError(`User with id ${userId} not found in the database`)
+    }
+    await this.usersDao.update(dbUser, updateData)
+    return this.getDetailById(userId)
+  }
+
   async getByEmailOrCreate(email: string, userData: User): Promise<UserGetOrCreateResponse> {
     try {
       const dbUser = await this.getDetailByEmail(email)
       return {
         isNewUser: false,
-        dbUser,
+        dbUser: await this.updateUser(dbUser._id, userData),
       }
     } catch (error) {
       const dbUser = await this.create(userData)

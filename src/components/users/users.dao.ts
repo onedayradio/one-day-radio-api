@@ -19,4 +19,8 @@ export class UsersDao {
   async getDetailByEmail(email: string): Promise<DBUser | null> {
     return UserModel.findOne({ email })
   }
+
+  async update(dbUser: DBUser, updateData: User): Promise<DBUser> {
+    return dbUser.updateOne(updateData)
+  }
 }
