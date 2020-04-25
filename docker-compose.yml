@@ -1,0 +1,30 @@
+version: '3.7'
+networks:
+  onedayradio:
+    external:
+      name: onedayradio
+services:
+  mongo-seed:
+    build:
+      context: ./local-db
+      dockerfile: mongo-seed/Dockerfile
+    container_name: mongo-seed
+    command: ['./wait-for-it.sh', 'mongodb:27017', '--', './mongo-seed.sh']
+    depends_on:
+      - mongodb
+    networks:
+      - onedayradio
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    expose:
+      - '27017'
+    command: mongod
+    networks:
+      - onedayradio
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=onedayradio-admin
+      - MONGO_INITDB_ROOT_PASSWORD=password

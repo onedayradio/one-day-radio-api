@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "outDir": "lib",
+    "strict": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "target": "es2017",
+    "baseUrl": ".",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "typeRoots": ["node_modules/@types", "./src/types"]
+  },
+  "compileOnSave": true,
+  "include": ["src", "tests"],
+  "exclude": ["node_modules"]
+}

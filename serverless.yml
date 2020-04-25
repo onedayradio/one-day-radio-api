@@ -1,0 +1,37 @@
+service: one-day-radio-api
+app: one-day-radio-api
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  timeout: 30
+
+custom:
+  myStage: ${opt:stage, self:provider.stage}
+  serverless-offline:
+    useChildProcesses: true
+
+functions:
+  graphql:
+    handler: src/handler.handler
+    events:
+      - http:
+          path: graphql
+          method: post
+          cors: true
+    environment:
+      mongodb_url: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_url}
+      mongodb_username: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_username}
+      mongodb_password: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_password~true}
+      token_secret: ${ssm:/onedayradio/${self:custom.myStage}/token_secret~true}
+      token_expiration: ${ssm:/onedayradio/${self:custom.myStage}/token_expiration}
+      security_salt_rounds: ${ssm:/onedayradio/${self:custom.myStage}/security_salt_rounds}
+      mailgun_apikey: ${ssm:/onedayradio/${self:custom.myStage}/mailgun_apikey~true}
+      mailgun_domain: ${ssm:/onedayradio/${self:custom.myStage}/mailgun_domain}
+      support_email: ${ssm:/onedayradio/${self:custom.myStage}/support_email}
+
+plugins:
+  - serverless-offline-ssm
+  - serverless-plugin-typescript
+  - serverless-offline

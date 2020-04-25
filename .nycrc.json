@@ -1,0 +1,17 @@
+{
+  "cache": false,
+  "extension": [".ts"],
+  "check-coverage": true,
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "local-db",
+    "tests",
+    "src/shared/logs",
+    "src/graphql",
+    "src/database",
+    "src/shared/constants",
+    "src/shared/util/types.ts",
+    "src/shared/util/mailgun.ts",
+    "**/*.graph.ts"
+  ]
+}
