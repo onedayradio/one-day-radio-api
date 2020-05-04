@@ -8,8 +8,7 @@
     "tests",
     "src/shared/logs",
     "src/graphql",
-    "src/database",
-    "src/shared/constants",
+    "src/shared/database.ts",
     "src/shared/util/types.ts",
     "src/shared/util/mailgun.ts",
     "**/*.graph.ts"

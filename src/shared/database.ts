@@ -11,7 +11,7 @@ const mongoUrl = getValue('mongodb_url')
 const mongoUsername = getValue('mongodb_username')
 const mongoPassword = getValue('mongodb_password')
 
-export const initConnection = async (): Promise<Mongoose> => {
+export const initDBConnection = async (): Promise<Mongoose> => {
   return mongoose.connect(mongoUrl, {
     socketTimeoutMS: 10000,
     useNewUrlParser: true,

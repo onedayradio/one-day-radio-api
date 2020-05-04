@@ -1,9 +1,18 @@
 import { Document } from 'mongoose'
 
+export interface UserSpotifyData {
+  accessToken: string
+  refreshToken: string
+}
+
 export interface User {
+  email: string
   firstname?: string
   lastname?: string
-  email: string
+  displayName?: string
+  countryCode?: string
+  profileImageUrl?: string
+  spotifyData?: UserSpotifyData
   updatedAt?: string
 }
 

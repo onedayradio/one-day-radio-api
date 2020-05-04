@@ -18,15 +18,14 @@ export const validateToken = async (
   if (jwtType.toLowerCase() !== 'bearer' || !token) {
     throw new AuthenticationError('Unauthorized!!')
   }
-  let decoded: any
+  let decoded: { id: string }
   try {
-    decoded = await jwt.verify(token, getValue(tokenSecretKey))
+    decoded = (await jwt.verify(token, getValue(tokenSecretKey))) as { id: string }
   } catch (error) {
     throw new AuthenticationError('Unauthorized!!')
   }
   return {
     userId: decoded.id,
-    userRoles: decoded.roles,
   }
 }
 

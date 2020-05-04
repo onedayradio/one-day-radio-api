@@ -7,9 +7,11 @@ const UserSchema = new Schema(
   {
     firstname: {
       type: String,
-      required: [true, 'First name is required'],
     },
     lastname: {
+      type: String,
+    },
+    displayName: {
       type: String,
     },
     email: {
@@ -34,6 +36,9 @@ const UserSchema = new Schema(
         },
       ],
     },
+    countryCode: String,
+    profileImageUrl: String,
+    spotifyData: {},
   },
   {
     timestamps: true,

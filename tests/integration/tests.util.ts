@@ -26,8 +26,8 @@ export const connectMongoose = (): Promise<void> => {
         void mongoose.connect(getValue('mongodb_url'), {
           useNewUrlParser: true,
           useCreateIndex: true,
-          user: getValue('mongo_username'),
-          pass: getValue('mongo_password'),
+          user: getValue('mongodb_username'),
+          pass: getValue('mongodb_password'),
         })
         mongoose.connection.once('open', () => {
           resolve()
@@ -45,8 +45,8 @@ export const testsSetup = async (done: any): Promise<void> => {
     await connectMongoose()
     await fixtures.connect(getValue('mongodb_url'), {
       auth: {
-        user: getValue('mongo_username'),
-        password: getValue('mongo_password'),
+        user: getValue('mongodb_username'),
+        password: getValue('mongodb_password'),
       },
     })
     await fixtures.unload()

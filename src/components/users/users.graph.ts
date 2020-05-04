@@ -7,6 +7,9 @@ export const userType = `
     firstname: String
     lastname: String
     email: String
+    displayName: String
+    countryCode: String
+    profileImageUrl: String
   }
 
   input UserInput {
