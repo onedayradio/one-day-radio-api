@@ -2,17 +2,23 @@
 # RUNNING PROJECT LOCALLY
 # ----------------------------
 
-local: setup-local-db
+local: migrations-up
 	yarn
 	yarn start
 
 # ----------------------------
-# SETTING UP LOCAL DATABASES
+# SETTING UP LOCAL DATABASE
 # ----------------------------
 
 setup-local-db: docker-compose-down init
-	docker-compose up --build -d mongo-seed
-	$(call run_docker_logs)
+	docker-compose up --build -d mongodb
+
+# ----------------------------
+# RUNNING MIGRATIONS
+# ----------------------------
+
+migrations-up: setup-local-db
+	migrate-mongo up
 
 # ----------------------------
 # DOCKER COMMANDS
@@ -20,11 +26,9 @@ setup-local-db: docker-compose-down init
 
 docker-clean-up:
 	docker stop mongodb || true
-	docker stop mongo-seed || true
 	docker rm -v $(shell docker ps -a -q -f status=exited) 2>&1 || true
 	docker rmi $(shell docker images -f "dangling=true" -q) 2>&1 || true
 	docker rm mongodb || true
-	docker rm mongo-seed || true
 	docker volume prune -f
 
 docker-compose-down: docker-clean-up
@@ -42,11 +46,11 @@ define create_network
 endef
 
 define run_docker_logs
-	docker-compose logs -f mongo-seed
+	docker-compose logs -f mongodb
 endef
 
 # ----------------------------
 # MAKE TARGETS
 # ----------------------------
 
-.PHONY: docker-compose-down docker-clean-up init setup-local-db
+.PHONY: docker-compose-down docker-clean-up init setup-local-db migrations-up

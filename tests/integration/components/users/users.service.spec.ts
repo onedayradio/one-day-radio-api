@@ -15,8 +15,8 @@ describe('UsersService', () => {
 
   it('should load users by ids', async () => {
     const { users } = ids
-    const songsLoaded = await usersService.loadByIds([users.juanId, users.pabloId])
-    expect(songsLoaded.length).to.equal(2)
+    const usersLoaded = await usersService.loadByIds([users.juanId, users.pabloId])
+    expect(usersLoaded.length).to.equal(2)
   })
 
   it('should create an user', async () => {

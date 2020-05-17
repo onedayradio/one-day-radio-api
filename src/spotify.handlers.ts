@@ -1,14 +1,8 @@
 import { Context, Callback } from 'aws-lambda'
 import querystring from 'querystring'
 
-import {
-  generateRandomString,
-  getValue,
-  generalLogger,
-  SpotifyApi,
-  initDBConnection,
-  generateToken,
-} from './shared'
+import { generateRandomString, getValue, generalLogger, SpotifyApi, generateToken } from './shared'
+import { initDBConnection } from './shared/database'
 import { SpotifyEvent, SpotifyUserData, GetTokensResponse, User } from './types'
 import { UsersService } from './components'
 

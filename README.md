@@ -4,6 +4,10 @@ The one day radio API
 
 ## How to run the project locally
 
+### Pre-requisites
+
+1. Install `migrate-mongo` by running `npm install -g migrate-mongo`
+
 ### NOTES:
 
 1. Local database credentials can be found in the `docker-compose.yml` file, look for `MONGO_INITDB_ROOT_USERNAME` and `MONGO_INITDB_ROOT_PASSWORD`
@@ -29,3 +33,8 @@ Test it using your REST client of preference. Insomnia is very much recommended:
 
 Run `yarn update-all` to interactively check what npm packages can be updated to newer versions.
 Please try to do this as often as possible! :)
+
+## Migrations
+
+1. To run all migrations run `make migrations-up`
+2. To create a new migration file run `migrate-mongo create <name>`
