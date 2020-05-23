@@ -42,3 +42,30 @@ export interface SpotifyEvent {
     Cookie: string
   }
 }
+
+export interface SpotifySearchSongsResponse {
+  tracks: {
+    href: string
+    items: SpotifySong[]
+  }
+  limit: number
+  total: number
+  next?: string
+  previous?: string
+}
+
+export interface SpotifySong {
+  artists: { id: string; name: string }[]
+  duration_ms: number
+  explicit: boolean
+  id: string
+  name: string
+  popularity: number
+  album: { id: string; name: string; images: SpotifyImage[] }
+}
+
+export interface SpotifyImage {
+  width: number
+  height: number
+  url: string
+}

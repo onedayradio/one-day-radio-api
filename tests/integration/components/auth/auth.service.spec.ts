@@ -25,6 +25,10 @@ describe('AuthService', () => {
       firstname: 'new firstname',
       lastname: 'new lastname',
       email: 'new@gmail.com',
+      spotifyData: {
+        accessToken: 'accesstoken',
+        refreshToken: 'refreshtoken',
+      },
     })
     expect(response).to.containSubset(expectedSignUpSocialNewUser)
     expect(response.token).not.to.be.undefined
@@ -35,6 +39,10 @@ describe('AuthService', () => {
       firstname: 'Juan',
       lastname: 'Morales',
       email: 'juan@gmail.com',
+      spotifyData: {
+        accessToken: 'accesstoken',
+        refreshToken: 'refreshtoken',
+      },
     })
     expect(response).to.containSubset(expectedSignUpSocialExistingUser)
     expect(response.token).not.to.be.undefined

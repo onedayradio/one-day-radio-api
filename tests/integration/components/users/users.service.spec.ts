@@ -2,7 +2,7 @@ import mongodb from 'mongodb'
 import { expect } from 'chai'
 
 import { testsSetup } from '../../tests.util'
-import { UsersService } from '../../../../src/components/users/users.service'
+import { UsersService } from '../../../../src/components'
 import { ids } from '../../fixtures-ids'
 import { expectedJuanUser } from '../../snapshots/users'
 
@@ -24,6 +24,10 @@ describe('UsersService', () => {
       firstname: 'Juanca',
       lastname: 'Morales',
       email: 'juan2@gmail.com',
+      spotifyData: {
+        accessToken: 'access',
+        refreshToken: 'refresh',
+      },
     })
     expect(user._id).not.to.be.undefined
     expect(user.firstname).to.equal('Juanca')

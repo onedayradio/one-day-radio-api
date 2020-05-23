@@ -3,7 +3,7 @@ import sinon from 'sinon'
 import request from 'request'
 
 import '../tests.util'
-import { doRequest } from 'src/shared'
+import { doRequest } from '../../../src/shared'
 
 describe('Request Util', () => {
   afterEach(() => {

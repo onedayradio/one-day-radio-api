@@ -2,7 +2,7 @@ import { keyBy } from 'lodash'
 import { ApolloError } from 'apollo-server-lambda'
 
 import { UsersDao } from './users.dao'
-import { User, DBUser, UserGetOrCreateResponse } from '../../types'
+import { User, DBUser, UserGetOrCreateResponse, UserUpdateData } from '../../types'
 
 export class UsersService {
   usersDao: UsersDao
@@ -38,7 +38,7 @@ export class UsersService {
     return user
   }
 
-  async updateUser(userId: string, updateData: User): Promise<DBUser> {
+  async updateUser(userId: string, updateData: UserUpdateData): Promise<DBUser> {
     delete updateData.email
     const dbUser = await this.usersDao.getDetailById(userId)
     if (!dbUser) {

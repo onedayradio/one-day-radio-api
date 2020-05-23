@@ -1,7 +1,13 @@
 import { Context, Callback } from 'aws-lambda'
 import querystring from 'querystring'
 
-import { generateRandomString, getValue, generalLogger, SpotifyApi, generateToken } from './shared'
+import {
+  generateRandomString,
+  getValue,
+  generalLogger,
+  generateToken,
+  SpotifyClient,
+} from './shared'
 import { initDBConnection } from './shared/database'
 import { SpotifyEvent, SpotifyUserData, GetTokensResponse, User } from './types'
 import { UsersService } from './components'
@@ -85,8 +91,8 @@ export const authCallback = async (
     })
   }
   const usersService = new UsersService()
-  const spotifyTokens = await SpotifyApi.getTokens(code)
-  const spotifyUser = await SpotifyApi.getUserData(spotifyTokens.accessToken)
+  const spotifyTokens = await SpotifyClient.getTokens(code)
+  const spotifyUser = await SpotifyClient.getUserData(spotifyTokens.accessToken)
   const userResponse = await usersService.getByEmailOrCreate(
     spotifyUser.email,
     getUserData(spotifyUser, spotifyTokens),

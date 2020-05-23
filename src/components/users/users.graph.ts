@@ -25,8 +25,8 @@ export const usersQueryTypes = `
 
 export const userQueriesResolvers = {
   loadAuthUser: (
-    root: {},
-    args: {},
+    root: unknown,
+    args: unknown,
     { usersService, currentUser }: AppContext,
   ): Promise<DBUser> => {
     if (!currentUser) {

@@ -1,7 +1,7 @@
 import { queryTypes } from './queries'
 import { mutationsTypes } from './mutations'
 import { sharedTypes } from './shared-graph-types'
-import { authType, userType, genreType } from '../../components'
+import { authType, userType, genreType, songType } from '../../components'
 
 export const typeDefs = `
   ${sharedTypes}
@@ -10,4 +10,5 @@ export const typeDefs = `
   ${authType}
   ${userType}
   ${genreType}
+  ${songType}
 `
