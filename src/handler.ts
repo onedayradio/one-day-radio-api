@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server-lambda'
 import { Context, APIGatewayProxyEvent, APIGatewayProxyCallback } from 'aws-lambda'
 
 import { schema, context } from './graphql'
-import { initDBConnection } from './shared'
+import { initDBConnection } from './shared/database'
 
 const apolloServer = new ApolloServer({
   schema,

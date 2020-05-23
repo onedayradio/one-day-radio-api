@@ -5,6 +5,10 @@ const ids = {
     juanId: ObjectId(),
     pabloId: ObjectId(),
   },
+  genres: {
+    metalId: ObjectId(),
+    punkId: ObjectId(),
+  },
 }
 
 export { ids }

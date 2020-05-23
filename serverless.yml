@@ -26,6 +26,9 @@ custom:
   myStage: ${opt:stage, self:provider.stage}
   serverless-offline:
     useChildProcesses: true
+  serverless-offline-ssm:
+    stages:
+      - dev
 
 functions:
   graphql:

@@ -1,8 +1,9 @@
-import { authMutationsResolvers, userQueriesResolvers } from '../components'
+import { authMutationsResolvers, userQueriesResolvers, genreQueriesResolvers } from '../components'
 
 export const resolvers = {
   Query: {
     ...userQueriesResolvers,
+    ...genreQueriesResolvers,
   },
   Mutation: {
     ...authMutationsResolvers,

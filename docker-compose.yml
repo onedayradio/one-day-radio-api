@@ -4,17 +4,6 @@ networks:
     external:
       name: onedayradio
 services:
-  mongo-seed:
-    build:
-      context: ./local-db
-      dockerfile: mongo-seed/Dockerfile
-    container_name: mongo-seed
-    command: ['./wait-for-it.sh', 'mongodb:27017', '--', './mongo-seed.sh']
-    depends_on:
-      - mongodb
-    networks:
-      - onedayradio
-
   mongodb:
     image: mongo:latest
     container_name: mongodb
