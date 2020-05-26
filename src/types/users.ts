@@ -5,15 +5,23 @@ export interface UserSpotifyData {
   refreshToken: string
 }
 
-export interface User {
-  email: string
+interface BaseUser {
   firstname?: string
   lastname?: string
   displayName?: string
   countryCode?: string
   profileImageUrl?: string
-  spotifyData?: UserSpotifyData
   updatedAt?: string
+}
+
+export interface UserUpdateData extends BaseUser {
+  email?: string
+  spotifyData?: UserSpotifyData
+}
+
+export interface User extends BaseUser {
+  email: string
+  spotifyData: UserSpotifyData
 }
 
 export interface DBUser extends Document, User {}

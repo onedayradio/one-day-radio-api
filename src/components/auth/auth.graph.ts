@@ -13,7 +13,7 @@ export const authMutationTypes = `
 
 export const authMutationsResolvers = {
   authSocial: (
-    root: {},
+    root: unknown,
     { user }: AuthSocialArgs,
     { authService }: AppContext,
   ): Promise<AuthResponse> => authService.authSocial(user),

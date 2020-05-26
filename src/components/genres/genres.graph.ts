@@ -14,8 +14,8 @@ export const genresQueryTypes = `
 
 export const genreQueriesResolvers = {
   loadAllGenres: (
-    root: {},
-    args: {},
+    root: unknown,
+    args: unknown,
     { genresService, currentUser }: AppContext,
   ): Promise<DBGenre[]> => {
     if (!currentUser) {

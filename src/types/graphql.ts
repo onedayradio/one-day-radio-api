@@ -1,6 +1,6 @@
 import { DBUser } from './users'
 import { DecodedToken } from './auth'
-import { UsersService, AuthService, GenresService } from '../components'
+import { UsersService, AuthService, GenresService, SearchService } from '../components'
 
 export interface ServerContextEvent {
   headers: {
@@ -20,4 +20,5 @@ export interface AppContext {
   usersService: UsersService
   authService: AuthService
   genresService: GenresService
+  searchService: SearchService
 }

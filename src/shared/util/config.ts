@@ -1,6 +1,5 @@
 import { get } from 'lodash'
 
-/* eslint-disable @typescript-eslint/camelcase */
 const defaults = {
   environment: 'local',
   test: {

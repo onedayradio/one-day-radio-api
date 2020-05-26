@@ -40,7 +40,7 @@ export const connectMongoose = (): Promise<void> => {
   return new Promise(promise)
 }
 
-export const testsSetup = async (done: any): Promise<void> => {
+export const testsSetup = async (done: () => void): Promise<void> => {
   try {
     await connectMongoose()
     await fixtures.connect(getValue('mongodb_url'), {

@@ -1,5 +1,5 @@
 import { UserModel } from './user'
-import { DBUser, User } from '../../types'
+import { DBUser, User, UserUpdateData } from '../../types'
 
 export class UsersDao {
   async loadByIds(ids: string[]): Promise<DBUser[]> {
@@ -20,7 +20,7 @@ export class UsersDao {
     return UserModel.findOne({ email })
   }
 
-  async update(dbUser: DBUser, updateData: User): Promise<DBUser> {
+  async update(dbUser: DBUser, updateData: UserUpdateData): Promise<DBUser> {
     return dbUser.updateOne(updateData)
   }
 }

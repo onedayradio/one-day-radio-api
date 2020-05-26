@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import sinon from 'sinon'
 import '../tests.util'
-import { generateRandomString } from 'src/shared'
+import { generateRandomString } from '../../../src/shared'
 
 const sandbox = sinon.createSandbox()
 
