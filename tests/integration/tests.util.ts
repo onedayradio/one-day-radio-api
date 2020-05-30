@@ -26,8 +26,6 @@ export const connectMongoose = (): Promise<void> => {
         void mongoose.connect(getValue('mongodb_url'), {
           useNewUrlParser: true,
           useCreateIndex: true,
-          user: getValue('mongodb_username'),
-          pass: getValue('mongodb_password'),
         })
         mongoose.connection.once('open', () => {
           resolve()

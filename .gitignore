@@ -14,7 +14,9 @@ node_modules
 *.log
 
 .env
-.env-prd
+.env-prod
+.env-local
+.env-dev
 
 .nyc_output
 
@@ -23,3 +25,6 @@ node_modules
 coverage
 
 TODO
+
+migrations/db-config**/*.js
+!migrations/db-config.template.js

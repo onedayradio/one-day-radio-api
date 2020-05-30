@@ -8,8 +8,6 @@ provider:
   timeout: 30
   environment:
     mongodb_url: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_url}
-    mongodb_username: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_username}
-    mongodb_password: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_password~true}
     frontend_url: ${ssm:/onedayradio/${self:custom.myStage}/frontend_url}
     spotify_redirect_url: ${ssm:/onedayradio/${self:custom.myStage}/spotify_redirect_url}
     spotify_client_id: ${ssm:/onedayradio/${self:custom.myStage}/spotify_client_id}
@@ -18,9 +16,6 @@ provider:
     token_secret: ${ssm:/onedayradio/${self:custom.myStage}/token_secret~true}
     token_expiration: ${ssm:/onedayradio/${self:custom.myStage}/token_expiration}
     security_salt_rounds: ${ssm:/onedayradio/${self:custom.myStage}/security_salt_rounds}
-    mailgun_apikey: ${ssm:/onedayradio/${self:custom.myStage}/mailgun_apikey~true}
-    mailgun_domain: ${ssm:/onedayradio/${self:custom.myStage}/mailgun_domain}
-    support_email: ${ssm:/onedayradio/${self:custom.myStage}/support_email}
 
 custom:
   myStage: ${opt:stage, self:provider.stage}
