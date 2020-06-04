@@ -3,7 +3,7 @@ import { get } from 'lodash'
 const defaults = {
   environment: 'local',
   test: {
-    mongodb_url: 'mongodb://localhost:27017/test?authSource=admin',
+    mongodb_url: 'mongodb://onedayradio-admin:password@localhost:27017/test?authSource=admin',
     mongodb_username: 'onedayradio-admin',
     mongodb_password: 'password',
     token_secret: 'a_test_secret',

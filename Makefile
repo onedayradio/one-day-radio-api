@@ -18,7 +18,7 @@ setup-local-db: docker-compose-down init
 # ----------------------------
 
 migrations-up: setup-local-db
-	migrate-mongo up
+	migrate-mongo up -f './migrations/migrate-mongo-config.js'
 
 # ----------------------------
 # DOCKER COMMANDS
