@@ -44,6 +44,17 @@ export interface SpotifyPlaylist {
   uri?: string
 }
 
+export interface SpotifyPlayList {
+  id?: string
+  name: string
+  description: string
+  public?: boolean
+  tracks?: {
+    href: string
+    items: SpotifySong[]
+  }
+}
+
 export interface SpotifyEvent {
   queryStringParameters: {
     code: string

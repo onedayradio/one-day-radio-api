@@ -36,6 +36,10 @@ const ids = {
     echoDot: ObjectId(),
     mac: ObjectId(),
   },
+  playList: {
+    todayId: ObjectId(),
+    yesterdayId: ObjectId(),
+  },
 }
 
 export { ids }
