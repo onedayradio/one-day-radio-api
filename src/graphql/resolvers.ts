@@ -3,6 +3,7 @@ import {
   userQueriesResolvers,
   genreQueriesResolvers,
   searchQueriesResolvers,
+  playListQueriesResolvers,
 } from '../components'
 
 export const resolvers = {
@@ -10,6 +11,7 @@ export const resolvers = {
     ...userQueriesResolvers,
     ...genreQueriesResolvers,
     ...searchQueriesResolvers,
+    ...playListQueriesResolvers,
   },
   Mutation: {
     ...authMutationsResolvers,

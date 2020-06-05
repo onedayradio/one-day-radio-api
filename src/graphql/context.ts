@@ -1,4 +1,10 @@
-import { UsersService, AuthService, GenresService, SearchService } from '../components'
+import {
+  UsersService,
+  AuthService,
+  GenresService,
+  SearchService,
+  PlayListService,
+} from '../components'
 import { getTokenData } from '../shared'
 import { ServerContextParams, AppContext } from '../types'
 
@@ -19,5 +25,6 @@ export const context = async ({ event }: ServerContextParams): Promise<AppContex
     authService: new AuthService(),
     genresService: new GenresService(),
     searchService: new SearchService(),
+    playListService: new PlayListService(),
   }
 }

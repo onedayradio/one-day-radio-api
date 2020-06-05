@@ -12,6 +12,8 @@ provider:
     mongodb_password: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_password~true}
     frontend_url: ${ssm:/onedayradio/${self:custom.myStage}/frontend_url}
     spotify_redirect_url: ${ssm:/onedayradio/${self:custom.myStage}/spotify_redirect_url}
+    spotify_refresh_token: ${ssm:/onedayradio/${self:custom.myStage}/spotify_refresh_token}
+    spotify_one_day_radio_user_id: ${ssm:/onedayradio/${self:custom.myStage}/spotify_one_day_radio_user_id}
     spotify_client_id: ${ssm:/onedayradio/${self:custom.myStage}/spotify_client_id}
     spotify_client_secret: ${ssm:/onedayradio/${self:custom.myStage}/spotify_client_secret~true}
     spotify_scopes: ${ssm:/onedayradio/${self:custom.myStage}/spotify_scopes}

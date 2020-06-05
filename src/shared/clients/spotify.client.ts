@@ -7,6 +7,7 @@ import {
   GetTokensResponse,
   SpotifyUserData,
   SpotifySearchSongsResponse,
+  SpotifyPlayList,
 } from '../../types'
 import { getValue, doRequest } from '../util'
 
@@ -110,6 +111,29 @@ export class SpotifyClient {
       options,
     )) as SpotifySearchSongsResponse
     return searchResult
+  }
+
+  static async createPlayList(
+    accessToken: string,
+    userId: string,
+    playList: SpotifyPlayList,
+  ): Promise<SpotifyPlayList> {
+    const options = {
+      url: `${BASE_API_URL}/users/${userId}/playlists`,
+      headers: { Authorization: `Bearer ${accessToken}` },
+      body: { ...playList, public: false },
+      json: true,
+    }
+    return doRequest(options, 'post')
+  }
+
+  static async getPlayList(accessToken: string, playListId: string): Promise<SpotifyPlayList> {
+    const options = {
+      url: `${BASE_API_URL}/playlists/${playListId}`,
+      headers: { Authorization: `Bearer ${accessToken}` },
+      json: true,
+    }
+    return doRequest(options)
   }
 
   static async refreshAccessToken(refreshToken: string): Promise<string> {

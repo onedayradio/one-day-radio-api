@@ -5,7 +5,7 @@ export interface TokenRequestOptionsParams {
 }
 
 export interface TokenRequestOptionsForm {
-  grant_type: string
+  grant_type?: string
   redirect_uri?: string
   code?: string
   refresh_token?: string
@@ -31,6 +31,17 @@ export interface SpotifyUserData {
   username: string
   email: string
   profileImageUrl?: string
+}
+
+export interface SpotifyPlayList {
+  id?: string
+  name: string
+  description: string
+  public?: boolean
+  tracks?: {
+    href: string
+    items: SpotifySong[]
+  }
 }
 
 export interface SpotifyEvent {
