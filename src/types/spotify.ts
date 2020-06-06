@@ -80,3 +80,12 @@ export interface SpotifyImage {
   height: number
   url: string
 }
+
+export interface SpotifyDevice {
+  id: string
+  name: string
+}
+
+export interface SpotifyDevices {
+  devices: SpotifyDevice[]
+}

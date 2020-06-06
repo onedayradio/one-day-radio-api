@@ -3,6 +3,7 @@ import {
   genresQueryTypes,
   searchQueryTypes,
   playListQueryTypes,
+  devicesQueryTypes,
 } from '../../components'
 
 export const queryTypes = `
@@ -11,5 +12,6 @@ export const queryTypes = `
     ${genresQueryTypes}
     ${searchQueryTypes}
     ${playListQueryTypes}
+    ${devicesQueryTypes}
   }
 `

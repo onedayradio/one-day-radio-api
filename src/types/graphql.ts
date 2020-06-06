@@ -6,6 +6,7 @@ import {
   GenresService,
   SearchService,
   PlayListService,
+  DevicesService,
 } from '../components'
 
 export interface ServerContextEvent {
@@ -28,4 +29,5 @@ export interface AppContext {
   genresService: GenresService
   searchService: SearchService
   playListService: PlayListService
+  devicesService: DevicesService
 }

@@ -72,3 +72,16 @@ export const playListMock = {
   type: 'playlist',
   uri: 'spotify:playlist:2aflW5TiXgHGSkWSTjNtor',
 }
+
+export const devicesMock = {
+  devices: [
+    {
+      id: '1db0b3c5-7667-4530-86e6-6cb72ca52789',
+      name: 'Echo Dot',
+    },
+    {
+      id: 'b9aa67d4eba084f6e88334f86893da4c2fb554ed',
+      name: ' MacBook Pro',
+    },
+  ],
+}

@@ -8,6 +8,7 @@ import {
   SpotifyUserData,
   SpotifySearchSongsResponse,
   SpotifyPlayList,
+  SpotifyDevices,
 } from '../../types'
 import { getValue, doRequest } from '../util'
 
@@ -133,7 +134,17 @@ export class SpotifyClient {
       headers: { Authorization: `Bearer ${accessToken}` },
       json: true,
     }
-    return doRequest(options)
+    return this.doSpotifyRequest(options)
+  }
+
+  static async getPlayerDevices(accessToken: string): Promise<SpotifyDevices> {
+    const options = {
+      url: `${BASE_API_URL}/me/player/devices`,
+      headers: { Authorization: 'Bearer ' + accessToken },
+      json: true,
+    }
+    const playerDevices = await SpotifyClient.doSpotifyRequest(options)
+    return playerDevices
   }
 
   static async refreshAccessToken(refreshToken: string): Promise<string> {
