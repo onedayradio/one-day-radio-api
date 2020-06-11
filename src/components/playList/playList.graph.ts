@@ -21,18 +21,18 @@ export const playListType = `
 `
 
 export const playListQueryTypes = `
-  loadPlayList(genreId: String, date: String): PlayList
+  loadPlayList(genreId: String, day: String, month: String, year: String): PlayList
 `
 
 export const playListQueriesResolvers = {
   loadPlayList: (
     root: unknown,
-    { genreId, date }: PlayListArgs,
+    { genreId, day, month, year }: PlayListArgs,
     { playListService, currentUser }: AppContext,
   ): Promise<PlayList> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playListService.loadPlayList(currentUser, genreId, date)
+    return playListService.loadPlayList(currentUser, genreId, day, month, year)
   },
 }

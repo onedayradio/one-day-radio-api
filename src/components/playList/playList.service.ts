@@ -1,7 +1,6 @@
 import moment from 'moment'
 
 import { PlayListDao } from './playList.dao'
-import { Constants } from './../../shared'
 import { PlayList, DBUser, SpotifyPlayList, PlayListDate, PlayListData } from '../../types'
 import { ValidationError } from 'apollo-server-lambda'
 import { SpotifyService } from './../spotify/spotify.service'
@@ -33,8 +32,14 @@ export class PlayListService {
     return spotifyPlayList
   }
 
-  async loadPlayList(user: DBUser, genreId: string, date: string): Promise<PlayList> {
-    const playListDate = this.createPlayListDate(date)
+  async loadPlayList(
+    user: DBUser,
+    genreId: string,
+    day: string,
+    month: string,
+    year: string,
+  ): Promise<PlayList> {
+    const playListDate = this.createPlayListDate(day, month, year)
     const playList = await this.playListDao.load({ genreId, ...playListDate })
     if (playList && playList.spotifyId) {
       const spotifyService = new SpotifyService(user)
@@ -47,7 +52,7 @@ export class PlayListService {
   async createPlayListData(genreId: string, playListDate: PlayListDate): Promise<PlayListData> {
     const genreService = new GenresService()
     const genre = await genreService.getDetailById(genreId)
-    const name = this.createPlayListName(genre.name)
+    const name = this.createPlayListName(genre.name, playListDate)
     return {
       name,
       description: this.createPlayListDescription(name),
@@ -56,23 +61,23 @@ export class PlayListService {
     }
   }
 
-  createPlayListName(genreName: string): string {
-    const date = moment().format(Constants.DATE.FORMAT)
-    return `One day Radio. ${genreName} playlist - ${date}`
+  createPlayListName(genreName: string, playListDate: PlayListDate): string {
+    const { year, month, day } = playListDate
+    return `One day Radio. ${genreName} playlist - ${year}-${month}-${day}`
   }
 
   createPlayListDescription(name: string): string {
     return `This playlist has been created to you, from your community. ${name}`
   }
 
-  createPlayListDate(date: string): PlayListDate {
-    if (!moment(date, DATE.FORMAT, true).isValid()) {
+  createPlayListDate(day: string, month: string, year: string): PlayListDate {
+    if (!moment(`${year}-${month}-${day}`, DATE.FORMAT, true).isValid()) {
       throw new ValidationError('Invalid date format')
     }
     return {
-      day: moment(date).day().toString(),
-      month: moment(date).month().toString(),
-      year: moment(date).year().toString(),
+      day,
+      month,
+      year,
     }
   }
 }

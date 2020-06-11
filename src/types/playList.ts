@@ -30,5 +30,7 @@ export interface PlayListFilter extends PlayListDate {
 
 export interface PlayListArgs {
   genreId: string
-  date: string
+  day: string
+  month: string
+  year: string
 }

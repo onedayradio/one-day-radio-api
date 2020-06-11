@@ -25,8 +25,12 @@ describe('Playlist Service', () => {
 
   it('should create a play list name', async () => {
     const sandbox = sinon.createSandbox()
-    sandbox.stub(moment, 'format').returns('2020-12-24')
-    const playListDescription = playListService.createPlayListName('Rock')
+    const playListDate = {
+      day: '24',
+      month: '12',
+      year: '2020',
+    }
+    const playListDescription = playListService.createPlayListName('Rock', playListDate)
     expect(playListDescription).to.equal('One day Radio. Rock playlist - 2020-12-24')
     sandbox.restore()
   })
