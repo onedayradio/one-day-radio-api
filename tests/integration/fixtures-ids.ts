@@ -9,7 +9,12 @@ const ids = {
   },
   genres: {
     metalId: ObjectId(),
+    rockId: ObjectId(),
     punkId: ObjectId(),
+  },
+  playList: {
+    todayId: ObjectId(),
+    yesterdayId: ObjectId(),
   },
 }
 
