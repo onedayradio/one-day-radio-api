@@ -1,5 +1,5 @@
 import { getValue, SpotifyClient, SpotifyUnauthorizedError } from '../../shared'
-import { DBUser, Song, SpotifyPlayList } from '../../types'
+import { DBUser, Song, SpotifyPlayList, SpotifyDevice } from '../../types'
 import { UsersService } from '../users/users.service'
 
 export class SpotifyService {
@@ -9,6 +9,17 @@ export class SpotifyService {
   constructor(user: DBUser) {
     this.user = user
     this.usersService = new UsersService()
+  }
+
+  async refreshAccessToken(): Promise<DBUser> {
+    const newAccessToken = await SpotifyClient.refreshAccessToken(this.getUserRefreshToken())
+    const newUser = await this.usersService.updateUser(this.user._id, {
+      spotifyData: {
+        accessToken: newAccessToken,
+        refreshToken: this.getUserRefreshToken(),
+      },
+    })
+    return newUser
   }
 
   getUserAccessToken(): string {
@@ -59,14 +70,16 @@ export class SpotifyService {
     return SpotifyClient.createPlayList(accessToken, userId, playList)
   }
 
-  async refreshAccessToken(): Promise<DBUser> {
-    const newAccessToken = await SpotifyClient.refreshAccessToken(this.getUserRefreshToken())
-    const newUser = await this.usersService.updateUser(this.user._id, {
-      spotifyData: {
-        accessToken: newAccessToken,
-        refreshToken: this.getUserRefreshToken(),
-      },
-    })
-    return newUser
+  async loadPlayerDevices(): Promise<SpotifyDevice[]> {
+    try {
+      const { devices = [] } = await SpotifyClient.getPlayerDevices(this.getUserAccessToken())
+      return devices
+    } catch (error) {
+      if (error instanceof SpotifyUnauthorizedError) {
+        this.user = await this.refreshAccessToken()
+        return this.loadPlayerDevices()
+      }
+      throw error
+    }
   }
 }

@@ -5,7 +5,7 @@ import { expect } from 'chai'
 import { testsSetup } from '../../tests.util'
 import { SpotifyService, UsersService } from '../../../../src/components'
 import { ids } from '../../fixtures-ids'
-import { playListMock, searchSongsMock } from '../../mock-data/spotify-api.mocks'
+import { devicesMock, playListMock, searchSongsMock } from '../../mock-data/spotify-api.mocks'
 import { spotifyServiceSearchSongs } from '../../snapshots/spotify'
 import { SpotifyClient, SpotifyUnauthorizedError } from '../../../../src/shared'
 
@@ -139,5 +139,15 @@ describe('SpotifyService', () => {
     const updatedUser = await spotifyService.refreshAccessToken()
     expect(updatedUser.spotifyData.accessToken).to.equal('new-access-token')
     sandbox.restore()
+  })
+
+  it('should get the user devices', async () => {
+    sinon.stub(request, 'get').yields(null, { statusCode: 200 }, devicesMock)
+    const { users } = ids
+    const user = await usersService.getDetailById(users.sanId)
+    const spotifyService = new SpotifyService(user)
+    const searchResponse = await spotifyService.loadPlayerDevices()
+    expect(searchResponse).to.deep.equal(devicesMock.devices)
+    ;(request.get as any).restore()
   })
 })
