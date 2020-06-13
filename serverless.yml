@@ -5,7 +5,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   stage: local
-  timeout: 30
+  timeout: 60
   region: us-east-1
   environment:
     mongodb_url: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_url~true}
@@ -19,6 +19,7 @@ provider:
     token_secret: ${ssm:/onedayradio/${self:custom.myStage}/token_secret~true}
     token_expiration: ${ssm:/onedayradio/${self:custom.myStage}/token_expiration}
     security_salt_rounds: ${ssm:/onedayradio/${self:custom.myStage}/security_salt_rounds}
+    max_user_songs_per_playlist: ${ssm:/onedayradio/${self:custom.myStage}/max_user_songs_per_playlist}
 
 custom:
   myStage: ${opt:stage, self:provider.stage}
@@ -37,14 +38,14 @@ functions:
           method: post
           cors: true
   spotifyAuth:
-    handler: src/spotify.handlers.authorize
+    handler: src/spotify-auth-handler.authorize
     events:
       - http:
           path: spotify/auth
           method: get
           cors: true
   spotifyAuthCallback:
-    handler: src/spotify.handlers.authCallback
+    handler: src/spotify-auth-callback.authCallback
     events:
       - http:
           path: spotify/auth/callback

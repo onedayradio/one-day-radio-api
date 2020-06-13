@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 const ObjectId = require('mongodb').ObjectID
 
 const ids = {
@@ -15,6 +16,19 @@ const ids = {
   playList: {
     todayId: ObjectId(),
     yesterdayId: ObjectId(),
+    metalId: ObjectId(),
+    rockId: ObjectId(),
+  },
+  playlistSongs: {
+    metalWrathchildId: ObjectId(),
+    metalTheTrooperId: ObjectId(),
+    metalRawDealId: ObjectId(),
+    rockPushingMeAway: ObjectId(),
+    rockSomewhereIBelong: ObjectId(),
+    rockFaint: ObjectId(),
+    rockBleedItOut: ObjectId(),
+    rockOneMoreLight: ObjectId(),
+    rockTheMessenger: ObjectId(),
   },
   devices: {
     echoDot: ObjectId(),

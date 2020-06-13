@@ -74,6 +74,7 @@ export interface SpotifySong {
   name: string
   popularity: number
   album: { id: string; name: string; images: SpotifyImage[] }
+  uri: string
 }
 
 export interface SpotifyImage {

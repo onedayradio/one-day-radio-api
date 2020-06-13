@@ -10,10 +10,22 @@ import { spotifyServiceSearchSongs } from '../../snapshots/spotify'
 import { SpotifyClient, SpotifyUnauthorizedError } from '../../../../src/shared'
 
 const usersService = new UsersService()
+const sandbox = sinon.createSandbox()
 
 describe('SpotifyService', () => {
   beforeEach((done: any) => {
     void testsSetup(done)
+  })
+  afterEach(() => {
+    if (sandbox.restore) {
+      sandbox.restore()
+    }
+    if ((request.post as any).restore) {
+      ;(request.post as any).restore()
+    }
+    if ((request.get as any).restore) {
+      ;(request.get as any).restore()
+    }
   })
 
   it('should get spotify user access token', async () => {
@@ -39,22 +51,20 @@ describe('SpotifyService', () => {
     const spotifyService = new SpotifyService(user)
     const searchResponse = await spotifyService.searchSong('raw deal')
     expect(searchResponse).to.deep.equal(spotifyServiceSearchSongs)
-    ;(request.get as any).restore()
   })
 
   it('should get a playlist', async () => {
+    sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
     sinon.stub(request, 'get').yields(null, { statusCode: 200 }, playListMock)
     const { users, playList } = ids
     const user = await usersService.getDetailById(users.sanId)
     const spotifyService = new SpotifyService(user)
     const searchResponse = await spotifyService.getPlayList(playList.yesterdayId)
     expect(searchResponse).to.deep.equal(playListMock)
-    ;(request.get as any).restore()
   })
 
   it('should throw unexpected errors when getting a playlist', async () => {
     const { users, playList } = ids
-    const sandbox = sinon.createSandbox()
     sandbox.stub(SpotifyClient, 'refreshAccessToken').callsFake(async () => {
       throw new Error('Unexpected error')
     })
@@ -65,13 +75,10 @@ describe('SpotifyService', () => {
     } catch (error) {
       expect(error.message).to.equal('Unexpected error')
     }
-    sandbox.restore()
   })
 
   it('should refresh token if unauthorized error on get playlist', async () => {
     const { users, playList } = ids
-    const sandbox = sinon.createSandbox()
-
     const getPlayList = sandbox.stub(SpotifyClient, 'getPlayList')
     getPlayList.onFirstCall().rejects(new SpotifyUnauthorizedError('invalid access token'))
     getPlayList.onSecondCall().resolves(playListMock)
@@ -81,7 +88,6 @@ describe('SpotifyService', () => {
     const spotifyService = new SpotifyService(user)
     const searchResponse = await spotifyService.getPlayList(playList.yesterdayId)
     expect(searchResponse).to.deep.equal(playListMock)
-    sandbox.restore()
   })
 
   it('should create a playlist', async () => {
@@ -89,12 +95,8 @@ describe('SpotifyService', () => {
     const { users } = ids
     const user = await usersService.getDetailById(users.sanId)
     const spotifyService = new SpotifyService(user)
-    const createPlayListResponse = await spotifyService.createPlayList({
-      name: '',
-      description: '',
-    })
-    expect(createPlayListResponse).to.deep.equal(playListMock)
-    ;(request.post as any).restore()
+    const searchResponse = await spotifyService.createPlayList({ name: '', description: '' })
+    expect(searchResponse).to.deep.equal(playListMock)
   })
 
   it('should play a playlist on a device', async () => {
@@ -112,7 +114,6 @@ describe('SpotifyService', () => {
 
   it('should refresh token if unauthorized error on search songs', async () => {
     const { users } = ids
-    const sandbox = sinon.createSandbox()
     sandbox.stub(SpotifyClient, 'searchSong').callsFake(async (accessToken: string) => {
       if (accessToken === 'access-token') {
         throw new SpotifyUnauthorizedError('invalid access token')
@@ -127,12 +128,10 @@ describe('SpotifyService', () => {
     const spotifyService = new SpotifyService(user)
     const searchResponse = await spotifyService.searchSong('raw deal')
     expect(searchResponse).to.deep.equal(spotifyServiceSearchSongs)
-    sandbox.restore()
   })
 
   it('should throw unexpected errors when searching for a song', async () => {
     const { users } = ids
-    const sandbox = sinon.createSandbox()
     sandbox.stub(SpotifyClient, 'searchSong').callsFake(async () => {
       throw new Error('Unexpected error')
     })
@@ -143,18 +142,15 @@ describe('SpotifyService', () => {
     } catch (error) {
       expect(error.message).to.equal('Unexpected error')
     }
-    sandbox.restore()
   })
 
   it('should refresh access token and update user in database', async () => {
     const { users } = ids
-    const sandbox = sinon.createSandbox()
     sandbox.stub(SpotifyClient, 'refreshAccessToken').returns(Promise.resolve('new-access-token'))
     const user = await usersService.getDetailById(users.sanId)
     const spotifyService = new SpotifyService(user)
     const updatedUser = await spotifyService.refreshAccessToken()
     expect(updatedUser.spotifyData.accessToken).to.equal('new-access-token')
-    sandbox.restore()
   })
 
   it('should get the user devices', async () => {
@@ -164,6 +160,19 @@ describe('SpotifyService', () => {
     const spotifyService = new SpotifyService(user)
     const searchResponse = await spotifyService.loadPlayerDevices()
     expect(searchResponse).to.deep.equal(devicesMock.devices)
-    ;(request.get as any).restore()
+  })
+
+  it('should refresh token if unauthorized error on add song to playlist', async () => {
+    const { users } = ids
+    sandbox.stub(SpotifyClient, 'addSongToPlaylist').callsFake(async () => {
+      return true
+    })
+    sandbox.stub(SpotifyClient, 'refreshAccessToken').callsFake(async () => {
+      return 'access-token'
+    })
+    const user = await usersService.getDetailById(users.sanId)
+    const spotifyService = new SpotifyService(user)
+    const response = await spotifyService.addSongToPlaylist('1', 'spotify:track:1')
+    expect(response).to.deep.equal(true)
   })
 })

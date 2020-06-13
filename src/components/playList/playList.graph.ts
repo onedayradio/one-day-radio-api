@@ -1,7 +1,41 @@
 import { AuthenticationError } from 'apollo-server-lambda'
-import { AppContext, PlayListArgs, PlayList, PlayOnDeviceArgs } from '../../types'
+import {
+  AppContext,
+  PlayListArgs,
+  PlayList,
+  AddSongToPlaylistMutationArgs,
+  PlaylistSongs,
+  PlayOnDeviceArgs,
+} from '../../types'
 
 export const playListType = `
+  type ItemImage {
+    height: Int
+    width: Int
+    url: String
+  }
+
+  type Album {
+    id: String!
+    name: String
+    images: [ItemImage]
+  }
+
+  type Song {
+    id: String!
+    name: String
+    artists: String
+    album: Album
+    uri: String
+  }
+
+  input SongInput {
+    id: String!
+    name: String
+    artists: String
+    uri: String
+  }
+
   type Tracks {
     href: String
     items: [Song]
@@ -11,12 +45,21 @@ export const playListType = `
     previous: Int,
     total: Int
   }
-  
+
   type PlayList {
     id: String!
     name: String
     description: String
     tracks: Tracks
+  }
+
+  type PlaylistSong {
+    playlist: String
+    user: String
+    spotifyId: String
+    spotifyUri: String
+    name: String
+    artists: String
   }
 `
 
@@ -46,5 +89,22 @@ export const playListQueriesResolvers = {
       throw new AuthenticationError('Unauthorized!!')
     }
     return playListService.playOnDevice(currentUser, playListId, deviceId)
+  },
+}
+
+export const playlistMutationTypes = `
+  addSongToPlaylist(playlistId: String, song: SongInput): PlaylistSong
+`
+
+export const playlistMutationsResolvers = {
+  addSongToPlaylist: (
+    root: unknown,
+    { playlistId, song }: AddSongToPlaylistMutationArgs,
+    { playListService, currentUser }: AppContext,
+  ): Promise<PlaylistSongs> => {
+    if (!currentUser) {
+      throw new AuthenticationError('Unauthorized!!')
+    }
+    return playListService.addSongToPlaylist(currentUser, playlistId, song)
   },
 }

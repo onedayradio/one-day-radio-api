@@ -40,6 +40,7 @@ export class SpotifyService {
         id: spotifySong.id,
         name: spotifySong.name,
         artists: spotifySong.artists.map((spotifyArtist) => spotifyArtist.name).join(','),
+        uri: spotifySong.uri,
         album: spotifySong.album,
       }))
     } catch (error) {
@@ -99,5 +100,11 @@ export class SpotifyService {
       }
       throw error
     }
+  }
+
+  async addSongToPlaylist(playlistId: string, songUri: string): Promise<boolean> {
+    const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
+    const response = await SpotifyClient.addSongToPlaylist(accessToken, playlistId, songUri)
+    return response
   }
 }
