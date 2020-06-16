@@ -38,6 +38,7 @@ export interface SpotifyPlayList {
   name: string
   description: string
   public?: boolean
+  uri?: string
   tracks?: {
     href: string
     items: SpotifySong[]

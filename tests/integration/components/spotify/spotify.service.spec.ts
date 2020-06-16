@@ -89,9 +89,25 @@ describe('SpotifyService', () => {
     const { users } = ids
     const user = await usersService.getDetailById(users.sanId)
     const spotifyService = new SpotifyService(user)
-    const searchResponse = await spotifyService.createPlayList({ name: '', description: '' })
-    expect(searchResponse).to.deep.equal(playListMock)
+    const createPlayListResponse = await spotifyService.createPlayList({
+      name: '',
+      description: '',
+    })
+    expect(createPlayListResponse).to.deep.equal(playListMock)
     ;(request.post as any).restore()
+  })
+
+  it('should play a playlist on a device', async () => {
+    const sandbox = sinon.createSandbox()
+    sandbox.stub(SpotifyClient, 'getPlayList').resolves(playListMock)
+    sandbox.stub(SpotifyClient, 'followPlayList').resolves(undefined)
+    sandbox.stub(SpotifyClient, 'playOnDevice').resolves(undefined)
+    const { users, devices, playList } = ids
+    const user = await usersService.getDetailById(users.sanId)
+    const spotifyService = new SpotifyService(user)
+    const data = await spotifyService.playOnDevice(playList.todayId, devices.echoDot)
+    expect(data).to.equal(true)
+    sandbox.restore()
   })
 
   it('should refresh token if unauthorized error on search songs', async () => {

@@ -1,5 +1,5 @@
 import { AuthenticationError } from 'apollo-server-lambda'
-import { AppContext, PlayListArgs, PlayList } from '../../types'
+import { AppContext, PlayListArgs, PlayList, PlayOnDeviceArgs } from '../../types'
 
 export const playListType = `
   type Tracks {
@@ -22,6 +22,7 @@ export const playListType = `
 
 export const playListQueryTypes = `
   loadPlayList(genreId: String, day: String, month: String, year: String): PlayList
+  playOnDevice(playListId: String, deviceId: String): Boolean
 `
 
 export const playListQueriesResolvers = {
@@ -34,5 +35,16 @@ export const playListQueriesResolvers = {
       throw new AuthenticationError('Unauthorized!!')
     }
     return playListService.loadPlayList(currentUser, genreId, day, month, year)
+  },
+
+  playOnDevice: (
+    root: unknown,
+    { playListId, deviceId }: PlayOnDeviceArgs,
+    { playListService, currentUser }: AppContext,
+  ): Promise<boolean> => {
+    if (!currentUser) {
+      throw new AuthenticationError('Unauthorized!!')
+    }
+    return playListService.playOnDevice(currentUser, playListId, deviceId)
   },
 }

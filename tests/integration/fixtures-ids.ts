@@ -16,6 +16,10 @@ const ids = {
     todayId: ObjectId(),
     yesterdayId: ObjectId(),
   },
+  devices: {
+    echoDot: ObjectId(),
+    mac: ObjectId(),
+  },
 }
 
 export { ids }

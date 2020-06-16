@@ -34,3 +34,8 @@ export interface PlayListArgs {
   month: string
   year: string
 }
+
+export interface PlayOnDeviceArgs {
+  playListId: string
+  deviceId: string
+}
