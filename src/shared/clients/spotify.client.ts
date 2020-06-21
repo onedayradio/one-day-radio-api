@@ -147,6 +147,34 @@ export class SpotifyClient {
     return playerDevices
   }
 
+  static async playOnDevice(
+    accessToken: string,
+    deviceId: string,
+    contextUri: string,
+  ): Promise<void> {
+    const options = {
+      url: `${BASE_API_URL}/me/player/play?device_id=${deviceId}`,
+      headers: { Authorization: 'Bearer ' + accessToken },
+      body: {
+        context_uri: contextUri,
+      },
+      json: true,
+    }
+    await SpotifyClient.doSpotifyRequest(options, 'put')
+  }
+
+  static async followPlayList(accessToken: string, playListId: string): Promise<void> {
+    const options = {
+      url: `${BASE_API_URL}/playlists/${playListId}/followers`,
+      headers: { Authorization: 'Bearer ' + accessToken },
+      body: {
+        public: false,
+      },
+      json: true,
+    }
+    await SpotifyClient.doSpotifyRequest(options, 'put')
+  }
+
   static async refreshAccessToken(refreshToken: string): Promise<string> {
     const requestOptions = SpotifyClient.getTokenRequestOptions({
       grantType: 'refresh_token',
@@ -158,9 +186,10 @@ export class SpotifyClient {
 
   static async doSpotifyRequest(options: RequestOptions, method = 'get'): Promise<any> {
     const response = await doRequest(options, method)
-    if (response.error && response.error.status === UNAUTHORIZED_STATUS) {
+
+    if (response && response.error && response.error.status === UNAUTHORIZED_STATUS) {
       throw new SpotifyUnauthorizedError(response.error.message)
-    } else if (response.error) {
+    } else if (response && response.error) {
       throw new Error(response.error.message)
     }
     return response

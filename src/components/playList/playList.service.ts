@@ -80,4 +80,9 @@ export class PlayListService {
       year,
     }
   }
+
+  async playOnDevice(user: DBUser, playListId: string, deviceId: string): Promise<boolean> {
+    const spotifyService = new SpotifyService(user)
+    return spotifyService.playOnDevice(playListId, deviceId)
+  }
 }

@@ -82,4 +82,22 @@ export class SpotifyService {
       throw error
     }
   }
+
+  async playOnDevice(playListId: string, deviceId: string): Promise<boolean> {
+    try {
+      const { uri } = await SpotifyClient.getPlayList(this.getUserAccessToken(), playListId)
+      if (uri) {
+        await SpotifyClient.followPlayList(this.getUserAccessToken(), playListId)
+        await SpotifyClient.playOnDevice(this.getUserAccessToken(), deviceId, uri)
+        return true
+      }
+      return false
+    } catch (error) {
+      if (error instanceof SpotifyUnauthorizedError) {
+        this.user = await this.refreshAccessToken()
+        return this.playOnDevice(playListId, deviceId)
+      }
+      throw error
+    }
+  }
 }
