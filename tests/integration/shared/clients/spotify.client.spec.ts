@@ -152,6 +152,17 @@ describe('Spotify client', () => {
     ;(request.get as any).restore()
   })
 
+  it('Should add song to playlist', async () => {
+    sinon.stub(request, 'post').yields(null, { statusCode: 200 }, {})
+    const addSongResponse = await SpotifyClient.addSongToPlaylist(
+      'access-token',
+      'playlist1',
+      'spotify:track:1',
+    )
+    expect(addSongResponse).to.deep.equal(true)
+    ;(request.post as any).restore()
+  })
+
   it('Should refresh access tokens', async () => {
     sinon
       .stub(request, 'post')

@@ -1,12 +1,20 @@
 import moment from 'moment'
 
 import { PlayListDao } from './playList.dao'
-import { PlayList, DBUser, SpotifyPlayList, PlayListDate, PlayListData } from '../../types'
+import {
+  PlayList,
+  DBUser,
+  SpotifyPlayList,
+  PlayListDate,
+  PlayListData,
+  DBPlaylistSongs,
+  Song,
+} from '../../types'
 import { ValidationError } from 'apollo-server-lambda'
 import { SpotifyService } from './../spotify/spotify.service'
 
 import { GenresService } from '..'
-import { DATE } from '../../shared/util/constants'
+import { Constants, getValueAsInt } from '../../shared'
 
 export class PlayListService {
   playListDao: PlayListDao
@@ -71,7 +79,7 @@ export class PlayListService {
   }
 
   createPlayListDate(day: string, month: string, year: string): PlayListDate {
-    if (!moment(`${year}-${month}-${day}`, DATE.FORMAT, true).isValid()) {
+    if (!moment(`${year}-${month}-${day}`, Constants.DATE.FORMAT, true).isValid()) {
       throw new ValidationError('Invalid date format')
     }
     return {
@@ -84,5 +92,40 @@ export class PlayListService {
   async playOnDevice(user: DBUser, playListId: string, deviceId: string): Promise<boolean> {
     const spotifyService = new SpotifyService(user)
     return spotifyService.playOnDevice(playListId, deviceId)
+  }
+
+  async getPlaylistSongsByUser(playlistId: string, userId: string): Promise<DBPlaylistSongs[]> {
+    return this.playListDao.getPlaylistSongsByUser(playlistId, userId)
+  }
+
+  async playlistContains(
+    playlistId: string,
+    spotifySongIds: string[],
+  ): Promise<{ spotifyId: string; duplicate: boolean }[]> {
+    const songs = await this.playListDao.playlistContains(playlistId, spotifySongIds)
+    const duplicateSpotifyIds = songs.map((song) => song.spotifyId)
+    return spotifySongIds.map((spotifyId) => ({
+      spotifyId,
+      duplicate: duplicateSpotifyIds.includes(spotifyId),
+    }))
+  }
+
+  async addSongToPlaylist(user: DBUser, playlistId: string, song: Song): Promise<DBPlaylistSongs> {
+    const maxSongsAllowed = getValueAsInt('max_user_songs_per_playlist')
+    const playlist = await this.playListDao.loadBySpotifyId(playlistId)
+    if (!playlist) {
+      throw new Error(`Playlist with id ${playlistId} does not exists!`)
+    }
+    const userSongs = await this.getPlaylistSongsByUser(playlist._id, user._id)
+    if (userSongs.length > maxSongsAllowed) {
+      throw new Error('User has reached max amount of songs for this playlist')
+    }
+    const [songDuplicateData] = await this.playlistContains(playlist._id, [song.id])
+    if (songDuplicateData.duplicate) {
+      throw new Error(`Song ${song.name} by ${song.artists} is already in this playlist`)
+    }
+    const spotifyService = new SpotifyService(user)
+    await spotifyService.addSongToPlaylist(playlist.spotifyId, song.uri)
+    return this.playListDao.addSongToPlaylist(user._id, playlist._id, song)
   }
 }

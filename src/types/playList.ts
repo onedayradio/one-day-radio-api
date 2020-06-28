@@ -1,4 +1,5 @@
 import { Document } from 'mongoose'
+import { Song } from './songs'
 
 export interface PlayList {
   spotifyId?: string
@@ -6,7 +7,20 @@ export interface PlayList {
   description: string
 }
 
-export interface DBPlayList extends Document, PlayList {}
+export interface DBPlayList extends Document, PlayList {
+  spotifyId: string
+}
+
+export interface PlaylistSongs {
+  playlist: string
+  user: string
+  spotifyId: string
+  spotifyUri: string
+  name: string
+  artists: string
+}
+
+export interface DBPlaylistSongs extends Document, PlaylistSongs {}
 
 export interface PlayListData {
   spotifyId?: string
@@ -38,4 +52,9 @@ export interface PlayListArgs {
 export interface PlayOnDeviceArgs {
   playListId: string
   deviceId: string
+}
+
+export interface AddSongToPlaylistMutationArgs {
+  playlistId: string
+  song: Song
 }

@@ -1,5 +1,7 @@
 import { get } from 'lodash'
 
+import { version } from '../../../package.json'
+
 const defaults = {
   environment: 'local',
   test: {
@@ -18,6 +20,7 @@ const defaults = {
     spotify_scopes: 'some scopes',
     frontend_url: 'http://localhost:3001',
     port: 5678,
+    max_user_songs_per_playlist: 5,
   },
 }
 
@@ -47,7 +50,7 @@ export const getValueAsInt = (key: string): number => {
 }
 
 export const getVersion = (): string => {
-  return require('../../../package.json').version
+  return version
 }
 
 export const isProd = (): boolean => {

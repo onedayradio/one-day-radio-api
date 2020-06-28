@@ -9,6 +9,7 @@ export const searchSongsMock = {
         id: '2QagWuAL61R8DLydEte3tw',
         name: 'Raw Deal',
         popularity: 29,
+        uri: 'some-uri',
         album: {
           id: '2GXeHOkRouW0LnKBMUnVtv',
           name: 'Sin After Sin',
@@ -22,6 +23,7 @@ export const searchSongsMock = {
         id: '16wkyNymAE6ruWAZcUx871',
         name: 'Raw Deal',
         popularity: 18,
+        uri: 'some-uri',
         album: {
           id: '7K5tf5FJ4bpmq5MABQqKsW',
           name: 'District',

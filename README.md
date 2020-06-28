@@ -26,9 +26,10 @@ Test it using your REST client of preference. Insomnia is very much recommended:
 
 ## Running tests
 
-1. To run all tests run `yarn test`
-2. To run all tests in watch mode run `yarn test:watch`
-3. To run the test coverage report run `yarn test:coverage`
+1. Start the local database `make setup-local-db`
+2. To run all tests run `yarn test`
+3. To run all tests in watch mode run `yarn test:watch`
+4. To run the test coverage report run `yarn test:coverage`
 
 ## Updating npm package dependencies
 

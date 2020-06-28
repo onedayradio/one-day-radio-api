@@ -5,6 +5,7 @@ import {
   searchQueriesResolvers,
   playListQueriesResolvers,
   deviceQueriesResolvers,
+  playlistMutationsResolvers,
 } from '../components'
 
 export const resolvers = {
@@ -17,5 +18,6 @@ export const resolvers = {
   },
   Mutation: {
     ...authMutationsResolvers,
+    ...playlistMutationsResolvers,
   },
 }

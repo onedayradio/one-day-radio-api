@@ -1,3 +1,3 @@
 export enum DATE {
-  FORMAT = 'YYYY-MM-DD',
+  FORMAT = 'YYYY-M-D',
 }
