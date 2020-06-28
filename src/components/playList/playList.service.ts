@@ -1,4 +1,5 @@
 import moment from 'moment'
+import * as base64Image from 'node-base64-image'
 
 import { PlayListDao } from './playList.dao'
 import {
@@ -13,22 +14,23 @@ import {
 import { ValidationError } from 'apollo-server-lambda'
 import { SpotifyService } from './../spotify/spotify.service'
 
-import { GenresService } from '..'
-import { Constants, getValueAsInt } from '../../shared'
+import { GenresService } from '../genres/genres.service'
+import { Constants, getValueAsInt, errorsLogger } from '../../shared'
 
 export class PlayListService {
   playListDao: PlayListDao
+  spotifyService: SpotifyService
 
   constructor() {
     this.playListDao = new PlayListDao()
+    this.spotifyService = new SpotifyService()
   }
 
   async createPlayList(user: DBUser, playList: PlayListData): Promise<SpotifyPlayList> {
-    const spotifyService = new SpotifyService(user)
     const { name, description, genreId, year, month, day } = playList
-    const spotifyPlayList = await spotifyService.createPlayList({ name, description })
+    const spotifyPlayList = await this.spotifyService.createPlayList({ name, description })
     const { id } = spotifyPlayList
-    await this.playListDao.create({
+    const dbPlaylist = await this.playListDao.create({
       spotifyId: id,
       name,
       description,
@@ -37,6 +39,7 @@ export class PlayListService {
       month,
       day,
     })
+    await this.uploadPlaylistImage(dbPlaylist.spotifyId, genreId)
     return spotifyPlayList
   }
 
@@ -50,8 +53,7 @@ export class PlayListService {
     const playListDate = this.createPlayListDate(day, month, year)
     const playList = await this.playListDao.load({ genreId, ...playListDate })
     if (playList && playList.spotifyId) {
-      const spotifyService = new SpotifyService(user)
-      return (await spotifyService.getPlayList(playList.spotifyId)) as PlayList
+      return (await this.spotifyService.getPlayList(playList.spotifyId)) as PlayList
     }
     const playListData = await this.createPlayListData(genreId, playListDate)
     return this.createPlayList(user, playListData) as Promise<PlayList>
@@ -90,8 +92,7 @@ export class PlayListService {
   }
 
   async playOnDevice(user: DBUser, playListId: string, deviceId: string): Promise<boolean> {
-    const spotifyService = new SpotifyService(user)
-    return spotifyService.playOnDevice(playListId, deviceId)
+    return this.spotifyService.playOnDevice(user, playListId, deviceId)
   }
 
   async getPlaylistSongsByUser(playlistId: string, userId: string): Promise<DBPlaylistSongs[]> {
@@ -124,8 +125,27 @@ export class PlayListService {
     if (songDuplicateData.duplicate) {
       throw new Error(`Song ${song.name} by ${song.artists} is already in this playlist`)
     }
-    const spotifyService = new SpotifyService(user)
-    await spotifyService.addSongToPlaylist(playlist.spotifyId, song.uri)
+    await this.spotifyService.addSongToPlaylist(playlist.spotifyId, song.uri)
     return this.playListDao.addSongToPlaylist(user._id, playlist._id, song)
+  }
+
+  async uploadPlaylistImage(spotifyPlaylistId: string, genreId: string): Promise<boolean> {
+    try {
+      const genreService = new GenresService()
+      const genre = await genreService.getDetailById(genreId)
+      const s3GenreImageName = genre.name.toLowerCase().replace(/ /g, '-')
+      const s3GenreImageUrl = `${Constants.S3_GENRE_IMAGES_BASE_URL}/${s3GenreImageName}.jpg`
+      const imageBase64Encoded = await base64Image.encode(encodeURI(s3GenreImageUrl), {
+        string: true,
+      })
+      await this.spotifyService.uploadyPlaylistCoverImage(spotifyPlaylistId, imageBase64Encoded)
+      return true
+    } catch (error) {
+      errorsLogger.error(
+        `Unexpected error uploading genre image. SpotifyPlaylistId: ${spotifyPlaylistId}, genreId: ${genreId}`,
+        error,
+      )
+      return false
+    }
   }
 }

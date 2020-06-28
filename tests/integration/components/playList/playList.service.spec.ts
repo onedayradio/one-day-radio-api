@@ -1,7 +1,9 @@
+import request from 'request'
 import sinon from 'sinon'
 import mongodb from 'mongodb'
 import { fn as moment } from 'moment'
 import { expect } from 'chai'
+import * as base64Image from 'node-base64-image'
 
 import { PlayListService, UsersService, SpotifyService } from '../../../../src/components'
 import { PlayListDao } from '../../../../src/components/playList/playList.dao'
@@ -27,6 +29,9 @@ describe('Playlist Service', () => {
   afterEach(() => {
     if (sandbox.restore) {
       sandbox.restore()
+    }
+    if ((request.put as any).restore) {
+      ;(request.put as any).restore()
     }
   })
 
@@ -69,9 +74,9 @@ describe('Playlist Service', () => {
 
   it('should create a play list', async () => {
     sandbox.stub(PlayListDao.prototype, 'load').resolves(null)
-    sandbox.stub(PlayListDao.prototype, 'create').resolves(undefined)
     sandbox.stub(SpotifyClient, 'createPlayList').resolves(playListMock)
     sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
+    sandbox.stub(PlayListService.prototype, 'uploadPlaylistImage')
     const { users, genres } = ids
     const data = await playListService.createPlayListData(genres.metalId, {
       year: '2020',
@@ -161,5 +166,21 @@ describe('Playlist Service', () => {
     expect(song).to.containSubset(expectedAddSongToPlaylist)
     userSongs = await playListService.getPlaylistSongsByUser(ids.playList.metalId, user._id)
     expect(userSongs.length).to.equal(3)
+  })
+
+  it('should return false if an error happens when uploading playlist image to spotify', async () => {
+    const { genres } = ids
+    sandbox.stub(base64Image, 'encode').throwsException(new Error('wrong image format'))
+    const result = await playListService.uploadPlaylistImage('1133', genres.metalId)
+    expect(result).to.equal(false)
+  })
+
+  it('should upload playlist image cover to spotify', async () => {
+    const { genres } = ids
+    sandbox.stub(base64Image, 'encode').returns(Promise.resolve('base64-encoded-image'))
+    sandbox.stub(SpotifyClient, 'refreshAccessToken')
+    sinon.stub(request, 'put').yields(null, { statusCode: 200 }, {})
+    const result = await playListService.uploadPlaylistImage('1133', genres.metalId)
+    expect(result).to.equal(true)
   })
 })
