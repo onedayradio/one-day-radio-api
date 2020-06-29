@@ -18,10 +18,11 @@ const UNAUTHORIZED_STATUS = 401
 
 interface RequestOptions {
   url: string
-  json: boolean
+  json?: boolean
   headers: {
     Authorization: string
   }
+  mode?: string
 }
 
 export class SpotifyUnauthorizedError extends Error {
@@ -189,6 +190,20 @@ export class SpotifyClient {
       json: true,
     }
     await SpotifyClient.doSpotifyRequest(options, 'post')
+    return true
+  }
+
+  static async uploadyPlaylistCoverImage(
+    accessToken: string,
+    spotifyPlaylistId: string,
+    imageBase64: string | Buffer,
+  ): Promise<boolean> {
+    const options = {
+      url: `${BASE_API_URL}/playlists/${spotifyPlaylistId}/images`,
+      headers: { Authorization: 'Bearer ' + accessToken, ['Content-Type']: 'image/jpeg' },
+      body: imageBase64,
+    }
+    await SpotifyClient.doSpotifyRequest(options, 'put')
     return true
   }
 

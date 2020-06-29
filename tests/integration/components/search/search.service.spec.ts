@@ -10,13 +10,14 @@ import { spotifyServiceSearchSongs } from '../../snapshots/spotify'
 
 const usersService = new UsersService()
 
-describe('SpotifyService', () => {
+describe('SearchService', () => {
   beforeEach((done: any) => {
     void testsSetup(done)
   })
 
   it('should search for songs', async () => {
     const sandbox = sinon.createSandbox()
+    sandbox.stub(SpotifyClient, 'refreshAccessToken')
     sandbox.stub(SpotifyClient, 'searchSong').returns(Promise.resolve(searchSongsMock))
     const { users } = ids
     const user = await usersService.getDetailById(users.sanId)

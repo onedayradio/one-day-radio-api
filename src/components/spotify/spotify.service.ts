@@ -3,66 +3,50 @@ import { DBUser, Song, SpotifyPlayList, SpotifyDevice } from '../../types'
 import { UsersService } from '../users/users.service'
 
 export class SpotifyService {
-  user: DBUser
   usersService: UsersService
 
-  constructor(user: DBUser) {
-    this.user = user
+  constructor() {
     this.usersService = new UsersService()
   }
 
-  async refreshAccessToken(): Promise<DBUser> {
-    const newAccessToken = await SpotifyClient.refreshAccessToken(this.getUserRefreshToken())
-    const newUser = await this.usersService.updateUser(this.user._id, {
+  async refreshAccessToken(dbUser: DBUser): Promise<DBUser> {
+    const userRefreshToken = this.getUserRefreshToken(dbUser)
+    const newAccessToken = await SpotifyClient.refreshAccessToken(userRefreshToken)
+    const newUser = await this.usersService.updateUser(dbUser._id, {
       spotifyData: {
         accessToken: newAccessToken,
-        refreshToken: this.getUserRefreshToken(),
+        refreshToken: userRefreshToken,
       },
     })
     return newUser
   }
 
-  getUserAccessToken(): string {
-    const { spotifyData } = this.user
+  getUserAccessToken(user: DBUser): string {
+    const { spotifyData } = user
     return spotifyData.accessToken
   }
 
-  getUserRefreshToken(): string {
-    const { spotifyData } = this.user
+  getUserRefreshToken(user: DBUser): string {
+    const { spotifyData } = user
     return spotifyData.refreshToken
   }
 
   async searchSong(songQuery: string): Promise<Song[]> {
-    try {
-      const response = await SpotifyClient.searchSong(this.getUserAccessToken(), songQuery)
-      const songs = response.tracks.items
-      return songs.map((spotifySong) => ({
-        id: spotifySong.id,
-        name: spotifySong.name,
-        artists: spotifySong.artists.map((spotifyArtist) => spotifyArtist.name).join(','),
-        uri: spotifySong.uri,
-        album: spotifySong.album,
-      }))
-    } catch (error) {
-      if (error instanceof SpotifyUnauthorizedError) {
-        this.user = await this.refreshAccessToken()
-        return this.searchSong(songQuery)
-      }
-      throw error
-    }
+    const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
+    const response = await SpotifyClient.searchSong(accessToken, songQuery)
+    const songs = response.tracks.items
+    return songs.map((spotifySong) => ({
+      id: spotifySong.id,
+      name: spotifySong.name,
+      artists: spotifySong.artists.map((spotifyArtist) => spotifyArtist.name).join(','),
+      uri: spotifySong.uri,
+      album: spotifySong.album,
+    }))
   }
 
   async getPlayList(playListId: string): Promise<SpotifyPlayList> {
-    try {
-      const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
-      return await SpotifyClient.getPlayList(accessToken, playListId)
-    } catch (error) {
-      if (error instanceof SpotifyUnauthorizedError) {
-        this.user = await this.refreshAccessToken()
-        return this.getPlayList(playListId)
-      }
-      throw error
-    }
+    const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
+    return await SpotifyClient.getPlayList(accessToken, playListId)
   }
 
   async createPlayList(playList: SpotifyPlayList): Promise<SpotifyPlayList> {
@@ -71,32 +55,33 @@ export class SpotifyService {
     return SpotifyClient.createPlayList(accessToken, userId, playList)
   }
 
-  async loadPlayerDevices(): Promise<SpotifyDevice[]> {
+  async loadPlayerDevices(user: DBUser): Promise<SpotifyDevice[]> {
     try {
-      const { devices = [] } = await SpotifyClient.getPlayerDevices(this.getUserAccessToken())
+      const { devices = [] } = await SpotifyClient.getPlayerDevices(this.getUserAccessToken(user))
       return devices
     } catch (error) {
       if (error instanceof SpotifyUnauthorizedError) {
-        this.user = await this.refreshAccessToken()
-        return this.loadPlayerDevices()
+        const dbUser = await this.refreshAccessToken(user._id)
+        return this.loadPlayerDevices(dbUser)
       }
       throw error
     }
   }
 
-  async playOnDevice(playListId: string, deviceId: string): Promise<boolean> {
+  async playOnDevice(user: DBUser, playListId: string, deviceId: string): Promise<boolean> {
     try {
-      const { uri } = await SpotifyClient.getPlayList(this.getUserAccessToken(), playListId)
+      const userAccessToken = this.getUserAccessToken(user)
+      const { uri } = await SpotifyClient.getPlayList(userAccessToken, playListId)
       if (uri) {
-        await SpotifyClient.followPlayList(this.getUserAccessToken(), playListId)
-        await SpotifyClient.playOnDevice(this.getUserAccessToken(), deviceId, uri)
+        await SpotifyClient.followPlayList(userAccessToken, playListId)
+        await SpotifyClient.playOnDevice(userAccessToken, deviceId, uri)
         return true
       }
       return false
     } catch (error) {
       if (error instanceof SpotifyUnauthorizedError) {
-        this.user = await this.refreshAccessToken()
-        return this.playOnDevice(playListId, deviceId)
+        const dbUser = await this.refreshAccessToken(user._id)
+        return this.playOnDevice(dbUser, playListId, deviceId)
       }
       throw error
     }
@@ -105,6 +90,19 @@ export class SpotifyService {
   async addSongToPlaylist(playlistId: string, songUri: string): Promise<boolean> {
     const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
     const response = await SpotifyClient.addSongToPlaylist(accessToken, playlistId, songUri)
+    return response
+  }
+
+  async uploadyPlaylistCoverImage(
+    spotifyPlaylistId: string,
+    imageBase64: string | Buffer,
+  ): Promise<boolean> {
+    const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
+    const response = await SpotifyClient.uploadyPlaylistCoverImage(
+      accessToken,
+      spotifyPlaylistId,
+      imageBase64,
+    )
     return response
   }
 }
