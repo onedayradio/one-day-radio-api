@@ -70,6 +70,7 @@
     "node-mongodb-fixtures": "3.2.4",
     "nyc": "15.1.0",
     "prettier": "2.0.5",
+    "serverless": "1.74.1",
     "serverless-offline": "6.4.0",
     "serverless-offline-ssm": "5.0.1",
     "serverless-plugin-typescript": "1.1.9",
