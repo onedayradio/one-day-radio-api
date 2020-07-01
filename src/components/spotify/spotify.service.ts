@@ -1,5 +1,5 @@
 import { getValue, SpotifyClient, SpotifyUnauthorizedError } from '../../shared'
-import { DBUser, Song, SpotifyPlayList, SpotifyDevice } from '../../types'
+import { DBUser, Song, SpotifyPlayList, SpotifyDevice, SpotifyPlayListItems } from '../../types'
 import { UsersService } from '../users/users.service'
 
 export class SpotifyService {
@@ -93,7 +93,7 @@ export class SpotifyService {
     return response
   }
 
-  async uploadyPlaylistCoverImage(
+  async uploadPlaylistCoverImage(
     spotifyPlaylistId: string,
     imageBase64: string | Buffer,
   ): Promise<boolean> {
@@ -102,6 +102,21 @@ export class SpotifyService {
       accessToken,
       spotifyPlaylistId,
       imageBase64,
+    )
+    return response
+  }
+
+  async getPlayListItems(
+    playListId: string,
+    currentPage: number,
+    perPage: number,
+  ): Promise<SpotifyPlayListItems> {
+    const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
+    const response = await SpotifyClient.getPlayListItems(
+      accessToken,
+      playListId,
+      currentPage,
+      perPage,
     )
     return response
   }

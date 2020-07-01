@@ -10,12 +10,15 @@ import {
   PlayListData,
   DBPlaylistSongs,
   Song,
+  SpotifyItem,
+  PaginatedPlaylistSongs,
 } from '../../types'
 import { ValidationError } from 'apollo-server-lambda'
 import { SpotifyService } from './../spotify/spotify.service'
 
 import { GenresService } from '../genres/genres.service'
 import { Constants, getValueAsInt, errorsLogger } from '../../shared'
+import { createPaginationObject } from '../../shared/util/paginator'
 
 export class PlayListService {
   playListDao: PlayListDao
@@ -26,7 +29,56 @@ export class PlayListService {
     this.spotifyService = new SpotifyService()
   }
 
-  async createPlayList(user: DBUser, playList: PlayListData): Promise<SpotifyPlayList> {
+  async loadPlayListSongs(
+    playListId: string,
+    currentPage: number,
+    perPage: number,
+  ): Promise<PaginatedPlaylistSongs> {
+    const playlistItems = await this.spotifyService.getPlayListItems(
+      playListId,
+      currentPage,
+      perPage,
+    )
+    const songIds = playlistItems.items.map((item) => item.track.id)
+    const playlist = await this.playListDao.loadBySpotifyId(playListId)
+    if (!playlist) {
+      throw new Error(`Playlist with id ${playListId} does not exists!`)
+    }
+    const songs = await this.mergePlaylistSongs(playlist._id, songIds, playlistItems.items)
+    const pagination = createPaginationObject({
+      total: playlistItems.total,
+      perPage,
+      currentPage,
+    })
+    return {
+      ...pagination,
+      songs,
+    }
+  }
+
+  async mergePlaylistSongs(
+    playListId: string,
+    songIds: string[],
+    items: SpotifyItem[],
+  ): Promise<Song[]> {
+    const songs = await this.playListDao.playlistContains(playListId, songIds)
+    return items.map((item) => {
+      const song = songs.find((song) => song.spotifyId === item.track.id)
+      if (!song || !song.user) {
+        throw new Error(`Playlist song with id ${item.track.id} does not exists!`)
+      }
+      return {
+        id: item.track.id,
+        name: song.name,
+        artists: song.artists,
+        uri: song.spotifyUri,
+        sharedBy: song.user.displayName,
+        album: item.track.album,
+      }
+    })
+  }
+
+  async createPlayList(playList: PlayListData): Promise<SpotifyPlayList> {
     const { name, description, genreId, year, month, day } = playList
     const spotifyPlayList = await this.spotifyService.createPlayList({ name, description })
     const { id } = spotifyPlayList
@@ -43,20 +95,14 @@ export class PlayListService {
     return spotifyPlayList
   }
 
-  async loadPlayList(
-    user: DBUser,
-    genreId: string,
-    day: string,
-    month: string,
-    year: string,
-  ): Promise<PlayList> {
+  async loadPlayList(genreId: string, day: string, month: string, year: string): Promise<PlayList> {
     const playListDate = this.createPlayListDate(day, month, year)
     const playList = await this.playListDao.load({ genreId, ...playListDate })
     if (playList && playList.spotifyId) {
       return (await this.spotifyService.getPlayList(playList.spotifyId)) as PlayList
     }
     const playListData = await this.createPlayListData(genreId, playListDate)
-    return this.createPlayList(user, playListData) as Promise<PlayList>
+    return this.createPlayList(playListData) as Promise<PlayList>
   }
 
   async createPlayListData(genreId: string, playListDate: PlayListDate): Promise<PlayListData> {
@@ -95,8 +141,8 @@ export class PlayListService {
     return this.spotifyService.playOnDevice(user, playListId, deviceId)
   }
 
-  async getPlaylistSongsByUser(playlistId: string, userId: string): Promise<DBPlaylistSongs[]> {
-    return this.playListDao.getPlaylistSongsByUser(playlistId, userId)
+  async getPlaylistSongsByUser(playlistId: string, user: DBUser): Promise<DBPlaylistSongs[]> {
+    return this.playListDao.getPlaylistSongsByUser(playlistId, user)
   }
 
   async playlistContains(
@@ -117,7 +163,7 @@ export class PlayListService {
     if (!playlist) {
       throw new Error(`Playlist with id ${playlistId} does not exists!`)
     }
-    const userSongs = await this.getPlaylistSongsByUser(playlist._id, user._id)
+    const userSongs = await this.getPlaylistSongsByUser(playlist._id, user)
     if (userSongs.length > maxSongsAllowed) {
       throw new Error('User has reached max amount of songs for this playlist')
     }
@@ -126,7 +172,7 @@ export class PlayListService {
       throw new Error(`Song ${song.name} by ${song.artists} is already in this playlist`)
     }
     await this.spotifyService.addSongToPlaylist(playlist.spotifyId, song.uri)
-    return this.playListDao.addSongToPlaylist(user._id, playlist._id, song)
+    return this.playListDao.addSongToPlaylist(user, playlist._id, song)
   }
 
   async uploadPlaylistImage(spotifyPlaylistId: string, genreId: string): Promise<boolean> {
@@ -138,7 +184,7 @@ export class PlayListService {
       const imageBase64Encoded = await base64Image.encode(encodeURI(s3GenreImageUrl), {
         string: true,
       })
-      await this.spotifyService.uploadyPlaylistCoverImage(spotifyPlaylistId, imageBase64Encoded)
+      await this.spotifyService.uploadPlaylistCoverImage(spotifyPlaylistId, imageBase64Encoded)
       return true
     } catch (error) {
       errorsLogger.error(

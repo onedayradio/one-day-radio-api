@@ -15,7 +15,7 @@ import {
   expectedPlaylistSongs,
   expectedPlaylistContains,
   expectedAddSongToPlaylist,
-} from 'tests/integration/snapshots/playlist-songs'
+} from '../../snapshots/playlist-songs'
 
 const playListService = new PlayListService()
 const usersService = new UsersService()
@@ -77,13 +77,13 @@ describe('Playlist Service', () => {
     sandbox.stub(SpotifyClient, 'createPlayList').resolves(playListMock)
     sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
     sandbox.stub(PlayListService.prototype, 'uploadPlaylistImage')
-    const { users, genres } = ids
+    const { genres } = ids
     const data = await playListService.createPlayListData(genres.metalId, {
       year: '2020',
       month: '12',
       day: '24',
     })
-    const playListData = await playListService.createPlayList(users.pabloId, data)
+    const playListData = await playListService.createPlayList(data)
     expect(playListData).to.equal(playListMock)
   })
 
@@ -155,7 +155,7 @@ describe('Playlist Service', () => {
   it('should add a new song to a playlist', async () => {
     sandbox.stub(SpotifyService.prototype, 'addSongToPlaylist').resolves(true)
     const user = await usersService.getDetailById(ids.users.juanId)
-    let userSongs = await playListService.getPlaylistSongsByUser(ids.playList.metalId, user._id)
+    let userSongs = await playListService.getPlaylistSongsByUser(ids.playList.metalId, user)
     expect(userSongs.length).to.equal(2)
     const song = await playListService.addSongToPlaylist(user, '33', {
       id: '3311WuAL61R8DLydEt1133',
@@ -163,8 +163,8 @@ describe('Playlist Service', () => {
       artists: 'Nightwish',
       uri: 'spotify:track:3311WuAL61R8DLydEt1133',
     })
-    expect(song).to.containSubset(expectedAddSongToPlaylist)
-    userSongs = await playListService.getPlaylistSongsByUser(ids.playList.metalId, user._id)
+    expect(song.spotifyId).to.containSubset(expectedAddSongToPlaylist.spotifyId)
+    userSongs = await playListService.getPlaylistSongsByUser(ids.playList.metalId, user)
     expect(userSongs.length).to.equal(3)
   })
 

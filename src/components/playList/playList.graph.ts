@@ -6,6 +6,8 @@ import {
   AddSongToPlaylistMutationArgs,
   PlaylistSongs,
   PlayOnDeviceArgs,
+  PlayListItemsArgs,
+  PaginatedPlaylistSongs,
 } from '../../types'
 
 export const playListType = `
@@ -27,6 +29,7 @@ export const playListType = `
     artists: String
     album: Album
     uri: String
+    sharedBy: String
   }
 
   input SongInput {
@@ -36,26 +39,25 @@ export const playListType = `
     uri: String
   }
 
-  type Tracks {
-    href: String
-    items: [Song]
-    limit: Int,
-    next: Int,
-    offset: Int,
-    previous: Int,
+  type PlayListSongs {
+    songs: [Song]
     total: Int
+    perPage: Int
+    lastPage: Int
+    currentPage: Int
+    from: Int
+    to: Int
   }
 
   type PlayList {
     id: String!
     name: String
     description: String
-    tracks: Tracks
   }
 
   type PlaylistSong {
     playlist: String
-    user: String
+    user: User
     spotifyId: String
     spotifyUri: String
     name: String
@@ -65,6 +67,7 @@ export const playListType = `
 
 export const playListQueryTypes = `
   loadPlayList(genreId: String, day: String, month: String, year: String): PlayList
+  loadPlayListSongs(playListId: String, perPage: Int, currentPage: Int): PlayListSongs
   playOnDevice(playListId: String, deviceId: String): Boolean
 `
 
@@ -77,7 +80,7 @@ export const playListQueriesResolvers = {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playListService.loadPlayList(currentUser, genreId, day, month, year)
+    return playListService.loadPlayList(genreId, day, month, year)
   },
 
   playOnDevice: (
@@ -89,6 +92,17 @@ export const playListQueriesResolvers = {
       throw new AuthenticationError('Unauthorized!!')
     }
     return playListService.playOnDevice(currentUser, playListId, deviceId)
+  },
+
+  loadPlayListSongs: (
+    root: unknown,
+    { playListId, currentPage, perPage }: PlayListItemsArgs,
+    { playListService, currentUser }: AppContext,
+  ): Promise<PaginatedPlaylistSongs> => {
+    if (!currentUser) {
+      throw new AuthenticationError('Unauthorized!!')
+    }
+    return playListService.loadPlayListSongs(playListId, currentPage, perPage)
   },
 }
 

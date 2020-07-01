@@ -87,3 +87,58 @@ export const devicesMock = {
     },
   ],
 }
+
+export const playListItemsMock = {
+  href: 'https://api.spotify.com/v1/playlists/08zCBxKpTDyQU3hP7cusMx/tracks?offset=1&limit=1',
+  items: [
+    {
+      added_at: '2020-07-01T03:41:15Z',
+      added_by: {
+        external_urls: {},
+        href: 'https://api.spotify.com/v1/users/nrg9c2eetq2ttxeyt0vdedrbx',
+        id: 'nrg9c2eetq2ttxeyt0vdedrbx',
+        type: 'user',
+        uri: 'spotify:user:nrg9c2eetq2ttxeyt0vdedrbx',
+      },
+      is_local: false,
+      primary_color: null,
+      track: {
+        album: [Object],
+        artists: [
+          {
+            external_urls: {},
+            href: 'https://api.spotify.com/v1/artists/14pVkFUHDL207LzLHtSA18',
+            id: '14pVkFUHDL207LzLHtSA18',
+            name: 'Pantera',
+            type: 'artist',
+            uri: 'spotify:artist:14pVkFUHDL207LzLHtSA18',
+          },
+        ],
+        available_markets: ['AD'],
+        disc_number: 1,
+        duration_ms: 315120,
+        episode: false,
+        explicit: true,
+        external_ids: { isrc: 'USEE10170088' },
+        external_urls: { spotify: 'https://open.spotify.com/album/7kW0cpKgSVsEqcc8xgbSb0' },
+        href: 'https://api.spotify.com/v1/tracks/7fcfNW0XxTWlwVlftzfDOR',
+        id: '7fcfNW0XxTWlwVlftzfDOR',
+        is_local: false,
+        name: 'Walk',
+        popularity: 73,
+        preview_url:
+          'https://p.scdn.co/mp3-preview/14e66cb261d6027f14d31e7d247b2281b9e79e71?cid=e43b1585ddf145c0b06a60b4dbe03f66',
+        track: true,
+        track_number: 3,
+        type: 'track',
+        uri: 'spotify:track:7fcfNW0XxTWlwVlftzfDOR',
+      },
+      video_thumbnail: { url: null },
+    },
+  ],
+  limit: 1,
+  next: null,
+  offset: 1,
+  previous: 'https://api.spotify.com/v1/playlists/08zCBxKpTDyQU3hP7cusMx/tracks?offset=0&limit=1',
+  total: 2,
+}
