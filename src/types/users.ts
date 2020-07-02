@@ -3,6 +3,7 @@ import { Document } from 'mongoose'
 export interface UserSpotifyData {
   accessToken: string
   refreshToken: string
+  spotifyUserId?: string
 }
 
 interface BaseUser {

@@ -64,7 +64,8 @@ describe('Spotify client', () => {
       },
       {
         country: 'CR',
-        id: 'juan.morales',
+        id: '123123',
+        display_name: 'juan.morales',
         email: 'juan.morales@gmail.com',
         images: [{ url: 'image_url' }],
       },
@@ -72,7 +73,8 @@ describe('Spotify client', () => {
     const userData = await SpotifyClient.getUserData('access_token')
     expect(userData).to.deep.equal({
       country: 'CR',
-      username: 'juan.morales',
+      id: '123123',
+      displayName: 'juan.morales',
       email: 'juan.morales@gmail.com',
       profileImageUrl: 'image_url',
     })
@@ -87,14 +89,16 @@ describe('Spotify client', () => {
       },
       {
         country: 'CR',
-        id: 'juan.morales',
+        id: '123123',
+        display_name: 'juan.morales',
         email: 'juan.morales@gmail.com',
       },
     )
     const userData = await SpotifyClient.getUserData('access_token')
     expect(userData).to.deep.equal({
       country: 'CR',
-      username: 'juan.morales',
+      id: '123123',
+      displayName: 'juan.morales',
       email: 'juan.morales@gmail.com',
       profileImageUrl: undefined,
     })
