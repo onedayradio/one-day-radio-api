@@ -21,12 +21,13 @@ const extractStoredStateFromCookies = (event: SpotifyEvent): string => {
 
 const getUserData = (spotifyUser: SpotifyUserData, spotifyTokens: GetTokensResponse): User => ({
   email: spotifyUser.email,
-  displayName: spotifyUser.username,
+  displayName: spotifyUser.displayName,
   countryCode: spotifyUser.country,
   profileImageUrl: spotifyUser.profileImageUrl,
   spotifyData: {
     accessToken: spotifyTokens.accessToken,
     refreshToken: spotifyTokens.refreshToken,
+    spotifyUserId: spotifyUser.id,
   },
 })
 

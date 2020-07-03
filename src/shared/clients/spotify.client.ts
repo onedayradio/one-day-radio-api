@@ -93,7 +93,8 @@ export class SpotifyClient {
     }
     return {
       country: userData.country,
-      username: userData.id,
+      id: userData.id,
+      displayName: userData.display_name,
       email: userData.email,
       profileImageUrl,
     }

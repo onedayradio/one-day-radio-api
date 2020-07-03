@@ -28,9 +28,10 @@ export interface GetTokensResponse {
 
 export interface SpotifyUserData {
   country: string
-  username: string
+  id: string
   email: string
   profileImageUrl?: string
+  displayName?: string
 }
 
 export interface SpotifyPlayList {
