@@ -40,10 +40,6 @@ export interface SpotifyPlayList {
   description: string
   public?: boolean
   uri?: string
-  tracks?: {
-    href: string
-    items: SpotifySong[]
-  }
 }
 
 export interface SpotifyEvent {
@@ -65,6 +61,20 @@ export interface SpotifySearchSongsResponse {
   total: number
   next?: string
   previous?: string
+}
+
+export interface SpotifyPlayListItems {
+  items: SpotifyItem[]
+  href: string
+  limit: number
+  total: number
+  next?: string
+  previous?: string
+  offset: number
+}
+
+export interface SpotifyItem {
+  track: SpotifySong
 }
 
 export interface SpotifySong {

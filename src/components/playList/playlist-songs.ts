@@ -3,7 +3,7 @@ import { DBPlaylistSongs } from '../../types'
 
 const Schema = mongoose.Schema
 
-const PalylistSongsSchema = new Schema(
+const PlaylistSongsSchema = new Schema(
   {
     playlist: {
       type: Schema.Types.ObjectId,
@@ -42,7 +42,7 @@ let playlistSongsModel: Model<DBPlaylistSongs>
 try {
   playlistSongsModel = mongoose.model<DBPlaylistSongs>('PlaylistSongs')
 } catch (error) {
-  playlistSongsModel = mongoose.model<DBPlaylistSongs>('PlaylistSongs', PalylistSongsSchema)
+  playlistSongsModel = mongoose.model<DBPlaylistSongs>('PlaylistSongs', PlaylistSongsSchema)
 }
 
 export { playlistSongsModel as PlaylistSongsModel }

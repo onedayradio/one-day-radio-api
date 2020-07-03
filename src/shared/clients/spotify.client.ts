@@ -9,6 +9,7 @@ import {
   SpotifySearchSongsResponse,
   SpotifyPlayList,
   SpotifyDevices,
+  SpotifyPlayListItems,
 } from '../../types'
 import { getValue, doRequest } from '../util'
 
@@ -133,6 +134,20 @@ export class SpotifyClient {
   static async getPlayList(accessToken: string, playListId: string): Promise<SpotifyPlayList> {
     const options = {
       url: `${BASE_API_URL}/playlists/${playListId}`,
+      headers: { Authorization: `Bearer ${accessToken}` },
+      json: true,
+    }
+    return this.doSpotifyRequest(options)
+  }
+
+  static async getPlayListItems(
+    accessToken: string,
+    playListId: string,
+    currentPage = 10,
+    perPage = 0,
+  ): Promise<SpotifyPlayListItems> {
+    const options = {
+      url: `${BASE_API_URL}/playlists/${playListId}/tracks?limit=${perPage}&offset=${currentPage}`,
       headers: { Authorization: `Bearer ${accessToken}` },
       json: true,
     }

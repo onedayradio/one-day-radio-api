@@ -15,5 +15,6 @@ export interface Song {
   name: string
   artists: string
   uri: string
+  sharedBy?: string
   album?: Album
 }

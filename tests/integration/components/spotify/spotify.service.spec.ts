@@ -5,7 +5,12 @@ import { expect } from 'chai'
 import { testsSetup } from '../../tests.util'
 import { SpotifyService, UsersService } from '../../../../src/components'
 import { ids } from '../../fixtures-ids'
-import { devicesMock, playListMock, searchSongsMock } from '../../mock-data/spotify-api.mocks'
+import {
+  devicesMock,
+  playListItemsMock,
+  playListMock,
+  searchSongsMock,
+} from '../../mock-data/spotify-api.mocks'
 import { spotifyServiceSearchSongs } from '../../snapshots/spotify'
 import { SpotifyClient } from '../../../../src/shared'
 
@@ -110,5 +115,14 @@ describe('SpotifyService', () => {
     const spotifyService = new SpotifyService()
     const searchResponse = await spotifyService.loadPlayerDevices(user)
     expect(searchResponse).to.deep.equal(devicesMock.devices)
+  })
+
+  it('should get the playlist items', async () => {
+    sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
+    sinon.stub(request, 'get').yields(null, { statusCode: 200 }, playListItemsMock)
+    const { playList } = ids
+    const spotifyService = new SpotifyService()
+    const playListItems = await spotifyService.getPlayListItems(playList.metalId, 1, 0)
+    expect(playListItems).to.deep.equal(playListItemsMock)
   })
 })
