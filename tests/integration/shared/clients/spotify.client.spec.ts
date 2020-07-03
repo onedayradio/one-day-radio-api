@@ -167,6 +167,17 @@ describe('Spotify client', () => {
     ;(request.post as any).restore()
   })
 
+  it('Should remove song from playlist', async () => {
+    sinon.stub(request, 'delete').yields(null, { statusCode: 200 }, {})
+    const removeSongResponse = await SpotifyClient.removeSongFromPlaylist(
+      'access-token',
+      'playlist1',
+      'spotify:track:1',
+    )
+    expect(removeSongResponse).to.deep.equal(true)
+    ;(request.delete as any).restore()
+  })
+
   it('Should refresh access tokens', async () => {
     sinon
       .stub(request, 'post')

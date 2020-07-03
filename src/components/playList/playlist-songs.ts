@@ -31,6 +31,22 @@ const PlaylistSongsSchema = new Schema(
       type: String,
       required: [true, 'Song artists names are required'],
     },
+    year: {
+      type: String,
+      required: [true, 'Year is required'],
+    },
+    month: {
+      type: String,
+      required: [true, 'Month is required'],
+    },
+    day: {
+      type: String,
+      required: [true, 'Day is required'],
+    },
+    removedFromSpotify: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

@@ -7,6 +7,7 @@ export interface PlayList {
   spotifyId?: string
   name: string
   description: string
+  genreId: string
 }
 
 export interface DBPlayList extends Document, PlayList {
@@ -20,6 +21,9 @@ export interface PlaylistSongs {
   spotifyUri: string
   name: string
   artists: string
+  year: string
+  month: string
+  day: string
 }
 
 export interface PaginatedPlaylistSongs extends Pagination {
@@ -33,26 +37,10 @@ export interface PlayListData {
   name: string
   description: string
   genreId: string
-  year: string
-  month: string
-  day: string
-}
-
-export interface PlayListDate {
-  year: string
-  month: string
-  day: string
-}
-
-export interface PlayListFilter extends PlayListDate {
-  genreId: string
 }
 
 export interface PlayListArgs {
   genreId: string
-  day: string
-  month: string
-  year: string
 }
 
 export interface PlayOnDeviceArgs {
@@ -63,10 +51,17 @@ export interface PlayOnDeviceArgs {
 export interface AddSongToPlaylistMutationArgs {
   playlistId: string
   song: Song
+  dateData: DateData
 }
 
 export interface PlayListItemsArgs {
   playListId: string
   perPage: number
   currentPage: number
+}
+
+export interface DateData {
+  day: string
+  month: string
+  year: string
 }

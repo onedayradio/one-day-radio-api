@@ -39,6 +39,12 @@ export const playListType = `
     uri: String
   }
 
+  input DateDataInput {
+    day: String!
+    month: String!
+    year: String!
+  }
+
   type PlayListSongs {
     songs: [Song]
     total: Int
@@ -66,34 +72,21 @@ export const playListType = `
 `
 
 export const playListQueryTypes = `
-  loadPlayList(genreId: String, day: String, month: String, year: String): PlayList
+  loadPlayList(genreId: String): PlayList
   loadPlayListSongs(playListId: String, perPage: Int, currentPage: Int): PlayListSongs
-  playOnDevice(playListId: String, deviceId: String): Boolean
 `
 
 export const playListQueriesResolvers = {
   loadPlayList: (
     root: unknown,
-    { genreId, day, month, year }: PlayListArgs,
+    { genreId }: PlayListArgs,
     { playListService, currentUser }: AppContext,
   ): Promise<PlayList> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playListService.loadPlayList(genreId, day, month, year)
+    return playListService.loadPlayList(genreId)
   },
-
-  playOnDevice: (
-    root: unknown,
-    { playListId, deviceId }: PlayOnDeviceArgs,
-    { playListService, currentUser }: AppContext,
-  ): Promise<boolean> => {
-    if (!currentUser) {
-      throw new AuthenticationError('Unauthorized!!')
-    }
-    return playListService.playOnDevice(currentUser, playListId, deviceId)
-  },
-
   loadPlayListSongs: (
     root: unknown,
     { playListId, currentPage, perPage }: PlayListItemsArgs,
@@ -107,18 +100,29 @@ export const playListQueriesResolvers = {
 }
 
 export const playlistMutationTypes = `
-  addSongToPlaylist(playlistId: String, song: SongInput): PlaylistSong
+  addSongToPlaylist(playlistId: String, song: SongInput, date: DateDataInput): PlaylistSong
+  playOnDevice(playListId: String, deviceId: String): Boolean
 `
 
 export const playlistMutationsResolvers = {
   addSongToPlaylist: (
     root: unknown,
-    { playlistId, song }: AddSongToPlaylistMutationArgs,
+    { playlistId, song, dateData }: AddSongToPlaylistMutationArgs,
     { playListService, currentUser }: AppContext,
   ): Promise<PlaylistSongs> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playListService.addSongToPlaylist(currentUser, playlistId, song)
+    return playListService.addSongToPlaylist(currentUser, playlistId, song, dateData)
+  },
+  playOnDevice: (
+    root: unknown,
+    { playListId, deviceId }: PlayOnDeviceArgs,
+    { playListService, currentUser }: AppContext,
+  ): Promise<boolean> => {
+    if (!currentUser) {
+      throw new AuthenticationError('Unauthorized!!')
+    }
+    return playListService.playOnDevice(currentUser, playListId, deviceId)
   },
 }

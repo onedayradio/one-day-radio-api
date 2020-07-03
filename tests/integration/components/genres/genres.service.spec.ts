@@ -22,10 +22,12 @@ describe('GenresService', () => {
     const genre = await genresService.create({
       name: 'Rock',
       order: 3,
+      maxSongs: 20,
     })
     expect(genre._id).not.to.be.undefined
     expect(genre.name).to.equal('Rock')
     expect(genre.order).to.equal(3)
+    expect(genre.maxSongs).to.equal(20)
   })
 
   it('should load genre details', async () => {
@@ -45,8 +47,10 @@ describe('GenresService', () => {
 
   it('should load all genres', async () => {
     const genresLoaded = await genresService.loadAll()
-    expect(genresLoaded.length).to.equal(2)
+    expect(genresLoaded.length).to.equal(4)
     expect(genresLoaded[0].name).to.equal('Heavy Metal')
     expect(genresLoaded[1].name).to.equal('Punk')
+    expect(genresLoaded[2].name).to.equal('Rock')
+    expect(genresLoaded[3].name).to.equal('Pop')
   })
 })

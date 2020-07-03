@@ -1,13 +1,6 @@
 import { PlayListModel } from './playList'
 import { PlaylistSongsModel } from './playlist-songs'
-import {
-  DBPlayList,
-  PlayListData,
-  PlayListFilter,
-  DBPlaylistSongs,
-  Song,
-  DBUser,
-} from '../../types'
+import { DBPlayList, PlayListData, DBPlaylistSongs, Song, DBUser, DateData } from '../../types'
 
 export class PlayListDao {
   create(playListData: PlayListData): Promise<DBPlayList> {
@@ -19,8 +12,8 @@ export class PlayListDao {
     return PlayListModel.findOne({ spotifyId })
   }
 
-  async load(playListFilter: PlayListFilter): Promise<DBPlayList | null> {
-    return PlayListModel.findOne(playListFilter)
+  async loadByGenreId(genreId: string): Promise<DBPlayList | null> {
+    return PlayListModel.findOne({ genreId })
   }
 
   async getPlaylistSongsByUser(playlistId: string, user: DBUser): Promise<DBPlaylistSongs[]> {
@@ -37,7 +30,21 @@ export class PlayListDao {
     }).populate('user')
   }
 
-  async addSongToPlaylist(user: DBUser, playlistId: string, song: Song): Promise<DBPlaylistSongs> {
+  async loadAllPlaylistSongs(playlistId: string): Promise<DBPlaylistSongs[]> {
+    return PlaylistSongsModel.find({
+      playlist: playlistId,
+      removedFromSpotify: false,
+    }).sort({
+      createdAt: 1,
+    })
+  }
+
+  async addSongToPlaylist(
+    user: DBUser,
+    playlistId: string,
+    song: Song,
+    dateData: DateData,
+  ): Promise<DBPlaylistSongs> {
     return PlaylistSongsModel.create({
       playlist: playlistId,
       user,
@@ -45,6 +52,13 @@ export class PlayListDao {
       spotifyUri: song.uri,
       name: song.name,
       artists: song.artists,
+      year: dateData.year,
+      month: dateData.month,
+      day: dateData.day,
     })
+  }
+
+  async removeSongFromPlaylist(dbPlaylistSong: DBPlaylistSongs): Promise<void> {
+    return dbPlaylistSong.updateOne({ removedFromSpotify: true })
   }
 }

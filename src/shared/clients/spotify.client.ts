@@ -209,6 +209,23 @@ export class SpotifyClient {
     return true
   }
 
+  static async removeSongFromPlaylist(
+    accessToken: string,
+    playlistId: string,
+    songUri: string,
+  ): Promise<boolean> {
+    const options = {
+      url: `${BASE_API_URL}/playlists/${playlistId}/tracks`,
+      headers: { Authorization: 'Bearer ' + accessToken },
+      body: {
+        uris: [songUri],
+      },
+      json: true,
+    }
+    await SpotifyClient.doSpotifyRequest(options, 'delete')
+    return true
+  }
+
   static async uploadyPlaylistCoverImage(
     accessToken: string,
     spotifyPlaylistId: string,
