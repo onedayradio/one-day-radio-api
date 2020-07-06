@@ -40,3 +40,11 @@ Please try to do this as often as possible! :)
 
 1. To run all migrations run `make migrations-up`
 2. To create a new migration file run `migrate-mongo create <name>`
+
+## Spotify
+
+This is the entire list of spotify scopes we use in the app:
+
+```
+user-read-private user-read-email playlist-modify-private playlist-read-private user-read-playback-state playlist-modify-public user-modify-playback-state
+```
