@@ -13,6 +13,10 @@ const GenreSchema = new Schema(
       type: Number,
       required: [true, 'Order is required'],
     },
+    maxSongs: {
+      type: Number,
+      required: [true, 'Max Songs is required'],
+    },
   },
   {
     timestamps: true,

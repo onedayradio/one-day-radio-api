@@ -35,3 +35,20 @@ export const expectedAddSongToPlaylist = {
   name: 'Ghost Love Score',
   artists: 'Nightwish',
 }
+
+export const expectedAddSongToPlaylistEarthSong = {
+  playlist: ids.playList.popId,
+  user: {
+    _id: ids.users.juanId,
+    firstname: 'Juan',
+    lastname: 'Morales',
+    email: 'juan@gmail.com',
+  },
+  spotifyId: '2QagWuAL61R8DLydEte344',
+  spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte344',
+  name: 'Earth Song',
+  artists: 'Michael Jackson',
+  year: '2020',
+  month: '07',
+  day: '24',
+}

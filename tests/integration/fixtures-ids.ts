@@ -12,12 +12,14 @@ const ids = {
     metalId: ObjectId(),
     rockId: ObjectId(),
     punkId: ObjectId(),
+    popId: ObjectId(),
   },
   playList: {
     todayId: ObjectId(),
     yesterdayId: ObjectId(),
     metalId: ObjectId(),
     rockId: ObjectId(),
+    popId: ObjectId(),
   },
   playlistSongs: {
     metalWrathchildId: ObjectId(),
@@ -29,6 +31,8 @@ const ids = {
     rockBleedItOut: ObjectId(),
     rockOneMoreLight: ObjectId(),
     rockTheMessenger: ObjectId(),
+    popBillieJean: ObjectId(),
+    popSmoothCriminal: ObjectId(),
   },
   devices: {
     echoDot: ObjectId(),

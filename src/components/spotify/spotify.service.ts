@@ -93,6 +93,12 @@ export class SpotifyService {
     return response
   }
 
+  async removeSongFromPlaylist(playlistId: string, songUri: string): Promise<boolean> {
+    const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
+    const response = await SpotifyClient.removeSongFromPlaylist(accessToken, playlistId, songUri)
+    return response
+  }
+
   async uploadPlaylistCoverImage(
     spotifyPlaylistId: string,
     imageBase64: string | Buffer,

@@ -31,6 +31,9 @@ describe('SpotifyService', () => {
     if ((request.get as any).restore) {
       ;(request.get as any).restore()
     }
+    if ((request.delete as any).restore) {
+      ;(request.delete as any).restore()
+    }
   })
 
   it('should get spotify user access token', async () => {
@@ -124,5 +127,23 @@ describe('SpotifyService', () => {
     const spotifyService = new SpotifyService()
     const playListItems = await spotifyService.getPlayListItems(playList.metalId, 1, 0)
     expect(playListItems).to.deep.equal(playListItemsMock)
+  })
+
+  it('should add songs to playlist', async () => {
+    sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
+    sinon.stub(request, 'post').yields(null, { statusCode: 200 }, true)
+    const { playList } = ids
+    const spotifyService = new SpotifyService()
+    const response = await spotifyService.addSongToPlaylist(playList.metalId, 'song:uri')
+    expect(response).to.deep.equal(true)
+  })
+
+  it('should remove songs from playlist', async () => {
+    sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
+    sinon.stub(request, 'delete').yields(null, { statusCode: 200 }, true)
+    const { playList } = ids
+    const spotifyService = new SpotifyService()
+    const response = await spotifyService.removeSongFromPlaylist(playList.metalId, 'song:uri')
+    expect(response).to.deep.equal(true)
   })
 })

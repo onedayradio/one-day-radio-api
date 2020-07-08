@@ -9,6 +9,8 @@ module.exports = [
     spotifyUri: 'spotify:track:1SpuDZ7y1W4vaCzHeLvsf7',
     name: 'Wrathchild - 2015 Remaster',
     artists: 'Iron Maiden',
+    createdAt: '2018-04-26T18:11:16.367Z',
+    removedFromSpotify: false,
   },
   {
     _id: ids.playlistSongs.metalTheTrooperId,
@@ -18,6 +20,8 @@ module.exports = [
     spotifyUri: 'spotify:track:4OROzZUy6gOWN4UGQVaZMF',
     name: 'The Trooper - 2015 Remaster',
     artists: 'Iron Maiden',
+    createdAt: '2020-04-26T18:11:16.367Z',
+    removedFromSpotify: false,
   },
   {
     _id: ids.playlistSongs.metalRawDealId,
@@ -27,6 +31,8 @@ module.exports = [
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3tw',
     name: 'Raw Deal',
     artists: 'Judas Priest',
+    createdAt: '2019-04-26T18:11:16.367Z',
+    removedFromSpotify: false,
   },
   {
     _id: ids.playlistSongs.rockBleedItOut,
@@ -36,6 +42,7 @@ module.exports = [
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t1',
     name: 'Bleed it out',
     artists: 'Linkin Park',
+    removedFromSpotify: false,
   },
   {
     _id: ids.playlistSongs.rockFaint,
@@ -45,6 +52,7 @@ module.exports = [
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t2',
     name: 'Faint',
     artists: 'Linkin Park',
+    removedFromSpotify: false,
   },
   {
     _id: ids.playlistSongs.rockOneMoreLight,
@@ -54,6 +62,7 @@ module.exports = [
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t3',
     name: 'One More Light',
     artists: 'Linkin Park',
+    removedFromSpotify: false,
   },
   {
     _id: ids.playlistSongs.rockPushingMeAway,
@@ -63,6 +72,7 @@ module.exports = [
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t4',
     name: 'Pushing Me Away',
     artists: 'Linkin Park',
+    removedFromSpotify: false,
   },
   {
     _id: ids.playlistSongs.rockSomewhereIBelong,
@@ -72,6 +82,7 @@ module.exports = [
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t5',
     name: 'Somewhere I Belong',
     artists: 'Linkin Park',
+    removedFromSpotify: false,
   },
   {
     _id: ids.playlistSongs.rockTheMessenger,
@@ -81,5 +92,28 @@ module.exports = [
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t6',
     name: 'The Messenger',
     artists: 'Linkin Park',
+    removedFromSpotify: false,
+  },
+  {
+    _id: ids.playlistSongs.popBillieJean,
+    user: ids.users.juanId,
+    playlist: ids.playList.popId,
+    spotifyId: '2QagWuAL61R8DLydEte311',
+    spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte311',
+    name: 'Billie Jean',
+    artists: 'Michael Jackson',
+    createdAt: '2020-04-26T18:11:16.367Z',
+    removedFromSpotify: false,
+  },
+  {
+    _id: ids.playlistSongs.popSmoothCriminal,
+    user: ids.users.sanId,
+    playlist: ids.playList.popId,
+    spotifyId: '2QagWuAL61R8DLydEte333',
+    spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte333',
+    name: 'Smooth Criminal',
+    artists: 'Michael Jackson',
+    createdAt: '2018-04-26T18:11:16.367Z',
+    removedFromSpotify: false,
   },
 ]

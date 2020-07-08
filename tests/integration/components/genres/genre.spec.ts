@@ -11,6 +11,7 @@ describe('Genre Model', () => {
   it('should not save a genre if no name is provided', async () => {
     const genre = new GenreModel({
       order: 1,
+      maxSongs: 20,
     })
     try {
       await genre.save()
@@ -22,6 +23,7 @@ describe('Genre Model', () => {
   it('should not save a genre if no order is provided', async () => {
     const genre = new GenreModel({
       name: 'Genre 1',
+      maxSongs: 20,
     })
     try {
       await genre.save()

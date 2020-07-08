@@ -21,18 +21,6 @@ const PlayListSchema = new Schema(
       type: String,
       required: [true, 'Genre Id is required'],
     },
-    year: {
-      type: String,
-      required: [true, 'Year is required'],
-    },
-    month: {
-      type: String,
-      required: [true, 'Month is required'],
-    },
-    day: {
-      type: String,
-      required: [true, 'Day is required'],
-    },
   },
   {
     timestamps: true,

@@ -15,6 +15,7 @@ import {
   expectedPlaylistSongs,
   expectedPlaylistContains,
   expectedAddSongToPlaylist,
+  expectedAddSongToPlaylistEarthSong,
 } from '../../snapshots/playlist-songs'
 
 const playListService = new PlayListService()
@@ -43,46 +44,30 @@ describe('Playlist Service', () => {
   })
 
   it('should create a play list name', async () => {
-    const playListDate = {
-      day: '24',
-      month: '12',
-      year: '2020',
-    }
-    const playListDescription = playListService.createPlayListName('Rock', playListDate)
-    expect(playListDescription).to.equal('One day Radio. Rock playlist - 2020-12-24')
+    const playListDescription = playListService.createPlayListName('Rock')
+    expect(playListDescription).to.equal('One day Radio. Rock playlist')
   })
 
   it('should create play list data', async () => {
     sandbox.stub(moment, 'format').returns('2020-12-24')
     const { genres } = ids
     const expectedData = {
-      name: 'One day Radio. Heavy Metal playlist - 2020-12-24',
+      name: 'One day Radio. Heavy Metal playlist',
       description:
-        'This playlist has been created to you, from your community. One day Radio. Heavy Metal playlist - 2020-12-24',
+        'This playlist has been created to you, from your community. One day Radio. Heavy Metal playlist',
       genreId: genres.metalId,
-      year: '2020',
-      month: '12',
-      day: '24',
     }
-    const playListData = await playListService.createPlayListData(genres.metalId, {
-      year: '2020',
-      month: '12',
-      day: '24',
-    })
+    const playListData = await playListService.createPlayListData(genres.metalId)
     expect(playListData).to.deep.equal(expectedData)
   })
 
   it('should create a play list', async () => {
-    sandbox.stub(PlayListDao.prototype, 'load').resolves(null)
+    sandbox.stub(PlayListDao.prototype, 'loadByGenreId').resolves(null)
     sandbox.stub(SpotifyClient, 'createPlayList').resolves(playListMock)
     sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
     sandbox.stub(PlayListService.prototype, 'uploadPlaylistImage')
     const { genres } = ids
-    const data = await playListService.createPlayListData(genres.metalId, {
-      year: '2020',
-      month: '12',
-      day: '24',
-    })
+    const data = await playListService.createPlayListData(genres.metalId)
     const playListData = await playListService.createPlayList(data)
     expect(playListData).to.equal(playListMock)
   })
@@ -111,12 +96,17 @@ describe('Playlist Service', () => {
     const badId = new mongodb.ObjectID() + ''
     const user = await usersService.getDetailById(ids.users.juanId)
     try {
-      await playListService.addSongToPlaylist(user, badId, {
-        id: '1',
-        name: 'song1',
-        artists: 'Iron Maiden',
-        uri: 'song1',
-      })
+      await playListService.addSongToPlaylist(
+        user,
+        badId,
+        {
+          id: '1',
+          name: 'song1',
+          artists: 'Iron Maiden',
+          uri: 'song1',
+        },
+        { year: '2020', month: '07', day: '24' },
+      )
     } catch (error) {
       expect(error.message).to.equal(`Playlist with id ${badId} does not exists!`)
     }
@@ -125,12 +115,17 @@ describe('Playlist Service', () => {
   it('should throw error if user has reach its max amount of songs per playlist', async () => {
     const user = await usersService.getDetailById(ids.users.sanId)
     try {
-      await playListService.addSongToPlaylist(user, '44', {
-        id: '1',
-        name: 'song1',
-        artists: 'Iron Maiden',
-        uri: 'song1',
-      })
+      await playListService.addSongToPlaylist(
+        user,
+        '44',
+        {
+          id: '1',
+          name: 'song1',
+          artists: 'Iron Maiden',
+          uri: 'song1',
+        },
+        { year: '2020', month: '07', day: '24' },
+      )
     } catch (error) {
       expect(error.message).to.equal('User has reached max amount of songs for this playlist')
     }
@@ -139,12 +134,17 @@ describe('Playlist Service', () => {
   it('should throw error if trying to add duplicate song to a playlist', async () => {
     const user = await usersService.getDetailById(ids.users.juanId)
     try {
-      await playListService.addSongToPlaylist(user, '44', {
-        id: '2QagWuAL61R8DLydEte3t5',
-        name: 'Somewhere I Belong',
-        artists: 'Linkin Park',
-        uri: 'spotify:track:2QagWuAL61R8DLydEte3t5',
-      })
+      await playListService.addSongToPlaylist(
+        user,
+        '44',
+        {
+          id: '2QagWuAL61R8DLydEte3t5',
+          name: 'Somewhere I Belong',
+          artists: 'Linkin Park',
+          uri: 'spotify:track:2QagWuAL61R8DLydEte3t5',
+        },
+        { year: '2020', month: '07', day: '24' },
+      )
     } catch (error) {
       expect(error.message).to.equal(
         'Song Somewhere I Belong by Linkin Park is already in this playlist',
@@ -152,20 +152,68 @@ describe('Playlist Service', () => {
     }
   })
 
-  it('should add a new song to a playlist', async () => {
+  it('should throw error if trying to add song to a playlist when passing ivalid date params', async () => {
+    const user = await usersService.getDetailById(ids.users.juanId)
+    try {
+      await playListService.addSongToPlaylist(
+        user,
+        '44',
+        {
+          id: '3311WuAL61R8DLydEt1133',
+          name: 'Ghost Love Score',
+          artists: 'Nightwish',
+          uri: 'spotify:track:3311WuAL61R8DLydEt1133',
+        },
+        { year: '2020', month: '77', day: '24' },
+      )
+    } catch (error) {
+      expect(error.message).to.equal('Invalid date format')
+    }
+  })
+
+  it('should add a new song to a playlist when maxSongs per genre has not been reached', async () => {
     sandbox.stub(SpotifyService.prototype, 'addSongToPlaylist').resolves(true)
     const user = await usersService.getDetailById(ids.users.juanId)
     let userSongs = await playListService.getPlaylistSongsByUser(ids.playList.metalId, user)
     expect(userSongs.length).to.equal(2)
-    const song = await playListService.addSongToPlaylist(user, '33', {
-      id: '3311WuAL61R8DLydEt1133',
-      name: 'Ghost Love Score',
-      artists: 'Nightwish',
-      uri: 'spotify:track:3311WuAL61R8DLydEt1133',
-    })
+    const song = await playListService.addSongToPlaylist(
+      user,
+      '33',
+      {
+        id: '3311WuAL61R8DLydEt1133',
+        name: 'Ghost Love Score',
+        artists: 'Nightwish',
+        uri: 'spotify:track:3311WuAL61R8DLydEt1133',
+      },
+      { year: '2020', month: '07', day: '24' },
+    )
     expect(song.spotifyId).to.containSubset(expectedAddSongToPlaylist.spotifyId)
     userSongs = await playListService.getPlaylistSongsByUser(ids.playList.metalId, user)
     expect(userSongs.length).to.equal(3)
+  })
+
+  it('should add a new song to a playlist when maxSongs per genre has been reached', async () => {
+    sandbox.stub(SpotifyService.prototype, 'addSongToPlaylist').resolves(true)
+    sandbox.stub(SpotifyService.prototype, 'removeSongFromPlaylist').resolves(true)
+    const user = await usersService.getDetailById(ids.users.juanId)
+    let userSongs = await playListService.getPlaylistSongsByUser(ids.playList.popId, user)
+    expect(userSongs.length).to.equal(1)
+    const song = await playListService.addSongToPlaylist(
+      user,
+      '88',
+      {
+        id: '2QagWuAL61R8DLydEte344',
+        name: 'Earth Song',
+        artists: 'Michael Jackson',
+        uri: 'spotify:track:2QagWuAL61R8DLydEte344',
+      },
+      { year: '2020', month: '07', day: '24' },
+    )
+    expect(song.toObject()).to.containSubset(expectedAddSongToPlaylistEarthSong)
+    userSongs = await playListService.getPlaylistSongsByUser(ids.playList.popId, user)
+    expect(userSongs.length).to.equal(2)
+    const allSongs = await playListService.loadAllPlaylistSongs(ids.playList.popId)
+    expect(allSongs.length).to.equal(2)
   })
 
   it('should return false if an error happens when uploading playlist image to spotify', async () => {
