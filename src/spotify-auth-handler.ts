@@ -28,7 +28,7 @@ const getSpotifyAuthParams = (state: string): SpotifyRedirectParams => {
 }
 
 export const authorize = (event: SpotifyEvent, context: Context, callback: Callback): void => {
-  generalLogger.info('Handling spotify authorization...')
+  generalLogger.info('Handling spotify authorization....')
   const state = generateRandomString(SPOTIFY_AUTH_STATE_SIZE)
   const params = getSpotifyAuthParams(state)
   const redirectUrl = `${BASE_SPOTIFY_AUTH_URL}?${querystring.stringify(params as any)}`
