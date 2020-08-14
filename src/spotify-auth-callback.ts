@@ -1,22 +1,23 @@
-import { Context, Callback } from 'aws-lambda'
 import querystring from 'querystring'
 
-import { getValue, generalLogger, generateToken, SpotifyClient, errorsLogger } from './shared'
+import { getValue, generalLogger, generateToken, SpotifyClient } from './shared'
 import { initDBConnection } from './shared/database'
 import { SpotifyEvent, SpotifyUserData, GetTokensResponse, User } from './types'
 import { UsersService } from './components'
 
-const REDIRECT_HTTP_CODE = 301
+const REDIRECT_HTTP_CODE = 302
 const SPOTIFY_AUTH_STATE_SIZE = 16
 const SPOTIFY_AUTH_STATE_KEY = 'spotify_auth_state'
 
 const extractStoredStateFromCookies = (event: SpotifyEvent): string => {
   const { headers } = event
-  const cookies = headers.Cookie as string
-  return cookies.substr(
-    cookies.lastIndexOf(`${SPOTIFY_AUTH_STATE_KEY}=`) + SPOTIFY_AUTH_STATE_KEY.length + 1,
-    SPOTIFY_AUTH_STATE_SIZE,
-  )
+  const cookies = headers ? (headers.Cookie as string) : undefined
+  return cookies
+    ? cookies.substr(
+        cookies.lastIndexOf(`${SPOTIFY_AUTH_STATE_KEY}=`) + SPOTIFY_AUTH_STATE_KEY.length + 1,
+        SPOTIFY_AUTH_STATE_SIZE,
+      )
+    : ''
 }
 
 const getUserData = (spotifyUser: SpotifyUserData, spotifyTokens: GetTokensResponse): User => ({
@@ -31,27 +32,24 @@ const getUserData = (spotifyUser: SpotifyUserData, spotifyTokens: GetTokensRespo
   },
 })
 
-export const authCallback = async (
-  event: SpotifyEvent,
-  context: Context,
-  callback: Callback,
-): Promise<void> => {
-  generalLogger.info('Handling spotify authorization callback...')
-  await initDBConnection().catch((error) =>
-    errorsLogger.error('error connecting to atlas db', error),
-  )
+const connect = initDBConnection()
+
+export const authCallback = async (event: SpotifyEvent): Promise<any> => {
+  generalLogger.info('Handling spotify authorization callback!')
+  await connect
+  generalLogger.info('Successfully connected to mongodb')
   const { queryStringParameters } = event
   const { state, code } = queryStringParameters
   const storedState = extractStoredStateFromCookies(event)
   if (state === null || state !== `${storedState}`) {
-    return callback(null, {
+    return {
       statusCode: REDIRECT_HTTP_CODE,
       headers: {
         Location: `${getValue('frontend_url')}?${querystring.stringify({
           authError: 'state_mismatch',
         })}`,
       },
-    })
+    }
   }
   const usersService = new UsersService()
   const spotifyTokens = await SpotifyClient.getTokens(code)
@@ -70,5 +68,6 @@ export const authCallback = async (
       Location: redirectUrl,
     },
   }
-  return callback(null, response)
+  generalLogger.info('returning successful response11', redirectUrl)
+  return response
 }

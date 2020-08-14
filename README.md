@@ -48,3 +48,7 @@ This is the entire list of spotify scopes we use in the app:
 ```
 user-read-private user-read-email playlist-modify-private playlist-read-private user-read-playback-state playlist-modify-public user-modify-playback-state
 ```
+
+## How To Deploy
+
+1. Run `yarn deploy-dev` or `yarn deploy-prod` deppending on what environment you wish to deploy
