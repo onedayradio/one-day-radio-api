@@ -143,8 +143,8 @@ export class SpotifyClient {
   static async getPlayListItems(
     accessToken: string,
     playListId: string,
-    currentPage = 10,
-    perPage = 0,
+    currentPage: number,
+    perPage: number,
   ): Promise<SpotifyPlayListItems> {
     const options = {
       url: `${BASE_API_URL}/playlists/${playListId}/tracks?limit=${perPage}&offset=${currentPage}`,

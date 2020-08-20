@@ -51,7 +51,7 @@ export interface PlayOnDeviceArgs {
 export interface AddSongToPlaylistMutationArgs {
   playlistId: string
   song: Song
-  dateData: DateData
+  date: DateData
 }
 
 export interface PlayListItemsArgs {

@@ -33,8 +33,8 @@ export class PlayListService {
 
   async loadPlayListSongs(
     playListId: string,
-    currentPage: number,
-    perPage: number,
+    currentPage = 0,
+    perPage = 10,
   ): Promise<PaginatedPlaylistSongs> {
     const playlistItems = await this.spotifyService.getPlayListItems(
       playListId,
@@ -145,7 +145,7 @@ export class PlayListService {
     user: DBUser,
     spotifyPlaylistId: string,
     song: Song,
-    dateData: DateData,
+    date: DateData,
   ): Promise<DBPlaylistSongs> {
     const maxSongsAllowedPerUser = getValueAsInt('max_user_songs_per_playlist')
     const playlist = await this.playListDao.loadBySpotifyId(spotifyPlaylistId)
@@ -160,7 +160,7 @@ export class PlayListService {
     if (songDuplicateData.duplicate) {
       throw new Error(`Song ${song.name} by ${song.artists} is already in this playlist`)
     }
-    const { year, month, day } = dateData
+    const { year, month, day } = date
     if (!moment(`${year}-${month}-${day}`, Constants.DATE.FORMAT, true).isValid()) {
       throw new ValidationError('Invalid date format')
     }
@@ -172,7 +172,7 @@ export class PlayListService {
       await this.playListDao.removeSongFromPlaylist(oldestSong)
     }
     await this.spotifyService.addSongToPlaylist(playlist.spotifyId, song.uri)
-    return this.playListDao.addSongToPlaylist(user, playlist._id, song, dateData)
+    return this.playListDao.addSongToPlaylist(user, playlist._id, song, date)
   }
 
   loadAllPlaylistSongs(playlistId: string): Promise<DBPlaylistSongs[]> {
