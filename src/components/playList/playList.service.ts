@@ -32,20 +32,20 @@ export class PlayListService {
   }
 
   async loadPlayListSongs(
-    playListId: string,
+    genreId: string,
     currentPage = 0,
     perPage = 10,
   ): Promise<PaginatedPlaylistSongs> {
+    const playlist = await this.playListDao.loadByGenreId(genreId)
+    if (!playlist) {
+      throw new Error(`Playlist for genre Id ${genreId} does not exists!`)
+    }
     const playlistItems = await this.spotifyService.getPlayListItems(
-      playListId,
+      playlist.spotifyId,
       currentPage,
       perPage,
     )
     const songIds = playlistItems.items.map((item) => item.track.id)
-    const playlist = await this.playListDao.loadBySpotifyId(playListId)
-    if (!playlist) {
-      throw new Error(`Playlist with id ${playListId} does not exists!`)
-    }
     const songs = await this.mergePlaylistSongs(playlist._id, songIds, playlistItems.items)
     const pagination = createPaginationObject({
       total: playlistItems.total,
