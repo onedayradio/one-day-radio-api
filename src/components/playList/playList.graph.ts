@@ -107,13 +107,13 @@ export const playlistMutationTypes = `
 export const playlistMutationsResolvers = {
   addSongToPlaylist: (
     root: unknown,
-    { playlistId, song, dateData }: AddSongToPlaylistMutationArgs,
+    { playlistId, song, date }: AddSongToPlaylistMutationArgs,
     { playListService, currentUser }: AppContext,
   ): Promise<PlaylistSongs> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playListService.addSongToPlaylist(currentUser, playlistId, song, dateData)
+    return playListService.addSongToPlaylist(currentUser, playlistId, song, date)
   },
   playOnDevice: (
     root: unknown,
