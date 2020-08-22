@@ -73,7 +73,7 @@ export const playListType = `
 
 export const playListQueryTypes = `
   loadPlayList(genreId: String): PlayList
-  loadPlayListSongs(playListId: String, perPage: Int, currentPage: Int): PlayListSongs
+  loadPlayListSongs(genreId: String, perPage: Int, currentPage: Int): PlayListSongs
 `
 
 export const playListQueriesResolvers = {
@@ -89,13 +89,13 @@ export const playListQueriesResolvers = {
   },
   loadPlayListSongs: (
     root: unknown,
-    { playListId, currentPage, perPage }: PlayListItemsArgs,
+    { genreId, currentPage, perPage }: PlayListItemsArgs,
     { playListService, currentUser }: AppContext,
   ): Promise<PaginatedPlaylistSongs> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playListService.loadPlayListSongs(playListId, currentPage, perPage)
+    return playListService.loadPlayListSongs(genreId, currentPage, perPage)
   },
 }
 
