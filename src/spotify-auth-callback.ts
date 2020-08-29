@@ -1,7 +1,7 @@
 import querystring from 'querystring'
 
 import { getValue, generalLogger, generateToken, SpotifyClient } from './shared'
-import { initDBConnection } from './shared/database'
+import { connectToDatabase } from './shared/database'
 import { SpotifyEvent, SpotifyUserData, GetTokensResponse, User } from './types'
 import { UsersService } from './components'
 
@@ -32,11 +32,11 @@ const getUserData = (spotifyUser: SpotifyUserData, spotifyTokens: GetTokensRespo
   },
 })
 
-const connect = initDBConnection()
+let cachedDb: any = null
 
 export const authCallback = async (event: SpotifyEvent): Promise<any> => {
   generalLogger.info('Handling spotify authorization callback!')
-  await connect
+  cachedDb = await connectToDatabase(cachedDb)
   generalLogger.info('Successfully connected to mongodb')
   const { queryStringParameters } = event
   const { state, code } = queryStringParameters

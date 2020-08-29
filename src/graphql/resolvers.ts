@@ -1,5 +1,4 @@
 import {
-  authMutationsResolvers,
   userQueriesResolvers,
   genreQueriesResolvers,
   searchQueriesResolvers,
@@ -17,7 +16,6 @@ export const resolvers = {
     ...deviceQueriesResolvers,
   },
   Mutation: {
-    ...authMutationsResolvers,
     ...playlistMutationsResolvers,
   },
 }

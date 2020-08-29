@@ -2,8 +2,8 @@ import { ApolloServer } from 'apollo-server-lambda'
 import { Context, APIGatewayProxyEvent, APIGatewayProxyCallback } from 'aws-lambda'
 
 import { schema, context } from './graphql'
-import { initDBConnection } from './shared/database'
-import { generalLogger, errorsLogger } from './shared'
+import { connectToDatabase } from './shared/database'
+import { errorsLogger } from './shared'
 
 const apolloServer = new ApolloServer({
   schema,
@@ -17,7 +17,7 @@ const graphqlHandler = apolloServer.createHandler({
   },
 })
 
-const connect = initDBConnection()
+let cachedDb: any = null
 
 export const handler = (
   event: APIGatewayProxyEvent,
@@ -25,10 +25,10 @@ export const handler = (
   callback: APIGatewayProxyCallback,
 ): void => {
   context.callbackWaitsForEmptyEventLoop = false
-  connect
-    .then(() => {
-      generalLogger.info('Successfully connected to MongoDB!')
+  connectToDatabase(cachedDb)
+    .then((db) => {
+      cachedDb = db
       graphqlHandler(event, context, callback)
     })
-    .catch((error) => errorsLogger.error('unexpected error connecting to database', error))
+    .catch((error: Error) => errorsLogger.error('unexpected error connecting to database', error))
 }

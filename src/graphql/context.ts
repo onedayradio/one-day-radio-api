@@ -1,6 +1,5 @@
 import {
   UsersService,
-  AuthService,
   GenresService,
   SearchService,
   PlayListService,
@@ -23,7 +22,6 @@ export const context = async ({ event }: ServerContextParams): Promise<AppContex
     currentUser: user,
     tokenData,
     usersService,
-    authService: new AuthService(),
     genresService: new GenresService(),
     searchService: new SearchService(),
     playListService: new PlayListService(),

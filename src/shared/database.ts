@@ -10,11 +10,21 @@ mongoose.set('useCreateIndex', true)
 
 const mongoUrl = getValue('mongodb_url')
 
-export const initDBConnection = async (): Promise<Mongoose> => {
-  generalLogger.info(`Connecting to mongo database on ${mongoUrl}`)
-  return mongoose.connect(mongoUrl, {
-    socketTimeoutMS: 10000,
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+export const connectToDatabase = (cachedDb: Mongoose): Promise<Mongoose> => {
+  console.time('connectingToMongo')
+  if (cachedDb) {
+    generalLogger.info('=> using cached database instance...')
+    console.timeEnd('connectingToMongo')
+    return Promise.resolve(cachedDb)
+  }
+  return mongoose
+    .connect(mongoUrl, {
+      socketTimeoutMS: 10000,
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    .then((db) => {
+      console.timeEnd('connectingToMongo')
+      return db
+    })
 }

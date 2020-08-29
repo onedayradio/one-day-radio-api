@@ -2,7 +2,6 @@ import { DBUser } from './users'
 import { DecodedToken } from './auth'
 import {
   UsersService,
-  AuthService,
   GenresService,
   SearchService,
   PlayListService,
@@ -10,6 +9,7 @@ import {
 } from '../components'
 
 export interface ServerContextEvent {
+  body: string
   headers: {
     authorization?: string
     Authorization?: string
@@ -25,7 +25,6 @@ export interface AppContext {
   currentUser?: DBUser
   tokenData?: DecodedToken
   usersService: UsersService
-  authService: AuthService
   genresService: GenresService
   searchService: SearchService
   playListService: PlayListService
