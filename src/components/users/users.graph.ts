@@ -24,14 +24,10 @@ export const usersQueryTypes = `
 `
 
 export const userQueriesResolvers = {
-  loadAuthUser: (
-    root: unknown,
-    args: unknown,
-    { usersService, currentUser }: AppContext,
-  ): Promise<DBUser> => {
+  loadAuthUser: (root: unknown, args: unknown, { currentUser }: AppContext): DBUser => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return usersService.getDetailById(currentUser._id)
+    return currentUser
   },
 }
