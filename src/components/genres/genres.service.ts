@@ -33,4 +33,8 @@ export class GenresService {
   loadAll(): Promise<DBGenre[]> {
     return this.genresDao.loadAll()
   }
+
+  async loadGenre(genreId: string): Promise<DBGenre> {
+    return this.getDetailById(genreId)
+  }
 }

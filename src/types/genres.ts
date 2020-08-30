@@ -7,3 +7,7 @@ export interface Genre {
 }
 
 export interface DBGenre extends Document, Genre {}
+
+export interface LoadGenreArgs {
+  genreId: string
+}

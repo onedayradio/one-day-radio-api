@@ -52,6 +52,6 @@ export const testsSetup = async (done: () => void): Promise<void> => {
     await fixtures.disconnect()
     done()
   } catch (error) {
-    console.log('errror', error)
+    console.log('Error: ', error)
   }
 }

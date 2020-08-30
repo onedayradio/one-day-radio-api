@@ -1,9 +1,9 @@
 import mongoose, { Model } from 'mongoose'
-import { DBPlayList } from '../../types'
+import { DBPlaylist } from '../../types'
 
 const Schema = mongoose.Schema
 
-const PlayListSchema = new Schema(
+const PlaylistSchema = new Schema(
   {
     name: {
       type: String,
@@ -18,21 +18,22 @@ const PlayListSchema = new Schema(
       required: [true, 'Description is required'],
     },
     genreId: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Genre',
       required: [true, 'Genre Id is required'],
     },
   },
   {
     timestamps: true,
-    collection: 'playLists',
+    collection: 'playlists',
   },
 )
 
-let playListModel: Model<DBPlayList>
+let playlistModel: Model<DBPlaylist>
 try {
-  playListModel = mongoose.model<DBPlayList>('PlayList')
+  playlistModel = mongoose.model<DBPlaylist>('Playlist')
 } catch (error) {
-  playListModel = mongoose.model<DBPlayList>('PlayList', PlayListSchema)
+  playlistModel = mongoose.model<DBPlaylist>('Playlist', PlaylistSchema)
 }
 
-export { playListModel as PlayListModel }
+export { playlistModel as PlaylistModel }

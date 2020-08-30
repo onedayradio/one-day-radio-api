@@ -63,20 +63,20 @@ describe('SpotifyService', () => {
   it('should get a playlist', async () => {
     sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
     sinon.stub(request, 'get').yields(null, { statusCode: 200 }, playListMock)
-    const { playList } = ids
+    const { playlist } = ids
     const spotifyService = new SpotifyService()
-    const searchResponse = await spotifyService.getPlayList(playList.yesterdayId)
+    const searchResponse = await spotifyService.getPlaylist(playlist.metalId)
     expect(searchResponse).to.deep.equal(playListMock)
   })
 
   it('should throw unexpected errors when getting a playlist', async () => {
-    const { playList } = ids
+    const { playlist } = ids
     sandbox.stub(SpotifyClient, 'refreshAccessToken').callsFake(async () => {
       throw new Error('Unexpected error')
     })
     try {
       const spotifyService = new SpotifyService()
-      await spotifyService.getPlayList(playList.yesterdayId)
+      await spotifyService.getPlaylist(playlist.rockId)
     } catch (error) {
       expect(error.message).to.equal('Unexpected error')
     }
@@ -85,19 +85,19 @@ describe('SpotifyService', () => {
   it('should create a playlist', async () => {
     sinon.stub(request, 'post').yields(null, { statusCode: 200 }, playListMock)
     const spotifyService = new SpotifyService()
-    const searchResponse = await spotifyService.createPlayList({ name: '', description: '' })
+    const searchResponse = await spotifyService.createPlaylist({ name: '', description: '' })
     expect(searchResponse).to.deep.equal(playListMock)
   })
 
   it('should play a playlist on a device', async () => {
     const sandbox = sinon.createSandbox()
-    sandbox.stub(SpotifyClient, 'getPlayList').resolves(playListMock)
-    sandbox.stub(SpotifyClient, 'followPlayList').resolves(undefined)
+    sandbox.stub(SpotifyClient, 'getPlaylist').resolves(playListMock)
+    sandbox.stub(SpotifyClient, 'followPlaylist').resolves(undefined)
     sandbox.stub(SpotifyClient, 'playOnDevice').resolves(undefined)
-    const { users, devices, playList } = ids
+    const { users, devices, playlist } = ids
     const user = await usersService.getDetailById(users.sanId)
     const spotifyService = new SpotifyService()
-    const data = await spotifyService.playOnDevice(user, playList.todayId, devices.echoDot)
+    const data = await spotifyService.playOnDevice(user, playlist.metalId, devices.echoDot)
     expect(data).to.equal(true)
     sandbox.restore()
   })
@@ -123,27 +123,27 @@ describe('SpotifyService', () => {
   it('should get the playlist items', async () => {
     sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
     sinon.stub(request, 'get').yields(null, { statusCode: 200 }, playListItemsMock)
-    const { playList } = ids
+    const { playlist } = ids
     const spotifyService = new SpotifyService()
-    const playListItems = await spotifyService.getPlayListItems(playList.metalId, 1, 0)
+    const playListItems = await spotifyService.getPlaylistItems(playlist.metalId, 1, 0)
     expect(playListItems).to.deep.equal(playListItemsMock)
   })
 
   it('should add songs to playlist', async () => {
     sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
     sinon.stub(request, 'post').yields(null, { statusCode: 200 }, true)
-    const { playList } = ids
+    const { playlist } = ids
     const spotifyService = new SpotifyService()
-    const response = await spotifyService.addSongToPlaylist(playList.metalId, 'song:uri')
+    const response = await spotifyService.addSongToPlaylist(playlist.metalId, 'song:uri')
     expect(response).to.deep.equal(true)
   })
 
   it('should remove songs from playlist', async () => {
     sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
     sinon.stub(request, 'delete').yields(null, { statusCode: 200 }, true)
-    const { playList } = ids
+    const { playlist } = ids
     const spotifyService = new SpotifyService()
-    const response = await spotifyService.removeSongFromPlaylist(playList.metalId, 'song:uri')
+    const response = await spotifyService.removeSongFromPlaylist(playlist.metalId, 'song:uri')
     expect(response).to.deep.equal(true)
   })
 })

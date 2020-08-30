@@ -4,7 +4,7 @@ import {
   UsersService,
   GenresService,
   SearchService,
-  PlayListService,
+  PlaylistsService,
   DevicesService,
 } from '../components'
 
@@ -27,6 +27,6 @@ export interface AppContext {
   usersService: UsersService
   genresService: GenresService
   searchService: SearchService
-  playListService: PlayListService
+  playlistService: PlaylistsService
   devicesService: DevicesService
 }

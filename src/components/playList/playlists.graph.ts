@@ -1,12 +1,12 @@
 import { AuthenticationError } from 'apollo-server-lambda'
 import {
   AppContext,
-  PlayListArgs,
-  PlayList,
+  PlaylistArgs,
+  Playlist,
   AddSongToPlaylistMutationArgs,
   PlaylistSongs,
   PlayOnDeviceArgs,
-  PlayListItemsArgs,
+  PlaylistItemsArgs,
   PaginatedPlaylistSongs,
 } from '../../types'
 
@@ -45,7 +45,7 @@ export const playListType = `
     year: String!
   }
 
-  type PlayListSongs {
+  type PlaylistSongs {
     songs: [Song]
     total: Int
     perPage: Int
@@ -55,7 +55,7 @@ export const playListType = `
     to: Int
   }
 
-  type PlayList {
+  type Playlist {
     id: String!
     name: String
     description: String
@@ -72,30 +72,30 @@ export const playListType = `
 `
 
 export const playListQueryTypes = `
-  loadPlayList(genreId: String): PlayList
-  loadPlayListSongs(genreId: String, perPage: Int, currentPage: Int): PlayListSongs
+  loadPlaylist(genreId: String): Playlist
+  loadPlaylistSongs(genreId: String, perPage: Int, currentPage: Int): PlaylistSongs
 `
 
 export const playListQueriesResolvers = {
-  loadPlayList: (
+  loadPlaylist: (
     root: unknown,
-    { genreId }: PlayListArgs,
-    { playListService, currentUser }: AppContext,
-  ): Promise<PlayList> => {
+    { genreId }: PlaylistArgs,
+    { playlistService, currentUser }: AppContext,
+  ): Promise<Playlist> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playListService.loadPlayList(genreId)
+    return playlistService.loadPlaylist(genreId)
   },
-  loadPlayListSongs: (
+  loadPlaylistSongs: (
     root: unknown,
-    { genreId, currentPage, perPage }: PlayListItemsArgs,
-    { playListService, currentUser }: AppContext,
+    { genreId, currentPage, perPage }: PlaylistItemsArgs,
+    { playlistService, currentUser }: AppContext,
   ): Promise<PaginatedPlaylistSongs> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playListService.loadPlayListSongs(genreId, currentPage, perPage)
+    return playlistService.loadPlaylistSongs(genreId, currentPage, perPage)
   },
 }
 
@@ -108,21 +108,21 @@ export const playlistMutationsResolvers = {
   addSongToPlaylist: (
     root: unknown,
     { playlistId, song, date }: AddSongToPlaylistMutationArgs,
-    { playListService, currentUser }: AppContext,
+    { playlistService, currentUser }: AppContext,
   ): Promise<PlaylistSongs> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playListService.addSongToPlaylist(currentUser, playlistId, song, date)
+    return playlistService.addSongToPlaylist(currentUser, playlistId, song, date)
   },
   playOnDevice: (
     root: unknown,
     { playListId, deviceId }: PlayOnDeviceArgs,
-    { playListService, currentUser }: AppContext,
+    { playlistService, currentUser }: AppContext,
   ): Promise<boolean> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playListService.playOnDevice(currentUser, playListId, deviceId)
+    return playlistService.playOnDevice(currentUser, playListId, deviceId)
   },
 }

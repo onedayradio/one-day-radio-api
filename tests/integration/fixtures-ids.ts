@@ -14,9 +14,7 @@ const ids = {
     punkId: ObjectId(),
     popId: ObjectId(),
   },
-  playList: {
-    todayId: ObjectId(),
-    yesterdayId: ObjectId(),
+  playlist: {
     metalId: ObjectId(),
     rockId: ObjectId(),
     popId: ObjectId(),

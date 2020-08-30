@@ -103,13 +103,23 @@ export const playListItemsMock = {
       is_local: false,
       primary_color: null,
       track: {
-        album: [Object],
+        album: {
+          id: '',
+          name: '',
+          images: [
+            {
+              width: 0,
+              height: 0,
+              url: '',
+            },
+          ],
+        },
         artists: [
           {
             external_urls: {},
             href: 'https://api.spotify.com/v1/artists/14pVkFUHDL207LzLHtSA18',
             id: '14pVkFUHDL207LzLHtSA18',
-            name: 'Pantera',
+            name: 'Iron Maiden',
             type: 'artist',
             uri: 'spotify:artist:14pVkFUHDL207LzLHtSA18',
           },
@@ -122,9 +132,9 @@ export const playListItemsMock = {
         external_ids: { isrc: 'USEE10170088' },
         external_urls: { spotify: 'https://open.spotify.com/album/7kW0cpKgSVsEqcc8xgbSb0' },
         href: 'https://api.spotify.com/v1/tracks/7fcfNW0XxTWlwVlftzfDOR',
-        id: '7fcfNW0XxTWlwVlftzfDOR',
+        id: '1SpuDZ7y1W4vaCzHeLvsf7',
         is_local: false,
-        name: 'Walk',
+        name: 'Wrathchild - 2015 Remaster',
         popularity: 73,
         preview_url:
           'https://p.scdn.co/mp3-preview/14e66cb261d6027f14d31e7d247b2281b9e79e71?cid=e43b1585ddf145c0b06a60b4dbe03f66',
@@ -137,8 +147,37 @@ export const playListItemsMock = {
     },
   ],
   limit: 1,
-  next: null,
+  next: '',
   offset: 1,
   previous: 'https://api.spotify.com/v1/playlists/08zCBxKpTDyQU3hP7cusMx/tracks?offset=0&limit=1',
   total: 2,
+}
+
+export const playListSongs = {
+  songs: [
+    {
+      id: '1SpuDZ7y1W4vaCzHeLvsf7',
+      name: 'Wrathchild - 2015 Remaster',
+      artists: 'Iron Maiden',
+      uri: 'spotify:track:1SpuDZ7y1W4vaCzHeLvsf7',
+      sharedBy: undefined,
+      album: {
+        id: '',
+        name: '',
+        images: [
+          {
+            width: 0,
+            height: 0,
+            url: '',
+          },
+        ],
+      },
+    },
+  ],
+  total: 2,
+  perPage: 10,
+  lastPage: 1,
+  currentPage: 0,
+  from: 0,
+  to: 2,
 }

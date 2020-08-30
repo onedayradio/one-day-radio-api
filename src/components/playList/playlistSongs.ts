@@ -7,7 +7,7 @@ const PlaylistSongsSchema = new Schema(
   {
     playlist: {
       type: Schema.Types.ObjectId,
-      ref: 'PlayList',
+      ref: 'Playlist',
       required: [true, 'Playlist id is required'],
     },
     user: {
@@ -50,7 +50,7 @@ const PlaylistSongsSchema = new Schema(
   },
   {
     timestamps: true,
-    collection: 'playlist-songs',
+    collection: 'playlistSongs',
   },
 )
 

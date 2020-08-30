@@ -1,19 +1,19 @@
-import { PlayListModel } from './playList'
-import { PlaylistSongsModel } from './playlist-songs'
-import { DBPlayList, PlayListData, DBPlaylistSongs, Song, DBUser, DateData } from '../../types'
+import { PlaylistModel } from './playlist'
+import { PlaylistSongsModel } from './playlistSongs'
+import { DBPlaylist, PlaylistData, DBPlaylistSongs, Song, DBUser, DateData } from '../../types'
 
-export class PlayListDao {
-  create(playListData: PlayListData): Promise<DBPlayList> {
-    const playList = new PlayListModel(playListData)
+export class PlaylistsDao {
+  create(playListData: PlaylistData): Promise<DBPlaylist> {
+    const playList = new PlaylistModel(playListData)
     return playList.save()
   }
 
-  async loadBySpotifyId(spotifyId: string): Promise<DBPlayList | null> {
-    return PlayListModel.findOne({ spotifyId })
+  async loadBySpotifyId(spotifyId: string): Promise<DBPlaylist | null> {
+    return PlaylistModel.findOne({ spotifyId })
   }
 
-  async loadByGenreId(genreId: string): Promise<DBPlayList | null> {
-    return PlayListModel.findOne({ genreId })
+  async loadByGenreId(genreId: string): Promise<DBPlaylist | null> {
+    return PlaylistModel.findOne({ genreId })
   }
 
   async getPlaylistSongsByUser(playlistId: string, user: DBUser): Promise<DBPlaylistSongs[]> {
