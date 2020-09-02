@@ -34,7 +34,7 @@ export interface SpotifyUserData {
   displayName?: string
 }
 
-export interface SpotifyPlayList {
+export interface SpotifyPlaylist {
   id?: string
   name: string
   description: string
@@ -63,7 +63,7 @@ export interface SpotifySearchSongsResponse {
   previous?: string
 }
 
-export interface SpotifyPlayListItems {
+export interface SpotifyPlaylistItems {
   items: SpotifyItem[]
   href: string
   limit: number

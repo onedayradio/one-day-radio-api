@@ -4,7 +4,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.metalWrathchildId,
     user: ids.users.juanId,
-    playlist: ids.playList.metalId,
+    playlist: ids.playlist.metalId,
     spotifyId: '1SpuDZ7y1W4vaCzHeLvsf7',
     spotifyUri: 'spotify:track:1SpuDZ7y1W4vaCzHeLvsf7',
     name: 'Wrathchild - 2015 Remaster',
@@ -15,7 +15,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.metalTheTrooperId,
     user: ids.users.pabloId,
-    playlist: ids.playList.metalId,
+    playlist: ids.playlist.metalId,
     spotifyId: '4OROzZUy6gOWN4UGQVaZMF',
     spotifyUri: 'spotify:track:4OROzZUy6gOWN4UGQVaZMF',
     name: 'The Trooper - 2015 Remaster',
@@ -26,7 +26,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.metalRawDealId,
     user: ids.users.juanId,
-    playlist: ids.playList.metalId,
+    playlist: ids.playlist.metalId,
     spotifyId: '2QagWuAL61R8DLydEte3tw',
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3tw',
     name: 'Raw Deal',
@@ -37,7 +37,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.rockBleedItOut,
     user: ids.users.sanId,
-    playlist: ids.playList.rockId,
+    playlist: ids.playlist.rockId,
     spotifyId: '2QagWuAL61R8DLydEte3t1',
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t1',
     name: 'Bleed it out',
@@ -47,7 +47,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.rockFaint,
     user: ids.users.sanId,
-    playlist: ids.playList.rockId,
+    playlist: ids.playlist.rockId,
     spotifyId: '2QagWuAL61R8DLydEte3t2',
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t2',
     name: 'Faint',
@@ -57,7 +57,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.rockOneMoreLight,
     user: ids.users.sanId,
-    playlist: ids.playList.rockId,
+    playlist: ids.playlist.rockId,
     spotifyId: '2QagWuAL61R8DLydEte3t3',
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t3',
     name: 'One More Light',
@@ -67,7 +67,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.rockPushingMeAway,
     user: ids.users.sanId,
-    playlist: ids.playList.rockId,
+    playlist: ids.playlist.rockId,
     spotifyId: '2QagWuAL61R8DLydEte3t4',
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t4',
     name: 'Pushing Me Away',
@@ -77,7 +77,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.rockSomewhereIBelong,
     user: ids.users.sanId,
-    playlist: ids.playList.rockId,
+    playlist: ids.playlist.rockId,
     spotifyId: '2QagWuAL61R8DLydEte3t5',
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t5',
     name: 'Somewhere I Belong',
@@ -87,7 +87,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.rockTheMessenger,
     user: ids.users.sanId,
-    playlist: ids.playList.rockId,
+    playlist: ids.playlist.rockId,
     spotifyId: '2QagWuAL61R8DLydEte3t6',
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte3t6',
     name: 'The Messenger',
@@ -97,7 +97,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.popBillieJean,
     user: ids.users.juanId,
-    playlist: ids.playList.popId,
+    playlist: ids.playlist.popId,
     spotifyId: '2QagWuAL61R8DLydEte311',
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte311',
     name: 'Billie Jean',
@@ -108,7 +108,7 @@ module.exports = [
   {
     _id: ids.playlistSongs.popSmoothCriminal,
     user: ids.users.sanId,
-    playlist: ids.playList.popId,
+    playlist: ids.playlist.popId,
     spotifyId: '2QagWuAL61R8DLydEte333',
     spotifyUri: 'spotify:track:2QagWuAL61R8DLydEte333',
     name: 'Smooth Criminal',

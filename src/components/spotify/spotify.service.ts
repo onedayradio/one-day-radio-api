@@ -1,6 +1,6 @@
 import { getValue, SpotifyClient, SpotifyUnauthorizedError } from '../../shared'
-import { DBUser, Song, SpotifyPlayList, SpotifyDevice, SpotifyPlayListItems } from '../../types'
-import { UsersService } from '../users/users.service'
+import { DBUser, Song, SpotifyPlaylist, SpotifyDevice, SpotifyPlaylistItems } from '../../types'
+import { UsersService } from '..'
 
 export class SpotifyService {
   usersService: UsersService
@@ -12,13 +12,12 @@ export class SpotifyService {
   async refreshAccessToken(dbUser: DBUser): Promise<DBUser> {
     const userRefreshToken = this.getUserRefreshToken(dbUser)
     const newAccessToken = await SpotifyClient.refreshAccessToken(userRefreshToken)
-    const newUser = await this.usersService.updateUser(dbUser._id, {
+    return this.usersService.updateUser(dbUser._id, {
       spotifyData: {
         accessToken: newAccessToken,
         refreshToken: userRefreshToken,
       },
     })
-    return newUser
   }
 
   getUserAccessToken(user: DBUser): string {
@@ -44,15 +43,15 @@ export class SpotifyService {
     }))
   }
 
-  async getPlayList(playListId: string): Promise<SpotifyPlayList> {
+  async getPlaylist(playListId: string): Promise<SpotifyPlaylist> {
     const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
-    return await SpotifyClient.getPlayList(accessToken, playListId)
+    return await SpotifyClient.getPlaylist(accessToken, playListId)
   }
 
-  async createPlayList(playList: SpotifyPlayList): Promise<SpotifyPlayList> {
+  async createPlaylist(playList: SpotifyPlaylist): Promise<SpotifyPlaylist> {
     const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
     const userId = getValue('spotify_one_day_radio_user_id')
-    return SpotifyClient.createPlayList(accessToken, userId, playList)
+    return SpotifyClient.createPlaylist(accessToken, userId, playList)
   }
 
   async loadPlayerDevices(user: DBUser): Promise<SpotifyDevice[]> {
@@ -71,9 +70,9 @@ export class SpotifyService {
   async playOnDevice(user: DBUser, playListId: string, deviceId: string): Promise<boolean> {
     try {
       const userAccessToken = this.getUserAccessToken(user)
-      const { uri } = await SpotifyClient.getPlayList(userAccessToken, playListId)
+      const { uri } = await SpotifyClient.getPlaylist(userAccessToken, playListId)
       if (uri) {
-        await SpotifyClient.followPlayList(userAccessToken, playListId)
+        await SpotifyClient.followPlaylist(userAccessToken, playListId)
         await SpotifyClient.playOnDevice(userAccessToken, deviceId, uri)
         return true
       }
@@ -89,14 +88,12 @@ export class SpotifyService {
 
   async addSongToPlaylist(playlistId: string, songUri: string): Promise<boolean> {
     const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
-    const response = await SpotifyClient.addSongToPlaylist(accessToken, playlistId, songUri)
-    return response
+    return SpotifyClient.addSongToPlaylist(accessToken, playlistId, songUri)
   }
 
   async removeSongFromPlaylist(playlistId: string, songUri: string): Promise<boolean> {
     const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
-    const response = await SpotifyClient.removeSongFromPlaylist(accessToken, playlistId, songUri)
-    return response
+    return SpotifyClient.removeSongFromPlaylist(accessToken, playlistId, songUri)
   }
 
   async uploadPlaylistCoverImage(
@@ -104,26 +101,15 @@ export class SpotifyService {
     imageBase64: string | Buffer,
   ): Promise<boolean> {
     const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
-    const response = await SpotifyClient.uploadyPlaylistCoverImage(
-      accessToken,
-      spotifyPlaylistId,
-      imageBase64,
-    )
-    return response
+    return SpotifyClient.uploadPlaylistCoverImage(accessToken, spotifyPlaylistId, imageBase64)
   }
 
-  async getPlayListItems(
+  async getPlaylistItems(
     playListId: string,
     currentPage: number,
     perPage: number,
-  ): Promise<SpotifyPlayListItems> {
+  ): Promise<SpotifyPlaylistItems> {
     const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
-    const response = await SpotifyClient.getPlayListItems(
-      accessToken,
-      playListId,
-      currentPage,
-      perPage,
-    )
-    return response
+    return SpotifyClient.getPlaylistItems(accessToken, playListId, currentPage, perPage)
   }
 }

@@ -5,20 +5,20 @@ import { fn as moment } from 'moment'
 import { expect } from 'chai'
 import * as base64Image from 'node-base64-image'
 
-import { PlayListService, UsersService, SpotifyService } from '../../../../src/components'
-import { PlayListDao } from '../../../../src/components/playList/playList.dao'
+import { PlaylistsService, UsersService, SpotifyService } from '../../../../src/components'
+import { PlaylistsDao } from '../../../../src/components/playList/playlists.dao'
 import { testsSetup } from '../../tests.util'
 import { SpotifyClient } from '../../../../src/shared'
-import { playListMock } from '../../mock-data/spotify-api.mocks'
+import { playListItemsMock, playListMock, playListSongs } from '../../mock-data/spotify-api.mocks'
 import { ids } from '../../fixtures-ids'
 import {
   expectedPlaylistSongs,
   expectedPlaylistContains,
   expectedAddSongToPlaylist,
   expectedAddSongToPlaylistEarthSong,
-} from '../../snapshots/playlist-songs'
+} from '../../snapshots/playlistSongs'
 
-const playListService = new PlayListService()
+const playlistService = new PlaylistsService()
 const usersService = new UsersService()
 
 const sandbox = sinon.createSandbox()
@@ -37,14 +37,14 @@ describe('Playlist Service', () => {
   })
 
   it('should create a play list description', () => {
-    const playListDescription = playListService.createPlayListDescription('Test name')
+    const playListDescription = playlistService.createPlaylistDescription('Test name')
     expect(playListDescription).to.equal(
       'This playlist has been created to you, from your community. Test name',
     )
   })
 
   it('should create a play list name', async () => {
-    const playListDescription = playListService.createPlayListName('Rock')
+    const playListDescription = playlistService.createPlaylistName('Rock')
     expect(playListDescription).to.equal('One day Radio. Rock playlist')
   })
 
@@ -57,34 +57,44 @@ describe('Playlist Service', () => {
         'This playlist has been created to you, from your community. One day Radio. Heavy Metal playlist',
       genreId: genres.metalId,
     }
-    const playListData = await playListService.createPlayListData(genres.metalId)
+    const playListData = await playlistService.createPlaylistData(genres.metalId)
     expect(playListData).to.deep.equal(expectedData)
   })
 
   it('should create a play list', async () => {
-    sandbox.stub(PlayListDao.prototype, 'loadByGenreId').resolves(null)
-    sandbox.stub(SpotifyClient, 'createPlayList').resolves(playListMock)
+    sandbox.stub(PlaylistsDao.prototype, 'loadByGenreId').resolves(null)
+    sandbox.stub(SpotifyClient, 'createPlaylist').resolves(playListMock)
     sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
-    sandbox.stub(PlayListService.prototype, 'uploadPlaylistImage')
+    sandbox.stub(PlaylistsService.prototype, 'uploadPlaylistImage')
     const { genres } = ids
-    const data = await playListService.createPlayListData(genres.metalId)
-    const playListData = await playListService.createPlayList(data)
+    const data = await playlistService.createPlaylistData(genres.metalId)
+    const playListData = await playlistService.createPlaylist(data)
     expect(playListData).to.equal(playListMock)
   })
 
   it('should get all songs a user has added to a playlist', async () => {
-    const { users, playList } = ids
-    let songs = await playListService.getPlaylistSongsByUser(playList.metalId, users.sanId)
+    const { users, playlist } = ids
+    let songs = await playlistService.getPlaylistSongsByUser(playlist.popId, users.pabloId)
     expect(songs).to.deep.equal([])
-    songs = await playListService.getPlaylistSongsByUser(playList.metalId, users.juanId)
+    songs = await playlistService.getPlaylistSongsByUser(playlist.metalId, users.juanId)
     expect(songs).to.containSubset(expectedPlaylistSongs)
+  })
+
+  it('should load all songs for a specific playlist given a genre id', async () => {
+    const { genres } = ids
+    sandbox.stub(SpotifyClient, 'getPlaylistItems').resolves(playListItemsMock)
+    sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
+    let paginatedPlaylistSongs = await playlistService.loadPlaylistSongs(genres.metalId)
+    expect(paginatedPlaylistSongs).to.deep.equal(playListSongs)
+    paginatedPlaylistSongs = await playlistService.loadPlaylistSongs(genres.metalId, 0, 10)
+    expect(paginatedPlaylistSongs).to.deep.equal(playListSongs)
   })
 
   it('should validate playlist duplicate songs', async () => {
     const wrathchildId = '1SpuDZ7y1W4vaCzHeLvsf7'
     const trooperId = '4OROzZUy6gOWN4UGQVaZMF'
     const everDreamId = '3hjkzZUy6gOcnu7GQV9311'
-    const containsResponse = await playListService.playlistContains(ids.playList.metalId, [
+    const containsResponse = await playlistService.playlistContains(ids.playlist.metalId, [
       wrathchildId,
       trooperId,
       everDreamId,
@@ -96,7 +106,7 @@ describe('Playlist Service', () => {
     const badId = new mongodb.ObjectID() + ''
     const user = await usersService.getDetailById(ids.users.juanId)
     try {
-      await playListService.addSongToPlaylist(
+      await playlistService.addSongToPlaylist(
         user,
         badId,
         {
@@ -115,7 +125,7 @@ describe('Playlist Service', () => {
   it('should throw error if user has reach its max amount of songs per playlist', async () => {
     const user = await usersService.getDetailById(ids.users.sanId)
     try {
-      await playListService.addSongToPlaylist(
+      await playlistService.addSongToPlaylist(
         user,
         '44',
         {
@@ -134,7 +144,7 @@ describe('Playlist Service', () => {
   it('should throw error if trying to add duplicate song to a playlist', async () => {
     const user = await usersService.getDetailById(ids.users.juanId)
     try {
-      await playListService.addSongToPlaylist(
+      await playlistService.addSongToPlaylist(
         user,
         '44',
         {
@@ -155,7 +165,7 @@ describe('Playlist Service', () => {
   it('should throw error if trying to add song to a playlist when passing ivalid date params', async () => {
     const user = await usersService.getDetailById(ids.users.juanId)
     try {
-      await playListService.addSongToPlaylist(
+      await playlistService.addSongToPlaylist(
         user,
         '44',
         {
@@ -174,9 +184,9 @@ describe('Playlist Service', () => {
   it('should add a new song to a playlist when maxSongs per genre has not been reached', async () => {
     sandbox.stub(SpotifyService.prototype, 'addSongToPlaylist').resolves(true)
     const user = await usersService.getDetailById(ids.users.juanId)
-    let userSongs = await playListService.getPlaylistSongsByUser(ids.playList.metalId, user)
+    let userSongs = await playlistService.getPlaylistSongsByUser(ids.playlist.metalId, user)
     expect(userSongs.length).to.equal(2)
-    const song = await playListService.addSongToPlaylist(
+    const song = await playlistService.addSongToPlaylist(
       user,
       '33',
       {
@@ -188,7 +198,7 @@ describe('Playlist Service', () => {
       { year: '2020', month: '07', day: '24' },
     )
     expect(song.spotifyId).to.containSubset(expectedAddSongToPlaylist.spotifyId)
-    userSongs = await playListService.getPlaylistSongsByUser(ids.playList.metalId, user)
+    userSongs = await playlistService.getPlaylistSongsByUser(ids.playlist.metalId, user)
     expect(userSongs.length).to.equal(3)
   })
 
@@ -196,9 +206,9 @@ describe('Playlist Service', () => {
     sandbox.stub(SpotifyService.prototype, 'addSongToPlaylist').resolves(true)
     sandbox.stub(SpotifyService.prototype, 'removeSongFromPlaylist').resolves(true)
     const user = await usersService.getDetailById(ids.users.juanId)
-    let userSongs = await playListService.getPlaylistSongsByUser(ids.playList.popId, user)
+    let userSongs = await playlistService.getPlaylistSongsByUser(ids.playlist.popId, user)
     expect(userSongs.length).to.equal(1)
-    const song = await playListService.addSongToPlaylist(
+    const song = await playlistService.addSongToPlaylist(
       user,
       '88',
       {
@@ -210,16 +220,16 @@ describe('Playlist Service', () => {
       { year: '2020', month: '07', day: '24' },
     )
     expect(song.toObject()).to.containSubset(expectedAddSongToPlaylistEarthSong)
-    userSongs = await playListService.getPlaylistSongsByUser(ids.playList.popId, user)
+    userSongs = await playlistService.getPlaylistSongsByUser(ids.playlist.popId, user)
     expect(userSongs.length).to.equal(2)
-    const allSongs = await playListService.loadAllPlaylistSongs(ids.playList.popId)
+    const allSongs = await playlistService.loadAllPlaylistSongs(ids.playlist.popId)
     expect(allSongs.length).to.equal(2)
   })
 
   it('should return false if an error happens when uploading playlist image to spotify', async () => {
     const { genres } = ids
     sandbox.stub(base64Image, 'encode').throwsException(new Error('wrong image format'))
-    const result = await playListService.uploadPlaylistImage('1133', genres.metalId)
+    const result = await playlistService.uploadPlaylistImage('1133', genres.metalId)
     expect(result).to.equal(false)
   })
 
@@ -228,7 +238,7 @@ describe('Playlist Service', () => {
     sandbox.stub(base64Image, 'encode').returns(Promise.resolve('base64-encoded-image'))
     sandbox.stub(SpotifyClient, 'refreshAccessToken')
     sinon.stub(request, 'put').yields(null, { statusCode: 200 }, {})
-    const result = await playListService.uploadPlaylistImage('1133', genres.metalId)
+    const result = await playlistService.uploadPlaylistImage('1133', genres.metalId)
     expect(result).to.equal(true)
   })
 })

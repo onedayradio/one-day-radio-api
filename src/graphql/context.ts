@@ -2,7 +2,7 @@ import {
   UsersService,
   GenresService,
   SearchService,
-  PlayListService,
+  PlaylistsService,
   DevicesService,
 } from '../components'
 import { getTokenData } from '../shared'
@@ -24,7 +24,7 @@ export const context = async ({ event }: ServerContextParams): Promise<AppContex
     usersService,
     genresService: new GenresService(),
     searchService: new SearchService(),
-    playListService: new PlayListService(),
+    playlistService: new PlaylistsService(),
     devicesService: new DevicesService(),
   }
 }

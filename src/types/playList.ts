@@ -3,14 +3,14 @@ import { Song } from './songs'
 import { User } from './users'
 import { Pagination } from './pagination'
 
-export interface PlayList {
+export interface Playlist {
   spotifyId?: string
   name: string
   description: string
   genreId: string
 }
 
-export interface DBPlayList extends Document, PlayList {
+export interface DBPlaylist extends Document, Playlist {
   spotifyId: string
 }
 
@@ -32,14 +32,14 @@ export interface PaginatedPlaylistSongs extends Pagination {
 
 export interface DBPlaylistSongs extends Document, PlaylistSongs {}
 
-export interface PlayListData {
+export interface PlaylistData {
   spotifyId?: string
   name: string
   description: string
   genreId: string
 }
 
-export interface PlayListArgs {
+export interface PlaylistArgs {
   genreId: string
 }
 
@@ -54,7 +54,7 @@ export interface AddSongToPlaylistMutationArgs {
   date: DateData
 }
 
-export interface PlayListItemsArgs {
+export interface PlaylistItemsArgs {
   genreId: string
   perPage: number
   currentPage: number

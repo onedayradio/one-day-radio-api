@@ -7,9 +7,9 @@ import {
   GetTokensResponse,
   SpotifyUserData,
   SpotifySearchSongsResponse,
-  SpotifyPlayList,
+  SpotifyPlaylist,
   SpotifyDevices,
-  SpotifyPlayListItems,
+  SpotifyPlaylistItems,
 } from '../../types'
 import { getValue, doRequest } from '../util'
 
@@ -57,7 +57,7 @@ export class SpotifyClient {
         ['refresh_token']: refreshToken,
       }
     }
-    const options = {
+    return {
       url: `${BASE_AUTH_API_URL}/token`,
       form: optionsForm,
       headers: {
@@ -65,7 +65,6 @@ export class SpotifyClient {
       },
       json: true,
     }
-    return options
   }
 
   static async getTokens(code: string): Promise<GetTokensResponse> {
@@ -111,17 +110,14 @@ export class SpotifyClient {
       headers: { Authorization: 'Bearer ' + accessToken },
       json: true,
     }
-    const searchResult = (await SpotifyClient.doSpotifyRequest(
-      options,
-    )) as SpotifySearchSongsResponse
-    return searchResult
+    return (await SpotifyClient.doSpotifyRequest(options)) as SpotifySearchSongsResponse
   }
 
-  static async createPlayList(
+  static async createPlaylist(
     accessToken: string,
     userId: string,
-    playList: SpotifyPlayList,
-  ): Promise<SpotifyPlayList> {
+    playList: SpotifyPlaylist,
+  ): Promise<SpotifyPlaylist> {
     const options = {
       url: `${BASE_API_URL}/users/${userId}/playlists`,
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -131,7 +127,7 @@ export class SpotifyClient {
     return this.doSpotifyRequest(options, 'post')
   }
 
-  static async getPlayList(accessToken: string, playListId: string): Promise<SpotifyPlayList> {
+  static async getPlaylist(accessToken: string, playListId: string): Promise<SpotifyPlaylist> {
     const options = {
       url: `${BASE_API_URL}/playlists/${playListId}`,
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -140,12 +136,12 @@ export class SpotifyClient {
     return this.doSpotifyRequest(options)
   }
 
-  static async getPlayListItems(
+  static async getPlaylistItems(
     accessToken: string,
     playListId: string,
     currentPage: number,
     perPage: number,
-  ): Promise<SpotifyPlayListItems> {
+  ): Promise<SpotifyPlaylistItems> {
     const options = {
       url: `${BASE_API_URL}/playlists/${playListId}/tracks?limit=${perPage}&offset=${currentPage}`,
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -154,14 +150,13 @@ export class SpotifyClient {
     return this.doSpotifyRequest(options)
   }
 
-  static async getPlayerDevices(accessToken: string): Promise<SpotifyDevices> {
+  static getPlayerDevices(accessToken: string): Promise<SpotifyDevices> {
     const options = {
       url: `${BASE_API_URL}/me/player/devices`,
       headers: { Authorization: 'Bearer ' + accessToken },
       json: true,
     }
-    const playerDevices = await SpotifyClient.doSpotifyRequest(options)
-    return playerDevices
+    return SpotifyClient.doSpotifyRequest(options)
   }
 
   static async playOnDevice(
@@ -180,7 +175,7 @@ export class SpotifyClient {
     await SpotifyClient.doSpotifyRequest(options, 'put')
   }
 
-  static async followPlayList(accessToken: string, playListId: string): Promise<void> {
+  static async followPlaylist(accessToken: string, playListId: string): Promise<void> {
     const options = {
       url: `${BASE_API_URL}/playlists/${playListId}/followers`,
       headers: { Authorization: 'Bearer ' + accessToken },
@@ -226,7 +221,7 @@ export class SpotifyClient {
     return true
   }
 
-  static async uploadyPlaylistCoverImage(
+  static async uploadPlaylistCoverImage(
     accessToken: string,
     spotifyPlaylistId: string,
     imageBase64: string | Buffer,
