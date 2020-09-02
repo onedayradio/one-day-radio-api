@@ -101,7 +101,7 @@ export const playListQueriesResolvers = {
 
 export const playlistMutationTypes = `
   addSongToPlaylist(playlistId: String, song: SongInput, date: DateDataInput): PlaylistSong
-  playOnDevice(playListId: String, deviceId: String): Boolean
+  playOnDevice(genreId: String, deviceId: String): Boolean
 `
 
 export const playlistMutationsResolvers = {
@@ -117,12 +117,12 @@ export const playlistMutationsResolvers = {
   },
   playOnDevice: (
     root: unknown,
-    { playListId, deviceId }: PlayOnDeviceArgs,
+    { genreId, deviceId }: PlayOnDeviceArgs,
     { playlistService, currentUser }: AppContext,
   ): Promise<boolean> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playlistService.playOnDevice(currentUser, playListId, deviceId)
+    return playlistService.playOnDevice(currentUser, genreId, deviceId)
   },
 }
