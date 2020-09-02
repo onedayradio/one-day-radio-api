@@ -60,7 +60,7 @@ export class SpotifyService {
       return devices
     } catch (error) {
       if (error instanceof SpotifyUnauthorizedError) {
-        const dbUser = await this.refreshAccessToken(user._id)
+        const dbUser = await this.refreshAccessToken(user)
         return this.loadPlayerDevices(dbUser)
       }
       throw error

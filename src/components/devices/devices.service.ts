@@ -3,7 +3,7 @@ import { SpotifyService } from '..'
 
 export class DevicesService {
   loadPlayerDevices(user: DBUser): Promise<SpotifyDevice[]> {
-    const spotifyApi = new SpotifyService()
-    return spotifyApi.loadPlayerDevices(user)
+    const spotifyService = new SpotifyService()
+    return spotifyService.loadPlayerDevices(user)
   }
 }
