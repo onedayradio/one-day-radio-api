@@ -44,7 +44,7 @@ export interface PlaylistArgs {
 }
 
 export interface PlayOnDeviceArgs {
-  playListId: string
+  genreId: string
   deviceId: string
 }
 

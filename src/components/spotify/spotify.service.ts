@@ -67,20 +67,20 @@ export class SpotifyService {
     }
   }
 
-  async playOnDevice(user: DBUser, playListId: string, deviceId: string): Promise<boolean> {
+  async playOnDevice(user: DBUser, spotifyPlaylistId: string, deviceId: string): Promise<boolean> {
     try {
       const userAccessToken = this.getUserAccessToken(user)
-      const { uri } = await SpotifyClient.getPlaylist(userAccessToken, playListId)
+      const { uri } = await SpotifyClient.getPlaylist(userAccessToken, spotifyPlaylistId)
       if (uri) {
-        await SpotifyClient.followPlaylist(userAccessToken, playListId)
+        await SpotifyClient.followPlaylist(userAccessToken, spotifyPlaylistId)
         await SpotifyClient.playOnDevice(userAccessToken, deviceId, uri)
         return true
       }
       return false
     } catch (error) {
       if (error instanceof SpotifyUnauthorizedError) {
-        const dbUser = await this.refreshAccessToken(user._id)
-        return this.playOnDevice(dbUser, playListId, deviceId)
+        const dbUser = await this.refreshAccessToken(user)
+        return this.playOnDevice(dbUser, spotifyPlaylistId, deviceId)
       }
       throw error
     }

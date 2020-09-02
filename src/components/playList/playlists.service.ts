@@ -121,8 +121,12 @@ export class PlaylistsService {
     return `This playlist has been created to you, from your community. ${name}`
   }
 
-  async playOnDevice(user: DBUser, playListId: string, deviceId: string): Promise<boolean> {
-    return this.spotifyService.playOnDevice(user, playListId, deviceId)
+  async playOnDevice(user: DBUser, genreId: string, deviceId: string): Promise<boolean> {
+    const playlist = await this.playlistDao.loadByGenreId(genreId)
+    if (!playlist || !playlist.spotifyId) {
+      throw new Error(`Playlist for the genre Id, does not exists!`)
+    }
+    return this.spotifyService.playOnDevice(user, playlist.spotifyId, deviceId)
   }
 
   async getPlaylistSongsByUser(playlistId: string, user: DBUser): Promise<DBPlaylistSongs[]> {
