@@ -5,7 +5,7 @@ import { DevicesService, UsersService } from '../../../../src/components'
 import { ids } from '../../fixtures-ids'
 import sinon from 'sinon'
 import { SpotifyClient } from '../../../../src/shared'
-import { devicesMock } from '../../mock-data/spotify-api.mocks'
+import { devicesMock } from '../../fixtures/spotify-api.mocks'
 
 const devicesService = new DevicesService()
 const usersService = new UsersService()

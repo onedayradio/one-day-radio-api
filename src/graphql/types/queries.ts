@@ -1,7 +1,7 @@
 import {
   usersQueryTypes,
   genresQueryTypes,
-  playListQueryTypes,
+  playlistQueryTypes,
   devicesQueryTypes,
 } from '../../components'
 
@@ -9,7 +9,7 @@ export const queryTypes = `
   type Query {
     ${usersQueryTypes}
     ${genresQueryTypes}
-    ${playListQueryTypes}
+    ${playlistQueryTypes}
     ${devicesQueryTypes}
   }
 `

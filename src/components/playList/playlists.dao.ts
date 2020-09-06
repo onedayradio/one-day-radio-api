@@ -1,18 +1,18 @@
 import { PlaylistModel } from './playlist'
 import { PlaylistSongsModel } from './playlistSongs'
-import { DBPlaylist, PlaylistData, DBPlaylistSongs, Song, DBUser, DateData } from '../../types'
+import { DBPlaylist, PlaylistData, DBPlaylistSongs, Song, User, DateData } from '../../types'
 
 export class PlaylistsDao {
-  create(playListData: PlaylistData): Promise<DBPlaylist> {
-    const playList = new PlaylistModel(playListData)
-    return playList.save()
+  create(playlistData: PlaylistData): Promise<DBPlaylist> {
+    const playlist = new PlaylistModel(playlistData)
+    return playlist.save()
   }
 
-  async loadByGenreId(genreId: string): Promise<DBPlaylist | null> {
+  async loadByGenreId(genreId: number): Promise<DBPlaylist | null> {
     return PlaylistModel.findOne({ genreId })
   }
 
-  async getPlaylistSongsByUser(playlistId: string, user: DBUser): Promise<DBPlaylistSongs[]> {
+  async getPlaylistSongsByUser(playlistId: string, user: User): Promise<DBPlaylistSongs[]> {
     return PlaylistSongsModel.find({
       playlist: playlistId,
       user,
@@ -23,6 +23,7 @@ export class PlaylistsDao {
     return PlaylistSongsModel.find({
       playlist: playlistId,
       spotifyId: { $in: spotifySongIds },
+      removedFromSpotify: false,
     }).populate('user')
   }
 
@@ -36,7 +37,7 @@ export class PlaylistsDao {
   }
 
   async addSongToPlaylist(
-    user: DBUser,
+    user: User,
     playlistId: string,
     song: Song,
     dateData: DateData,

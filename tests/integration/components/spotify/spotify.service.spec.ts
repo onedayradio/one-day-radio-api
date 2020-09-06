@@ -7,10 +7,10 @@ import { SpotifyService, UsersService } from '../../../../src/components'
 import { ids } from '../../fixtures-ids'
 import {
   devicesMock,
-  playListItemsMock,
-  playListMock,
+  playlistItemsMock,
+  playlistMock,
   searchSongsMock,
-} from '../../mock-data/spotify-api.mocks'
+} from '../../fixtures/spotify-api.mocks'
 import { spotifyServiceSearchSongs } from '../../snapshots/spotify'
 import { SpotifyClient } from '../../../../src/shared'
 
@@ -62,11 +62,11 @@ describe('SpotifyService', () => {
 
   it('should get a playlist', async () => {
     sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
-    sinon.stub(request, 'get').yields(null, { statusCode: 200 }, playListMock)
+    sinon.stub(request, 'get').yields(null, { statusCode: 200 }, playlistMock)
     const { playlist } = ids
     const spotifyService = new SpotifyService()
     const searchResponse = await spotifyService.getPlaylist(playlist.metalId)
-    expect(searchResponse).to.deep.equal(playListMock)
+    expect(searchResponse).to.deep.equal(playlistMock)
   })
 
   it('should throw unexpected errors when getting a playlist', async () => {
@@ -83,15 +83,15 @@ describe('SpotifyService', () => {
   })
 
   it('should create a playlist', async () => {
-    sinon.stub(request, 'post').yields(null, { statusCode: 200 }, playListMock)
+    sinon.stub(request, 'post').yields(null, { statusCode: 200 }, playlistMock)
     const spotifyService = new SpotifyService()
     const searchResponse = await spotifyService.createPlaylist({ name: '', description: '' })
-    expect(searchResponse).to.deep.equal(playListMock)
+    expect(searchResponse).to.deep.equal(playlistMock)
   })
 
   it('should play a playlist on a device', async () => {
     const sandbox = sinon.createSandbox()
-    sandbox.stub(SpotifyClient, 'getPlaylist').resolves(playListMock)
+    sandbox.stub(SpotifyClient, 'getPlaylist').resolves(playlistMock)
     sandbox.stub(SpotifyClient, 'followPlaylist').resolves(undefined)
     sandbox.stub(SpotifyClient, 'playOnDevice').resolves(undefined)
     const { users, devices, playlist } = ids
@@ -122,11 +122,11 @@ describe('SpotifyService', () => {
 
   it('should get the playlist items', async () => {
     sandbox.stub(SpotifyClient, 'refreshAccessToken').resolves('')
-    sinon.stub(request, 'get').yields(null, { statusCode: 200 }, playListItemsMock)
+    sinon.stub(request, 'get').yields(null, { statusCode: 200 }, playlistItemsMock)
     const { playlist } = ids
     const spotifyService = new SpotifyService()
-    const playListItems = await spotifyService.getPlaylistItems(playlist.metalId, 1, 0)
-    expect(playListItems).to.deep.equal(playListItemsMock)
+    const playlistItems = await spotifyService.getPlaylistItems(playlist.metalId, 1, 0)
+    expect(playlistItems).to.deep.equal(playlistItemsMock)
   })
 
   it('should add songs to playlist', async () => {

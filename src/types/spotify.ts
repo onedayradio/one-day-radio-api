@@ -28,6 +28,16 @@ export interface GetTokensResponse {
   expiresIn: string
 }
 
+export interface SpotifyEvent {
+  queryStringParameters: {
+    code: string
+    state: string
+  }
+  headers: {
+    Cookie: string
+  }
+}
+
 export interface SpotifyUserData {
   country: string
   id: string
@@ -44,58 +54,22 @@ export interface SpotifyPlaylist {
   uri?: string
 }
 
-export interface SpotifyPlayList {
-  id?: string
-  name: string
-  description: string
-  public?: boolean
-  tracks?: {
-    href: string
-    items: SpotifySong[]
-  }
+interface SpotifyPaginationData {
+  limit: number
+  total: number
+  next?: string
+  previous?: string
+  offset: number
 }
 
-export interface SpotifyEvent {
-  queryStringParameters: {
-    code: string
-    state: string
-  }
-  headers: {
-    Cookie: string
-  }
-}
-
-export interface SpotifySearchSongsResponse {
+export interface SpotifySearchSongsResponse extends SpotifyPaginationData {
   href: string
   items: SpotifySong[]
-  limit: number
-  total: number
-  next?: string
-  previous?: string
-  offset: number
 }
 
-export interface SpotifyPlaylistItems {
-  items: SpotifyItem[]
+export interface SpotifyPlaylistItems extends SpotifyPaginationData {
+  items: { track: SpotifySong }[]
   href: string
-  limit: number
-  total: number
-  next?: string
-  previous?: string
-  offset: number
-}
-
-export interface SpotifyPlaylistSongs {
-  songs: Song[]
-  limit: number
-  total: number
-  next?: string
-  previous?: string
-  offset: number
-}
-
-export interface SpotifyItem {
-  track: SpotifySong
 }
 
 export interface SpotifySong {
@@ -122,4 +96,8 @@ export interface SpotifyDevice {
 
 export interface SpotifyDevices {
   devices: SpotifyDevice[]
+}
+
+export interface SpotifySongsList extends SpotifyPaginationData {
+  songs: Song[]
 }

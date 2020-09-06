@@ -2,7 +2,7 @@ import request from 'request'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import { SpotifyClient, SpotifyUnauthorizedError } from '../../../../src/shared'
-import { searchSongsMock } from '../../mock-data/spotify-api.mocks'
+import { searchSongsMock } from '../../fixtures/spotify-api.mocks'
 
 describe('Spotify client', () => {
   it('should return token request options when passing a valid code', () => {

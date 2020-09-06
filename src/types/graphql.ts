@@ -1,6 +1,5 @@
-import { DBUser } from './users'
-import { DecodedToken } from './auth'
 import { UsersService, GenresService, PlaylistsService, DevicesService } from '../components'
+import { Session } from 'neo4j-driver'
 
 export interface ServerContextEvent {
   body: string
@@ -16,10 +15,9 @@ export interface ServerContextParams {
 
 export interface AppContext {
   token?: string
-  currentUser?: DBUser
-  tokenData?: DecodedToken
   usersService: UsersService
   genresService: GenresService
   playlistService: PlaylistsService
   devicesService: DevicesService
+  session: Session
 }

@@ -39,7 +39,7 @@ export const searchSongsMock = {
   total: 3,
 }
 
-export const playListMock = {
+export const playlistMock = {
   collaborative: false,
   description:
     'This playlist has been created to you, from your community. One day Radio. Rock playlist - 2020-06-02',
@@ -88,7 +88,7 @@ export const devicesMock = {
   ],
 }
 
-export const playListItemsMock = {
+export const playlistItemsMock = {
   href: 'https://api.spotify.com/v1/playlists/08zCBxKpTDyQU3hP7cusMx/tracks?offset=1&limit=1',
   items: [
     {
@@ -153,7 +153,7 @@ export const playListItemsMock = {
   total: 2,
 }
 
-export const playListSongs = {
+export const playlistSongs = {
   songs: [
     {
       id: '1SpuDZ7y1W4vaCzHeLvsf7',

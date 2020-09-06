@@ -18,6 +18,8 @@ const ids = {
     metalId: ObjectId(),
     rockId: ObjectId(),
     popId: ObjectId(),
+    todayId: ObjectId(),
+    yesterdayId: ObjectId(),
   },
   playlistSongs: {
     metalWrathchildId: ObjectId(),
@@ -35,10 +37,6 @@ const ids = {
   devices: {
     echoDot: ObjectId(),
     mac: ObjectId(),
-  },
-  playList: {
-    todayId: ObjectId(),
-    yesterdayId: ObjectId(),
   },
 }
 

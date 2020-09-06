@@ -1,5 +1,5 @@
-import { AuthenticationError } from 'apollo-server-lambda'
-import { DBUser, AppContext } from '../../types'
+import { getUserFromToken } from '../../shared'
+import { AppContext, User } from '../../types'
 
 export const userType = `
   type User {
@@ -24,10 +24,12 @@ export const usersQueryTypes = `
 `
 
 export const userQueriesResolvers = {
-  loadAuthUser: (root: unknown, args: unknown, { currentUser }: AppContext): DBUser => {
-    if (!currentUser) {
-      throw new AuthenticationError('Unauthorized!!')
-    }
+  loadAuthUser: async (
+    root: unknown,
+    args: unknown,
+    { session, token }: AppContext,
+  ): Promise<User> => {
+    const currentUser = await getUserFromToken(session, token)
     return currentUser
   },
 }

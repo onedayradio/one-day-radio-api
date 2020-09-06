@@ -1,42 +1,31 @@
-import { Document } from 'mongoose'
 import { Song } from './songs'
-import { User } from './users'
 import { Pagination } from './pagination'
+import { User } from './users'
 
 export interface Playlist {
-  spotifyId?: string
+  id: number
+  spotifyId: string
   name: string
   description: string
-  genreId: string
+  genreId: number
 }
 
-export interface DBPlaylist extends Document, Playlist {
-  spotifyId: string
-}
-
-export interface PlaylistSongs {
-  playlist: string
-  user: User
-  spotifyId: string
-  spotifyUri: string
-  name: string
-  artists: string
-  year: string
-  month: string
-  day: string
+export interface PlaylistSong {
+  song: Song & { id: number }
+  sharedBy: User
+  sharedOn: Date
+  active: boolean
 }
 
 export interface PaginatedPlaylistSongs extends Pagination {
   songs: Song[]
 }
 
-export interface DBPlaylistSongs extends Document, PlaylistSongs {}
-
 export interface PlaylistData {
   spotifyId?: string
   name: string
   description: string
-  genreId: string
+  genreId: number
 }
 
 export interface PlaylistArgs {
@@ -51,7 +40,6 @@ export interface PlayOnDeviceArgs {
 export interface AddSongToPlaylistMutationArgs {
   genreId: string
   song: Song
-  date: DateData
 }
 
 export interface PlaylistItemsArgs {
@@ -59,10 +47,4 @@ export interface PlaylistItemsArgs {
   searchText: string
   perPage: number
   currentPage: number
-}
-
-export interface DateData {
-  day: string
-  month: string
-  year: string
 }

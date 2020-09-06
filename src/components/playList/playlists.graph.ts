@@ -10,7 +10,7 @@ import {
   Song,
 } from '../../types'
 
-export const playListType = `
+export const playlistType = `
   type ItemImage {
     height: Int
     width: Int
@@ -39,12 +39,6 @@ export const playListType = `
     uri: String
   }
 
-  input DateDataInput {
-    day: String!
-    month: String!
-    year: String!
-  }
-
   type PlaylistSongs {
     songs: [Song]
     total: Int
@@ -62,12 +56,12 @@ export const playListType = `
   }
 `
 
-export const playListQueryTypes = `
+export const playlistQueryTypes = `
   loadPlaylist(genreId: String): Playlist
   loadPlaylistSongs(genreId: String, searchText: String, perPage: Int, currentPage: Int): PlaylistSongs
 `
 
-export const playListQueriesResolvers = {
+export const playlistQueriesResolvers = {
   loadPlaylist: (
     root: unknown,
     { genreId }: PlaylistArgs,
@@ -91,7 +85,7 @@ export const playListQueriesResolvers = {
 }
 
 export const playlistMutationTypes = `
-  addSongToPlaylist(genreId: String, song: SongInput, date: DateDataInput): Song
+  addSongToPlaylist(genreId: String, song: SongInput): Song
   playOnDevice(genreId: String, deviceId: String): Boolean
 `
 

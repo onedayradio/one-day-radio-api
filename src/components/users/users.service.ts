@@ -1,62 +1,53 @@
-import { keyBy } from 'lodash'
 import { ApolloError } from 'apollo-server-lambda'
+import { Session } from 'neo4j-driver'
 
 import { UsersDao } from './users.dao'
-import { User, DBUser, UserGetOrCreateResponse, UserUpdateData } from '../../types'
+import { User, UserGetOrCreateResponse } from '../../types'
+import { BaseService } from '../../shared'
+import { UserSchema } from './user.schema'
 
-export class UsersService {
-  usersDao: UsersDao
-
-  constructor() {
-    this.usersDao = new UsersDao()
+export class UsersService extends BaseService<User, UsersDao> {
+  constructor(session: Session) {
+    const dao = new UsersDao({ session, schema: UserSchema, label: 'User' })
+    super(session, dao)
   }
 
-  async loadByIds(ids: string[]): Promise<DBUser[]> {
-    const users = await this.usersDao.loadByIds(ids)
-    const usersById = keyBy(users, '_id')
-    const usersSorted = ids.map((userId: string) => usersById[userId])
-    return usersSorted
+  async create(data: Partial<User>): Promise<User> {
+    const existingUser = await this.dao.loadByEmail(data.email)
+    if (existingUser) {
+      throw new ApolloError(`User with email ${data.email} already exists!`)
+    }
+    return this.dao.create(data)
   }
 
-  create(data: User): Promise<DBUser> {
-    return this.usersDao.create(data)
-  }
-
-  async getDetailByEmail(email: string): Promise<DBUser> {
-    const user = await this.usersDao.getDetailByEmail(email)
+  async loadByEmail(email: string): Promise<User> {
+    const user = await this.dao.loadByEmail(email)
     if (!user) {
       throw new ApolloError(`User with email ${email} not found in the database`)
     }
     return user
   }
 
-  async getDetailById(userId: string): Promise<DBUser> {
-    const user = await this.usersDao.getDetailById(userId)
-    if (!user) {
-      throw new ApolloError(`User with id ${userId} not found in the database`)
-    }
-    return user
-  }
-
-  async updateUser(userId: string, updateData: UserUpdateData): Promise<DBUser> {
-    delete updateData.email
-    const dbUser = await this.usersDao.getDetailById(userId)
+  async update(userId: number, updateData: Partial<User>): Promise<User> {
+    const dbUser = await this.dao.loadById({ id: userId })
     if (!dbUser) {
       throw new ApolloError(`User with id ${userId} not found in the database`)
     }
-    await this.usersDao.update(dbUser, updateData)
-    return this.getDetailById(userId)
+    return this.dao.update(userId, updateData)
   }
 
-  async getByEmailOrCreate(email: string, userData: User): Promise<UserGetOrCreateResponse> {
+  async getByEmailOrCreate(
+    email: string,
+    userData: User | Partial<User>,
+  ): Promise<UserGetOrCreateResponse> {
     try {
-      const dbUser = await this.getDetailByEmail(email)
+      const dbUser = await this.loadByEmail(email)
       return {
         isNewUser: false,
-        dbUser: await this.updateUser(dbUser._id, userData),
+        dbUser: await this.update(dbUser.id, userData),
       }
     } catch (error) {
-      const dbUser = await this.create(userData)
+      const dbUser = await this.create(userData as User)
       return {
         isNewUser: true,
         dbUser,

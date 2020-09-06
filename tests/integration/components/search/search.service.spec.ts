@@ -5,7 +5,7 @@ import { testsSetup } from '../../tests.util'
 import { SearchService, UsersService } from '../../../../src/components'
 import { SpotifyClient } from '../../../../src/shared'
 import { ids } from '../../fixtures-ids'
-import { searchSongsMock } from '../../mock-data/spotify-api.mocks'
+import { searchSongsMock } from '../../fixtures/spotify-api.mocks'
 import { spotifyServiceSearchSongs } from '../../snapshots/spotify'
 
 const usersService = new UsersService()
