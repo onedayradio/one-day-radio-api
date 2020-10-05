@@ -1,3 +1,5 @@
+import { Song } from './songs'
+
 export interface TokenRequestOptionsParams {
   grantType: string
   code?: string
@@ -53,19 +55,27 @@ export interface SpotifyEvent {
 }
 
 export interface SpotifySearchSongsResponse {
-  tracks: {
-    href: string
-    items: SpotifySong[]
-  }
+  href: string
+  items: SpotifySong[]
   limit: number
   total: number
   next?: string
   previous?: string
+  offset: number
 }
 
 export interface SpotifyPlaylistItems {
   items: SpotifyItem[]
   href: string
+  limit: number
+  total: number
+  next?: string
+  previous?: string
+  offset: number
+}
+
+export interface SpotifyPlaylistSongs {
+  songs: Song[]
   limit: number
   total: number
   next?: string

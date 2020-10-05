@@ -1,5 +1,12 @@
 import { getValue, SpotifyClient, SpotifyUnauthorizedError } from '../../shared'
-import { DBUser, Song, SpotifyPlaylist, SpotifyDevice, SpotifyPlaylistItems } from '../../types'
+import {
+  DBUser,
+  SpotifyPlaylist,
+  SpotifyDevice,
+  SpotifySong,
+  SpotifyPlaylistSongs,
+  Song,
+} from '../../types'
 import { UsersService } from '..'
 
 export class SpotifyService {
@@ -30,17 +37,21 @@ export class SpotifyService {
     return spotifyData.refreshToken
   }
 
-  async searchSong(songQuery: string): Promise<Song[]> {
+  async searchSong(songQuery: string): Promise<SpotifyPlaylistSongs> {
     const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
     const response = await SpotifyClient.searchSong(accessToken, songQuery)
-    const songs = response.tracks.items
-    return songs.map((spotifySong) => ({
+    const songs = response.items.map((spotifySong) => ({
       id: spotifySong.id,
       name: spotifySong.name,
       artists: spotifySong.artists.map((spotifyArtist) => spotifyArtist.name).join(','),
       uri: spotifySong.uri,
       album: spotifySong.album,
     }))
+
+    return {
+      ...response,
+      songs,
+    }
   }
 
   async getPlaylist(playListId: string): Promise<SpotifyPlaylist> {
@@ -108,8 +119,31 @@ export class SpotifyService {
     playListId: string,
     currentPage: number,
     perPage: number,
-  ): Promise<SpotifyPlaylistItems> {
+  ): Promise<SpotifyPlaylistSongs> {
     const accessToken = await SpotifyClient.refreshAccessToken(getValue('spotify_refresh_token'))
-    return SpotifyClient.getPlaylistItems(accessToken, playListId, currentPage, perPage)
+    const response = await SpotifyClient.getPlaylistItems(
+      accessToken,
+      playListId,
+      currentPage,
+      perPage,
+    )
+    const songs = response.items.map((song) => {
+      return this.formatSpotifySong(song.track)
+    })
+
+    return {
+      ...response,
+      songs,
+    }
+  }
+
+  formatSpotifySong(spotifySong: SpotifySong): Song {
+    return {
+      id: spotifySong.id,
+      name: spotifySong.name,
+      artists: spotifySong.artists.map((spotifyArtist) => spotifyArtist.name).join(','),
+      uri: spotifySong.uri,
+      album: spotifySong.album,
+    }
   }
 }

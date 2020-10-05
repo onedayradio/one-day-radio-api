@@ -8,10 +8,10 @@ import {
   PlaylistData,
   DBPlaylistSongs,
   Song,
-  SpotifyItem,
   PaginatedPlaylistSongs,
   DateData,
   Playlist,
+  SpotifyPlaylistSongs,
 } from '../../types'
 import { ValidationError } from 'apollo-server-lambda'
 import { SpotifyService } from '..'
@@ -33,6 +33,7 @@ export class PlaylistsService {
 
   async loadPlaylistSongs(
     genreId: string,
+    searchText: string,
     currentPage = 0,
     perPage = 10,
   ): Promise<PaginatedPlaylistSongs> {
@@ -40,15 +41,28 @@ export class PlaylistsService {
     if (!playlist) {
       throw new Error(`Playlist for genre Id ${genreId} does not exists!`)
     }
-    const playlistItems = await this.spotifyService.getPlaylistItems(
+    const spotifyPlaylistSongs = await this.spotifyService.getPlaylistItems(
       playlist.spotifyId,
       currentPage,
       perPage,
     )
-    const songIds = playlistItems.items.map((item) => item.track.id)
-    const songs = await this.mergePlaylistSongs(playlist._id, songIds, playlistItems.items)
+    const songIds = spotifyPlaylistSongs.songs.map((song) => song.id)
+    const dbPlaylistSongs = await this.playlistDao.playlistContains(playlist._id, songIds)
+    if (searchText) {
+      return this.searchSongs(searchText, dbPlaylistSongs, currentPage, perPage)
+    }
+    return this.loadSongs(spotifyPlaylistSongs, dbPlaylistSongs, currentPage, perPage)
+  }
+
+  async loadSongs(
+    playlistSongs: SpotifyPlaylistSongs,
+    dbPlaylistSongs: DBPlaylistSongs[],
+    currentPage: number,
+    perPage: number,
+  ): Promise<PaginatedPlaylistSongs> {
+    const songs = await this.mergePlaylistSongs(dbPlaylistSongs, playlistSongs.songs)
     const pagination = createPaginationObject({
-      total: playlistItems.total,
+      total: playlistSongs.total,
       perPage,
       currentPage,
     })
@@ -58,24 +72,58 @@ export class PlaylistsService {
     }
   }
 
-  async mergePlaylistSongs(
-    playlistId: string,
-    songIds: string[],
-    items: SpotifyItem[],
+  async searchSongs(
+    searchText: string,
+    playlistSongs: DBPlaylistSongs[],
+    currentPage: number,
+    perPage: number,
+  ): Promise<PaginatedPlaylistSongs> {
+    const searchedSongs = await this.spotifyService.searchSong(searchText)
+    const songs = await this.mergeSearchedSongs(searchText, playlistSongs, searchedSongs.songs)
+    const pagination = createPaginationObject({
+      total: searchedSongs.total,
+      perPage,
+      currentPage,
+    })
+    return {
+      ...pagination,
+      songs,
+    }
+  }
+
+  async mergeSearchedSongs(
+    searchText: string,
+    dbSongs: DBPlaylistSongs[],
+    searchedSongs: Song[],
   ): Promise<Song[]> {
-    const songs = await this.playlistDao.playlistContains(playlistId, songIds)
-    return items.map((item) => {
-      const song = songs.find((song) => song.spotifyId === item.track.id)
-      if (!song || !song.user) {
-        throw new Error(`Playlist song with id ${item.track.id} does not exists!`)
-      }
+    return searchedSongs.map((song) => {
+      const playlistSong = dbSongs.find((item) => song.id === item.spotifyId)
       return {
-        id: item.track.id,
+        id: song.id,
         name: song.name,
         artists: song.artists,
-        uri: song.spotifyUri,
-        sharedBy: song.user.displayName,
-        album: item.track.album,
+        uri: song.uri,
+        sharedBy: playlistSong ? playlistSong.user.displayName : '',
+        album: song.album,
+        inPlaylist: !!playlistSong,
+      }
+    })
+  }
+
+  async mergePlaylistSongs(dbSongs: DBPlaylistSongs[], spotifySongs: Song[]): Promise<Song[]> {
+    return spotifySongs.map((song) => {
+      const dbSong = dbSongs.find((item) => song.id === item.spotifyId)
+      if (!dbSong || !dbSong.user) {
+        throw new Error(`Playlist song with id ${song.id} does not exists!`)
+      }
+      return {
+        id: song.id,
+        name: dbSong.name,
+        artists: dbSong.artists,
+        uri: dbSong.spotifyUri,
+        sharedBy: dbSong.user.displayName,
+        album: song.album,
+        inPlaylist: true,
       }
     })
   }

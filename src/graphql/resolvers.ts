@@ -1,7 +1,6 @@
 import {
   userQueriesResolvers,
   genreQueriesResolvers,
-  searchQueriesResolvers,
   playListQueriesResolvers,
   deviceQueriesResolvers,
   playlistMutationsResolvers,
@@ -11,7 +10,6 @@ export const resolvers = {
   Query: {
     ...userQueriesResolvers,
     ...genreQueriesResolvers,
-    ...searchQueriesResolvers,
     ...playListQueriesResolvers,
     ...deviceQueriesResolvers,
   },

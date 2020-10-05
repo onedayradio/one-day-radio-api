@@ -30,6 +30,7 @@ export const playListType = `
     album: Album
     uri: String
     sharedBy: String
+    inPlaylist: Boolean
   }
 
   input SongInput {
@@ -73,7 +74,7 @@ export const playListType = `
 
 export const playListQueryTypes = `
   loadPlaylist(genreId: String): Playlist
-  loadPlaylistSongs(genreId: String, perPage: Int, currentPage: Int): PlaylistSongs
+  loadPlaylistSongs(genreId: String, searchText: String, perPage: Int, currentPage: Int): PlaylistSongs
 `
 
 export const playListQueriesResolvers = {
@@ -89,13 +90,13 @@ export const playListQueriesResolvers = {
   },
   loadPlaylistSongs: (
     root: unknown,
-    { genreId, currentPage, perPage }: PlaylistItemsArgs,
+    { genreId, searchText, currentPage, perPage }: PlaylistItemsArgs,
     { playlistService, currentUser }: AppContext,
   ): Promise<PaginatedPlaylistSongs> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playlistService.loadPlaylistSongs(genreId, currentPage, perPage)
+    return playlistService.loadPlaylistSongs(genreId, searchText, currentPage, perPage)
   },
 }
 

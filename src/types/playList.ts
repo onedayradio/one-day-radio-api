@@ -56,6 +56,7 @@ export interface AddSongToPlaylistMutationArgs {
 
 export interface PlaylistItemsArgs {
   genreId: string
+  searchText: string
   perPage: number
   currentPage: number
 }
