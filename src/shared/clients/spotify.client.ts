@@ -110,7 +110,8 @@ export class SpotifyClient {
       headers: { Authorization: 'Bearer ' + accessToken },
       json: true,
     }
-    return (await SpotifyClient.doSpotifyRequest(options)) as SpotifySearchSongsResponse
+    const response = await SpotifyClient.doSpotifyRequest(options)
+    return response.tracks as SpotifySearchSongsResponse
   }
 
   static async createPlaylist(
