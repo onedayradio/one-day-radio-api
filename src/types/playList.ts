@@ -49,7 +49,7 @@ export interface PlayOnDeviceArgs {
 }
 
 export interface AddSongToPlaylistMutationArgs {
-  playlistId: string
+  genreId: string
   song: Song
   date: DateData
 }

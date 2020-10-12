@@ -123,7 +123,6 @@ export class PlaylistsService {
         uri: dbSong.spotifyUri,
         sharedBy: dbSong.user.displayName,
         album: song.album,
-        inPlaylist: true,
       }
     })
   }
@@ -195,14 +194,14 @@ export class PlaylistsService {
 
   async addSongToPlaylist(
     user: DBUser,
-    spotifyPlaylistId: string,
+    genreId: string,
     song: Song,
     date: DateData,
-  ): Promise<DBPlaylistSongs> {
+  ): Promise<Song> {
     const maxSongsAllowedPerUser = getValueAsInt('max_user_songs_per_playlist')
-    const playlist = await this.playlistDao.loadBySpotifyId(spotifyPlaylistId)
+    const playlist = await this.playlistDao.loadByGenreId(genreId)
     if (!playlist) {
-      throw new Error(`Playlist with id ${spotifyPlaylistId} does not exists!`)
+      throw new Error(`Playlist for the genre Id, does not exists!`)
     }
     const userSongs = await this.getPlaylistSongsByUser(playlist._id, user)
     if (userSongs.length > maxSongsAllowedPerUser) {
@@ -224,7 +223,16 @@ export class PlaylistsService {
       await this.playlistDao.removeSongFromPlaylist(oldestSong)
     }
     await this.spotifyService.addSongToPlaylist(playlist.spotifyId, song.uri)
-    return this.playlistDao.addSongToPlaylist(user, playlist._id, song, date)
+    const dbSong = await this.playlistDao.addSongToPlaylist(user, playlist._id, song, date)
+
+    return {
+      id: song.id,
+      name: dbSong.name,
+      artists: dbSong.artists,
+      uri: dbSong.spotifyUri,
+      sharedBy: dbSong.user.displayName,
+      album: song.album,
+    }
   }
 
   loadAllPlaylistSongs(playlistId: string): Promise<DBPlaylistSongs[]> {
