@@ -8,10 +8,6 @@ export class PlaylistsDao {
     return playList.save()
   }
 
-  async loadBySpotifyId(spotifyId: string): Promise<DBPlaylist | null> {
-    return PlaylistModel.findOne({ spotifyId })
-  }
-
   async loadByGenreId(genreId: string): Promise<DBPlaylist | null> {
     return PlaylistModel.findOne({ genreId })
   }

@@ -4,10 +4,10 @@ import {
   PlaylistArgs,
   Playlist,
   AddSongToPlaylistMutationArgs,
-  PlaylistSongs,
   PlayOnDeviceArgs,
   PlaylistItemsArgs,
   PaginatedPlaylistSongs,
+  Song,
 } from '../../types'
 
 export const playListType = `
@@ -30,7 +30,6 @@ export const playListType = `
     album: Album
     uri: String
     sharedBy: String
-    inPlaylist: Boolean
   }
 
   input SongInput {
@@ -60,15 +59,6 @@ export const playListType = `
     id: String!
     name: String
     description: String
-  }
-
-  type PlaylistSong {
-    playlist: String
-    user: User
-    spotifyId: String
-    spotifyUri: String
-    name: String
-    artists: String
   }
 `
 
@@ -101,20 +91,20 @@ export const playListQueriesResolvers = {
 }
 
 export const playlistMutationTypes = `
-  addSongToPlaylist(playlistId: String, song: SongInput, date: DateDataInput): PlaylistSong
+  addSongToPlaylist(genreId: String, song: SongInput, date: DateDataInput): Song
   playOnDevice(genreId: String, deviceId: String): Boolean
 `
 
 export const playlistMutationsResolvers = {
   addSongToPlaylist: (
     root: unknown,
-    { playlistId, song, date }: AddSongToPlaylistMutationArgs,
+    { genreId, song, date }: AddSongToPlaylistMutationArgs,
     { playlistService, currentUser }: AppContext,
-  ): Promise<PlaylistSongs> => {
+  ): Promise<Song> => {
     if (!currentUser) {
       throw new AuthenticationError('Unauthorized!!')
     }
-    return playlistService.addSongToPlaylist(currentUser, playlistId, song, date)
+    return playlistService.addSongToPlaylist(currentUser, genreId, song, date)
   },
   playOnDevice: (
     root: unknown,
