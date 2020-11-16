@@ -9,7 +9,7 @@ CREATE
   (San)-[:HAS_SPOTIFY_DATA]->(SanSpotifyData),
   (Jose)-[:HAS_SPOTIFY_DATA]->(JoseSpotifyData)
 CREATE (:Genre { name: 'Punk', order: 2, maxSongs: 200, created: datetime() })
-CREATE (heavyMetalGenre:Genre { name: 'Heavy Metal', order: 1, maxSongs: 200, created: datetime() })
+CREATE (heavyMetalGenre:Genre { name: 'Heavy Metal', order: 1, maxSongs: 5, created: datetime() })
 CREATE (:Genre { name: 'Rock', order: 3, maxSongs: 200, created: datetime() })
 CREATE (:Genre { name: 'Pop', order: 4, maxSongs: 200, created: datetime() })
 CREATE (playlist1:Playlist { name: 'One day Radio. Heavy Metal playlist', spotifyId: '11', description: 'This playlist has been created for you by the community. One day Radio. Heavy Metal playlist', genreId: ID(heavyMetalGenre), created: datetime() })

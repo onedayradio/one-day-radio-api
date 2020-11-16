@@ -30,3 +30,14 @@ export const testSong3 = {
   albumName: 'Covenant',
   albumImage300: 'http://some300image',
 }
+
+export const testSong4 = {
+  name: 'La Vida en un Beso',
+  spotifyId: 'warcry11',
+  spotifyUri: 'http://a-spotify-song-uri.com',
+  artistSpotifyIds: 'warcrysong1133',
+  artistsNames: 'Warcry',
+  albumSpotifyId: 'warcryalbum11',
+  albumName: 'Revolucion',
+  albumImage300: 'http://some300image',
+}

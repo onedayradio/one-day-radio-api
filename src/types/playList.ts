@@ -17,6 +17,13 @@ export interface PlaylistSong {
   active: boolean
 }
 
+export interface SearchSong {
+  song: Song
+  sharedBy?: User
+  sharedOn?: Date
+  active: boolean
+}
+
 export interface PaginatedPlaylistSongs extends Pagination {
   songs: Song[]
 }

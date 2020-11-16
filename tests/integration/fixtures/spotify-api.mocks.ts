@@ -39,6 +39,59 @@ export const searchSongsMock = {
   total: 3,
 }
 
+export const searchSongsMock2 = {
+  href: 'some-url',
+  items: [
+    {
+      artists: [{ id: 'im11', name: 'Iron Maiden' }],
+      ['duration_ms']: 358706,
+      explicit: false,
+      id: '1133',
+      name: 'Hallowed Be Thy Name',
+      popularity: 29,
+      uri: 'some-uri',
+      album: {
+        id: 'imalbum11',
+        name: 'The Number of the Beast',
+        images: [{ width: 300, height: 300, url: 'http://image-url' }],
+      },
+    },
+    {
+      artists: [{ id: 'da11', name: 'Death Angel' }],
+      ['duration_ms']: 358706,
+      explicit: false,
+      id: '2233',
+      name: 'Stop',
+      popularity: 29,
+      uri: 'some-uri',
+      album: {
+        id: 'daalbum11',
+        name: 'The Art of Dying',
+        images: [{ width: 300, height: 300, url: 'http://image-url' }],
+      },
+    },
+    {
+      artists: [{ id: '33', name: 'Dj Suchensuch' }],
+      ['duration_ms']: 362042,
+      explicit: true,
+      id: '16wkyNymAE6ruWAZcUx871',
+      name: 'Raw Deal',
+      popularity: 18,
+      uri: 'some-uri',
+      album: {
+        id: '7K5tf5FJ4bpmq5MABQqKsW',
+        name: 'District',
+        images: [{ width: 600, height: 400, url: 'http://image-url' }],
+      },
+    },
+  ],
+  limit: 20,
+  next: undefined,
+  offset: 0,
+  previous: undefined,
+  total: 3,
+}
+
 export const playlistMock = {
   collaborative: false,
   description:

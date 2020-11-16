@@ -60,7 +60,7 @@ describe('GenresService', () => {
     expect(genre.id).not.to.be.undefined
     expect(genre.name).to.equal('Super Heavy Metal')
     expect(genre.order).to.equal(1)
-    expect(genre.maxSongs).to.equal(200)
+    expect(genre.maxSongs).to.equal(5)
   })
 
   it('should load genre details', async () => {

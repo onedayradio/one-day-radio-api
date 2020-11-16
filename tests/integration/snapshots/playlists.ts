@@ -295,3 +295,73 @@ export const expectedAddSong2 = {
   },
   active: true,
 }
+
+export const expectedAddSong3 = {
+  song: {
+    artistsNames: 'Warcry',
+    name: 'La Vida en un Beso',
+    spotifyUri: 'http://a-spotify-song-uri.com',
+    albumImage300: 'http://some300image',
+    artistSpotifyIds: 'warcrysong1133',
+    albumName: 'Revolucion',
+    spotifyId: 'warcry11',
+    albumSpotifyId: 'warcryalbum11',
+  },
+  sharedBy: {
+    lastname: 'Morales',
+    firstname: 'Jose',
+    email: 'jose.morales@gmail.com',
+  },
+  active: true,
+}
+
+export const expectedSearchSongs = [
+  {
+    song: {
+      spotifyId: '1133',
+      name: 'Hallowed Be Thy Name',
+      artistSpotifyIds: 'im11',
+      artistsNames: 'Iron Maiden',
+      spotifyUri: 'some-uri',
+      albumName: 'The Number of the Beast',
+      albumSpotifyId: 'imalbum11',
+      albumImage300: 'http://image-url',
+    },
+    sharedBy: {
+      lastname: 'Morales',
+      firstname: 'Juan',
+      email: 'juan@gmail.com',
+    },
+    active: true,
+  },
+  {
+    song: {
+      spotifyId: '2233',
+      name: 'Stop',
+      artistSpotifyIds: 'da11',
+      artistsNames: 'Death Angel',
+      spotifyUri: 'some-uri',
+      albumName: 'The Art of Dying',
+      albumSpotifyId: 'daalbum11',
+      albumImage300: 'http://image-url',
+    },
+    sharedBy: undefined,
+    sharedOn: undefined,
+    active: false,
+  },
+  {
+    song: {
+      spotifyId: '16wkyNymAE6ruWAZcUx871',
+      name: 'Raw Deal',
+      artistSpotifyIds: '33',
+      artistsNames: 'Dj Suchensuch',
+      spotifyUri: 'some-uri',
+      albumName: 'District',
+      albumSpotifyId: '7K5tf5FJ4bpmq5MABQqKsW',
+      albumImage300: '',
+    },
+    sharedBy: undefined,
+    sharedOn: undefined,
+    active: false,
+  },
+]

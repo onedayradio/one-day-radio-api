@@ -9,18 +9,20 @@ import {
   SpotifyService,
 } from '../../../../src/components'
 import { SpotifyClient } from '../../../../src/shared'
-import { playlistMock } from '../../fixtures/spotify-api.mocks'
+import { playlistMock, searchSongsMock2 } from '../../fixtures/spotify-api.mocks'
 import {
   expectedAddSong1,
   expectedAddSong2,
+  expectedAddSong3,
   expectedAllActiveSongs,
   expectedHeavyMetalPlaylist,
   expectedNewPlaylist,
   expectedPunkPlaylist,
   expectedRemovedSong,
+  expectedSearchSongs,
   expectedSongsBySpotifyIds,
 } from '../../snapshots/playlists'
-import { testSong1, testSong2, testSong3 } from '../../fixtures/songs'
+import { testSong1, testSong2, testSong3, testSong4 } from '../../fixtures/songs'
 
 const testsUtil = new TestsUtil()
 
@@ -31,8 +33,10 @@ describe.only('PlaylistsService', () => {
     sandbox.stub(SpotifyClient, 'createPlaylist').resolves(playlistMock)
     sandbox.stub(SpotifyClient, 'refreshAccessToken').returns(Promise.resolve('spotify-token'))
     sandbox.stub(SpotifyClient, 'uploadPlaylistCoverImage')
+    sandbox.stub(SpotifyClient, 'searchSong').returns(Promise.resolve(searchSongsMock2))
     sandbox.stub(SpotifyService.prototype, 'playOnDevice').returns(Promise.resolve(true))
     sandbox.stub(SpotifyService.prototype, 'addSongToPlaylist').returns(Promise.resolve(true))
+    sandbox.stub(SpotifyService.prototype, 'removeSongFromPlaylist').returns(Promise.resolve(true))
     testsUtil.setupData().then(() => done())
   })
 
@@ -176,6 +180,20 @@ describe.only('PlaylistsService', () => {
     expect(songsSpotifyIds).to.deep.equal(['1155', '4433', '1133', '1144'])
   })
 
+  it('should load all playlist active songs by genreId', async () => {
+    const playlistService = new PlaylistsService(testsUtil.session)
+    const genresService = new GenresService(testsUtil.session)
+    const allGenres = await genresService.loadAll({ orderBy: 'order' })
+    const heavyMetalGenre = allGenres[0]
+    const playlistSongs = await playlistService.loadAllPlaylistActiveSongsByGenre(
+      heavyMetalGenre.id,
+    )
+    const songsSpotifyIds = playlistSongs.map(({ song }) => song.spotifyId)
+    expect(playlistSongs).to.containSubset(expectedAllActiveSongs)
+    playlistSongs.forEach((song) => expect(song.sharedOn).not.to.be.undefined)
+    expect(songsSpotifyIds).to.deep.equal(['1155', '4433', '1133', '1144'])
+  })
+
   it('should remove a song from a playlist', async () => {
     const playlistService = new PlaylistsService(testsUtil.session)
     const playlists = await playlistService.loadAll()
@@ -262,7 +280,38 @@ describe.only('PlaylistsService', () => {
     expect(spotifyIds).to.deep.equal(['5533', '1155', '4433', '1133', '1144'])
   })
 
-  it.only('should add a song to a playlist -> max songs per playlist reached (should remove oldest and add new song)', async () => {
-    expect(true).to.equal(false)
+  it('should add a song to a playlist -> max songs per playlist reached (should remove oldest and add new song)', async () => {
+    const usersService = new UsersService(testsUtil.session)
+    const jose = await usersService.loadByEmail('jose.morales@gmail.com')
+    const playlistService = new PlaylistsService(testsUtil.session)
+    const genresService = new GenresService(testsUtil.session)
+    const allGenres = await genresService.loadAll({ orderBy: 'order' })
+    const heavyMetalGenre = allGenres[0]
+    await playlistService.addSongToPlaylist(jose.id, heavyMetalGenre.id, testSong1)
+
+    const playlists = await playlistService.loadAll()
+    const playlist1 = playlists[0]
+    let allPlaylistSongs = await playlistService.loadAllPlaylistActiveSongs(playlist1.id)
+    let spotifyIds = allPlaylistSongs.map((playlistSong) => playlistSong.song.spotifyId)
+    expect(spotifyIds).to.deep.equal(['ava11', '1155', '4433', '1133', '1144'])
+
+    const playlistSong = await playlistService.addSongToPlaylist(
+      jose.id,
+      heavyMetalGenre.id,
+      testSong4,
+    )
+    expect(playlistSong).to.containSubset(expectedAddSong3)
+
+    allPlaylistSongs = await playlistService.loadAllPlaylistActiveSongs(playlist1.id)
+    spotifyIds = allPlaylistSongs.map((playlistSong) => playlistSong.song.spotifyId)
+    expect(spotifyIds).to.deep.equal(['warcry11', 'ava11', '1155', '4433', '1133'])
+  })
+
+  it('it should search songs', async () => {
+    const playlistService = new PlaylistsService(testsUtil.session)
+    const playlists = await playlistService.loadAll()
+    const playlist1 = playlists[0]
+    const searchSongs = await playlistService.searchSongs(playlist1.id, 'iron maiden')
+    expect(searchSongs).to.containSubset(expectedSearchSongs)
   })
 })

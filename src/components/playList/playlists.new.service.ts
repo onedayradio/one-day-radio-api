@@ -4,7 +4,7 @@ import * as base64Image from 'node-base64-image'
 import { PlaylistsDao } from './playlists.new.dao'
 import { BaseService, Constants, errorsLogger, getValueAsInt } from '../../shared'
 import { PlaylistSchema } from './palylist.schema'
-import { Playlist, PlaylistData, PlaylistSong, Song, User } from '../../types'
+import { Playlist, PlaylistData, PlaylistSong, SearchSong, Song, User } from '../../types'
 import { GenresService } from '../genres/genres.service'
 import { SpotifyService } from '../spotify/spotify.service'
 
@@ -74,6 +74,11 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
     return this.dao.loadActiveSongsBySpotifyIds(playlistId, spotifyIds)
   }
 
+  async loadAllPlaylistActiveSongsByGenre(genreId: number): Promise<PlaylistSong[]> {
+    const playlist = await this.getByGenreIdOrCreate(genreId)
+    return this.dao.loadAllPlaylistActiveSongs(playlist.id)
+  }
+
   loadAllPlaylistActiveSongs(playlistId: number): Promise<PlaylistSong[]> {
     return this.dao.loadAllPlaylistActiveSongs(playlistId)
   }
@@ -137,5 +142,23 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
       )
       return false
     }
+  }
+
+  async searchSongs(playlistId: number, searchText: string): Promise<SearchSong[]> {
+    const searchResponse = await this.spotifyService.searchSong(searchText)
+    const { songs } = searchResponse
+    const spotifySongIds = songs.map((song) => song.spotifyId)
+    const dbPlaylistSongs = await this.loadActiveSongsBySpotifyIds(playlistId, spotifySongIds)
+    return songs.map((song) => {
+      const dbSong = dbPlaylistSongs.find(
+        (playlistSong) => playlistSong.song.spotifyId === song.spotifyId,
+      )
+      return {
+        song,
+        sharedBy: dbSong && dbSong.sharedBy,
+        sharedOn: dbSong && dbSong.sharedOn,
+        active: dbSong ? true : false,
+      }
+    })
   }
 }
