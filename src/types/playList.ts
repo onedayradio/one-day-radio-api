@@ -36,22 +36,19 @@ export interface PlaylistData {
 }
 
 export interface PlaylistArgs {
-  genreId: string
+  genreId: number
 }
 
 export interface PlayOnDeviceArgs {
-  genreId: string
+  genreId: number
   deviceId: string
 }
 
 export interface AddSongToPlaylistMutationArgs {
-  genreId: string
+  genreId: number
   song: Song
 }
 
-export interface PlaylistItemsArgs {
-  genreId: string
-  searchText: string
-  perPage: number
-  currentPage: number
+export interface LoadPlaylistSongsArgs {
+  genreId: number
 }

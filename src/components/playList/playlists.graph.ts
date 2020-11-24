@@ -1,13 +1,12 @@
-import { AuthenticationError } from 'apollo-server-lambda'
+import { getUserFromToken } from 'src/shared'
 import {
   AppContext,
   PlaylistArgs,
   Playlist,
   AddSongToPlaylistMutationArgs,
   PlayOnDeviceArgs,
-  PlaylistItemsArgs,
-  PaginatedPlaylistSongs,
-  Song,
+  LoadPlaylistSongsArgs,
+  PlaylistSong,
 } from '../../types'
 
 export const playlistType = `
@@ -26,88 +25,86 @@ export const playlistType = `
   type Song {
     id: String!
     name: String
-    artists: String
-    album: Album
-    uri: String
-    sharedBy: String
+    spotifyId: String
+    spotifyUri: String
+    artistSpotifyIds: String
+    artistsNames: String
+    albumSpotifyId: String
+    albumName: String
+    albumImage300: String
   }
 
   input SongInput {
-    id: String!
     name: String
-    artists: String
-    uri: String
+    spotifyId: String
+    spotifyUri: String
+    artistSpotifyIds: String
+    artistsNames: String
+    albumSpotifyId: String
+    albumName: String
+    albumImage300: String
   }
 
-  type PlaylistSongs {
-    songs: [Song]
-    total: Int
-    perPage: Int
-    lastPage: Int
-    currentPage: Int
-    from: Int
-    to: Int
+  type PlaylistSong {
+    song: Song
+    sharedOn: String
+    sharedBy: User
+    active: Boolean
   }
 
   type Playlist {
     id: String!
     name: String
     description: String
+    spotifyId: String
+    genreId: Int
   }
 `
 
 export const playlistQueryTypes = `
-  loadPlaylist(genreId: String): Playlist
-  loadPlaylistSongs(genreId: String, searchText: String, perPage: Int, currentPage: Int): PlaylistSongs
+  loadPlaylist(genreId: Int): Playlist
+  loadPlaylistSongs(genreId: String, searchText: String, perPage: Int, currentPage: Int): PlaylistSong[]
 `
 
 export const playlistQueriesResolvers = {
-  loadPlaylist: (
+  loadPlaylist: async (
     root: unknown,
     { genreId }: PlaylistArgs,
-    { playlistService, currentUser }: AppContext,
+    { playlistService, session, token }: AppContext,
   ): Promise<Playlist> => {
-    if (!currentUser) {
-      throw new AuthenticationError('Unauthorized!!')
-    }
-    return playlistService.loadPlaylist(genreId)
+    await getUserFromToken(session, token)
+    return playlistService.getByGenreIdOrCreate(genreId)
   },
-  loadPlaylistSongs: (
+  loadPlaylistSongs: async (
     root: unknown,
-    { genreId, searchText, currentPage, perPage }: PlaylistItemsArgs,
-    { playlistService, currentUser }: AppContext,
-  ): Promise<PaginatedPlaylistSongs> => {
-    if (!currentUser) {
-      throw new AuthenticationError('Unauthorized!!')
-    }
-    return playlistService.loadPlaylistSongs(genreId, searchText, currentPage, perPage)
+    { genreId }: LoadPlaylistSongsArgs,
+    { playlistService, session, token }: AppContext,
+  ): Promise<PlaylistSong[]> => {
+    await getUserFromToken(session, token)
+    return playlistService.loadAllPlaylistActiveSongsByGenre(genreId)
   },
 }
 
 export const playlistMutationTypes = `
-  addSongToPlaylist(genreId: String, song: SongInput): Song
-  playOnDevice(genreId: String, deviceId: String): Boolean
+  addSongToPlaylist(genreId: Int, song: SongInput): PlaylistSong
+  playOnDevice(genreId: Int, deviceId: String): Boolean
 `
 
 export const playlistMutationsResolvers = {
-  addSongToPlaylist: (
+  addSongToPlaylist: async (
     root: unknown,
-    { genreId, song, date }: AddSongToPlaylistMutationArgs,
-    { playlistService, currentUser }: AppContext,
-  ): Promise<Song> => {
-    if (!currentUser) {
-      throw new AuthenticationError('Unauthorized!!')
-    }
-    return playlistService.addSongToPlaylist(currentUser, genreId, song, date)
+    { genreId, song }: AddSongToPlaylistMutationArgs,
+    { playlistService, session, token }: AppContext,
+  ): Promise<PlaylistSong> => {
+    const currentUser = await getUserFromToken(session, token)
+    return playlistService.addSongToPlaylist(currentUser.id, genreId, song)
   },
-  playOnDevice: (
+  playOnDevice: async (
     root: unknown,
     { genreId, deviceId }: PlayOnDeviceArgs,
-    { playlistService, currentUser }: AppContext,
+    { playlistService, session, token }: AppContext,
   ): Promise<boolean> => {
-    if (!currentUser) {
-      throw new AuthenticationError('Unauthorized!!')
-    }
+    const currentUser = await getUserFromToken(session, token)
     return playlistService.playOnDevice(currentUser, genreId, deviceId)
   },
 }

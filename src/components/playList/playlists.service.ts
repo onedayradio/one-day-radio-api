@@ -1,7 +1,7 @@
 import { Session } from 'neo4j-driver'
 import * as base64Image from 'node-base64-image'
 
-import { PlaylistsDao } from './playlists.new.dao'
+import { PlaylistsDao } from './playlists.dao'
 import { BaseService, Constants, errorsLogger, getValueAsInt } from '../../shared'
 import { PlaylistSchema } from './palylist.schema'
 import { Playlist, PlaylistData, PlaylistSong, SearchSong, Song, User } from '../../types'

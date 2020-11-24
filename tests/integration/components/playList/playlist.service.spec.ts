@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import Sinon from 'sinon'
 
-import { TestsUtil } from '../../tests.util2'
+import { TestsUtil } from '../../tests.util'
 import {
   GenresService,
   PlaylistsService,

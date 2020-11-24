@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 
-import { TestsUtil } from '../tests.util2'
+import { TestsUtil } from '../tests.util'
 import { QueryHelper } from '../../../src/shared'
 import { getUserIdsQuery, getAllUsers } from '../fixtures/db-seed'
 import { expectedAllUsersQueryResult } from '../snapshots/queryHelper'

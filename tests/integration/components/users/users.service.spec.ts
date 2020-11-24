@@ -10,7 +10,7 @@ import {
 } from '../../snapshots/users'
 
 import { UsersService } from '../../../../src/components'
-import { TestsUtil } from '../../tests.util2'
+import { TestsUtil } from '../../tests.util'
 import { expectedAllUsersQueryResult } from 'tests/integration/snapshots/queryHelper'
 
 const testsUtil = new TestsUtil()

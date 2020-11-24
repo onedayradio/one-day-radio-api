@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 
-import { TestsUtil } from '../../tests.util2'
+import { TestsUtil } from '../../tests.util'
 import { GenresService } from '../../../../src/components'
 
 const testsUtil = new TestsUtil()

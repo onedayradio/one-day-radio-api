@@ -1,13 +1,13 @@
 import { ApolloServer } from 'apollo-server-lambda'
 import { Context, APIGatewayProxyEvent, APIGatewayProxyCallback } from 'aws-lambda'
 
-import { schema, context } from './graphql'
-import { connectToDatabase } from './shared/database'
-import { errorsLogger } from './shared'
+import { schema, context, plugins } from './graphql'
+import { createNeo4JDriver } from './shared'
 
 const apolloServer = new ApolloServer({
   schema,
   context,
+  plugins,
 })
 
 const graphqlHandler = apolloServer.createHandler({
@@ -17,7 +17,7 @@ const graphqlHandler = apolloServer.createHandler({
   },
 })
 
-let cachedDb: any = null
+let cachedNeo4JDriver: any = null
 
 export const handler = (
   event: APIGatewayProxyEvent,
@@ -25,10 +25,6 @@ export const handler = (
   callback: APIGatewayProxyCallback,
 ): void => {
   context.callbackWaitsForEmptyEventLoop = false
-  connectToDatabase(cachedDb)
-    .then((db) => {
-      cachedDb = db
-      graphqlHandler(event, context, callback)
-    })
-    .catch((error: Error) => errorsLogger.error('unexpected error connecting to database', error))
+  cachedNeo4JDriver = createNeo4JDriver(cachedNeo4JDriver)
+  graphqlHandler(event, context, callback)
 }

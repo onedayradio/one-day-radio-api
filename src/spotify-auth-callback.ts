@@ -1,7 +1,7 @@
 import querystring from 'querystring'
 
 import { getValue, generalLogger, generateToken, SpotifyClient } from './shared'
-import { createNeo4JDriver, getNeo4JSession } from './shared/database2'
+import { createNeo4JDriver, getNeo4JSession } from './shared/database'
 import { SpotifyEvent, SpotifyUserData, GetTokensResponse, User } from './types'
 import { UsersService } from './components'
 
@@ -20,7 +20,10 @@ const extractStoredStateFromCookies = (event: SpotifyEvent): string => {
     : ''
 }
 
-const getUserData = (spotifyUser: SpotifyUserData, spotifyTokens: GetTokensResponse): User => ({
+const getUserData = (
+  spotifyUser: SpotifyUserData,
+  spotifyTokens: GetTokensResponse,
+): Partial<User> => ({
   email: spotifyUser.email,
   displayName: spotifyUser.displayName,
   countryCode: spotifyUser.country,

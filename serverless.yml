@@ -33,7 +33,7 @@ custom:
 
 functions:
   graphql:
-    handler: src/handler2.handler
+    handler: src/handler.handler
     events:
       - http:
           path: graphql

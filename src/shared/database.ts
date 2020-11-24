@@ -1,30 +1,25 @@
-import mongoose, { Mongoose } from 'mongoose'
+import neo4j, { Session, Config, Driver } from 'neo4j-driver'
 
-import { getValue } from '../shared'
+import { getValue, isLocal, isTest } from '.'
 import { generalLogger } from './logs'
 
-// Use native promises
-mongoose.Promise = global.Promise
-mongoose.set('useUnifiedTopology', true)
-mongoose.set('useCreateIndex', true)
+let driver: any = null
 
-const mongoUrl = getValue('mongodb_url')
-
-export const connectToDatabase = (cachedDb: Mongoose): Promise<Mongoose> => {
-  console.time('connectingToMongo')
-  if (cachedDb) {
-    generalLogger.info('=> using cached database instance...')
-    console.timeEnd('connectingToMongo')
-    return Promise.resolve(cachedDb)
+export const createNeo4JDriver = (cachedDriver: Driver | null): Driver => {
+  if (cachedDriver) {
+    generalLogger.info('using cached neo4j driver...')
+    driver = cachedDriver
+    return cachedDriver
   }
-  return mongoose
-    .connect(mongoUrl, {
-      socketTimeoutMS: 10000,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    .then((db) => {
-      console.timeEnd('connectingToMongo')
-      return db
-    })
+  const neo4jUrl = getValue('neo4j_url')
+  const username = getValue('neo4j_username')
+  const password = getValue('neo4j_password')
+  const options = isLocal() || isTest() ? undefined : ({ encrypted: 'ENCRYPTION_ON' } as Config)
+  driver = neo4j.driver(neo4jUrl, neo4j.auth.basic(username, password), options)
+  return driver
+}
+
+export const getNeo4JSession = (): Session => {
+  const session = driver.session()
+  return session
 }
