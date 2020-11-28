@@ -1,7 +1,11 @@
 import { Driver, Session } from 'neo4j-driver'
+import chai from 'chai'
+import chaiSubset from 'chai-subset'
 
 import { createNeo4JDriver } from '../../src/shared'
 import { insertAllDataQuery } from './fixtures/db-seed'
+
+chai.use(chaiSubset)
 
 export class TestsUtil {
   driver: Driver

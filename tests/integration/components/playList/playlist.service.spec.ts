@@ -28,7 +28,7 @@ const testsUtil = new TestsUtil()
 
 const sandbox = Sinon.createSandbox()
 
-describe.only('PlaylistsService', () => {
+describe('PlaylistsService', () => {
   beforeEach((done: any) => {
     sandbox.stub(SpotifyClient, 'createPlaylist').resolves(playlistMock)
     sandbox.stub(SpotifyClient, 'refreshAccessToken').returns(Promise.resolve('spotify-token'))
