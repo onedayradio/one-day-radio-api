@@ -117,20 +117,20 @@ export class SpotifyClient {
   static async createPlaylist(
     accessToken: string,
     userId: string,
-    playList: SpotifyPlaylist,
+    playlist: SpotifyPlaylist,
   ): Promise<SpotifyPlaylist> {
     const options = {
       url: `${BASE_API_URL}/users/${userId}/playlists`,
       headers: { Authorization: `Bearer ${accessToken}` },
-      body: { ...playList, public: false, collaborative: false },
+      body: { ...playlist, public: false, collaborative: false },
       json: true,
     }
     return this.doSpotifyRequest(options, 'post')
   }
 
-  static async getPlaylist(accessToken: string, playListId: string): Promise<SpotifyPlaylist> {
+  static async getPlaylist(accessToken: string, playlistId: string): Promise<SpotifyPlaylist> {
     const options = {
-      url: `${BASE_API_URL}/playlists/${playListId}`,
+      url: `${BASE_API_URL}/playlists/${playlistId}`,
       headers: { Authorization: `Bearer ${accessToken}` },
       json: true,
     }
@@ -139,12 +139,12 @@ export class SpotifyClient {
 
   static async getPlaylistItems(
     accessToken: string,
-    playListId: string,
+    playlistId: string,
     currentPage: number,
     perPage: number,
   ): Promise<SpotifyPlaylistItems> {
     const options = {
-      url: `${BASE_API_URL}/playlists/${playListId}/tracks?limit=${perPage}&offset=${currentPage}`,
+      url: `${BASE_API_URL}/playlists/${playlistId}/tracks?limit=${perPage}&offset=${currentPage}`,
       headers: { Authorization: `Bearer ${accessToken}` },
       json: true,
     }
@@ -176,9 +176,9 @@ export class SpotifyClient {
     await SpotifyClient.doSpotifyRequest(options, 'put')
   }
 
-  static async followPlaylist(accessToken: string, playListId: string): Promise<void> {
+  static async followPlaylist(accessToken: string, playlistId: string): Promise<void> {
     const options = {
-      url: `${BASE_API_URL}/playlists/${playListId}/followers`,
+      url: `${BASE_API_URL}/playlists/${playlistId}/followers`,
       headers: { Authorization: 'Bearer ' + accessToken },
       body: {
         public: false,
@@ -234,6 +234,29 @@ export class SpotifyClient {
     }
     await SpotifyClient.doSpotifyRequest(options, 'put')
     return true
+  }
+
+  static async createPlayList(
+    accessToken: string,
+    userId: string,
+    playlist: SpotifyPlaylist,
+  ): Promise<SpotifyPlaylist> {
+    const options = {
+      url: `${BASE_API_URL}/users/${userId}/playlists`,
+      headers: { Authorization: `Bearer ${accessToken}` },
+      body: { ...playlist, public: false },
+      json: true,
+    }
+    return doRequest(options, 'post')
+  }
+
+  static async getPlayList(accessToken: string, playlistId: string): Promise<SpotifyPlaylist> {
+    const options = {
+      url: `${BASE_API_URL}/playlists/${playlistId}`,
+      headers: { Authorization: `Bearer ${accessToken}` },
+      json: true,
+    }
+    return doRequest(options)
   }
 
   static async refreshAccessToken(refreshToken: string): Promise<string> {

@@ -1,5 +1,5 @@
-import { AuthenticationError } from 'apollo-server-lambda'
-import { AppContext, DBGenre, LoadGenreArgs } from '../../types'
+import { AppContext, LoadGenreArgs, Genre } from '../../types'
+import { getUserFromToken } from '../../shared'
 
 export const genreType = `
   type Genre {
@@ -14,25 +14,21 @@ export const genresQueryTypes = `
 `
 
 export const genreQueriesResolvers = {
-  loadAllGenres: (
+  loadAllGenres: async (
     root: unknown,
     args: unknown,
-    { genresService, currentUser }: AppContext,
-  ): Promise<DBGenre[]> => {
-    if (!currentUser) {
-      throw new AuthenticationError('Unauthorized!!')
-    }
-    return genresService.loadAll()
+    { genresService, token, session }: AppContext,
+  ): Promise<Genre[]> => {
+    await getUserFromToken(session, token)
+    return genresService.loadAll({ orderBy: 'order' })
   },
 
-  loadGenre: (
+  loadGenre: async (
     root: unknown,
     { genreId }: LoadGenreArgs,
-    { genresService, currentUser }: AppContext,
-  ): Promise<DBGenre> => {
-    if (!currentUser) {
-      throw new AuthenticationError('Unauthorized!!')
-    }
-    return genresService.loadGenre(genreId)
+    { genresService, session, token }: AppContext,
+  ): Promise<Genre> => {
+    await getUserFromToken(session, token)
+    return genresService.loadById({ id: genreId })
   },
 }

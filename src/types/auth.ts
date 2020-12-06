@@ -1,7 +1,7 @@
 import { User } from './users'
 
 export interface DecodedToken {
-  userId: string
+  userId: number
   userRoles?: string[]
 }
 

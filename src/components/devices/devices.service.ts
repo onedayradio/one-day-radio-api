@@ -1,9 +1,15 @@
-import { DBUser, SpotifyDevice } from '../../types'
+import { User, SpotifyDevice } from '../../types'
 import { SpotifyService } from '..'
+import { Session } from 'neo4j-driver'
 
 export class DevicesService {
-  loadPlayerDevices(user: DBUser): Promise<SpotifyDevice[]> {
-    const spotifyService = new SpotifyService()
-    return spotifyService.loadPlayerDevices(user)
+  spotifyService: SpotifyService
+
+  constructor(session: Session) {
+    this.spotifyService = new SpotifyService(session)
+  }
+
+  loadPlayerDevices(user: User): Promise<SpotifyDevice[]> {
+    return this.spotifyService.loadPlayerDevices(user)
   }
 }

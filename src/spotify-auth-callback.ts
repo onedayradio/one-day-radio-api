@@ -1,7 +1,7 @@
 import querystring from 'querystring'
 
 import { getValue, generalLogger, generateToken, SpotifyClient } from './shared'
-import { connectToDatabase } from './shared/database'
+import { createNeo4JDriver, getNeo4JSession } from './shared/database'
 import { SpotifyEvent, SpotifyUserData, GetTokensResponse, User } from './types'
 import { UsersService } from './components'
 
@@ -20,7 +20,10 @@ const extractStoredStateFromCookies = (event: SpotifyEvent): string => {
     : ''
 }
 
-const getUserData = (spotifyUser: SpotifyUserData, spotifyTokens: GetTokensResponse): User => ({
+const getUserData = (
+  spotifyUser: SpotifyUserData,
+  spotifyTokens: GetTokensResponse,
+): Partial<User> => ({
   email: spotifyUser.email,
   displayName: spotifyUser.displayName,
   countryCode: spotifyUser.country,
@@ -32,12 +35,13 @@ const getUserData = (spotifyUser: SpotifyUserData, spotifyTokens: GetTokensRespo
   },
 })
 
-let cachedDb: any = null
+let cachedNeo4JDriver: any = null
 
 export const authCallback = async (event: SpotifyEvent): Promise<any> => {
   generalLogger.info('Handling spotify authorization callback!')
-  cachedDb = await connectToDatabase(cachedDb)
-  generalLogger.info('Successfully connected to mongodb')
+  cachedNeo4JDriver = createNeo4JDriver(cachedNeo4JDriver)
+  const session = getNeo4JSession()
+  generalLogger.info('Successfully connected to neo4J')
   const { queryStringParameters } = event
   const { state, code } = queryStringParameters
   const storedState = extractStoredStateFromCookies(event)
@@ -51,14 +55,14 @@ export const authCallback = async (event: SpotifyEvent): Promise<any> => {
       },
     }
   }
-  const usersService = new UsersService()
+  const usersService = new UsersService(session)
   const spotifyTokens = await SpotifyClient.getTokens(code)
   const spotifyUser = await SpotifyClient.getUserData(spotifyTokens.accessToken)
   const userResponse = await usersService.getByEmailOrCreate(
     spotifyUser.email,
     getUserData(spotifyUser, spotifyTokens),
   )
-  const token = generateToken(userResponse.dbUser._id)
+  const token = generateToken(userResponse.dbUser.id)
   const redirectUrl = `${getValue('frontend_url')}/auth-callback?${querystring.stringify({
     token,
   })}`
@@ -68,6 +72,6 @@ export const authCallback = async (event: SpotifyEvent): Promise<any> => {
       Location: redirectUrl,
     },
   }
-  generalLogger.info('returning successful response11', redirectUrl)
+  generalLogger.info('returning successful response', redirectUrl)
   return response
 }

@@ -1,7 +1,7 @@
 import {
   userQueriesResolvers,
   genreQueriesResolvers,
-  playListQueriesResolvers,
+  playlistQueriesResolvers,
   deviceQueriesResolvers,
   playlistMutationsResolvers,
 } from '../components'
@@ -10,7 +10,7 @@ export const resolvers = {
   Query: {
     ...userQueriesResolvers,
     ...genreQueriesResolvers,
-    ...playListQueriesResolvers,
+    ...playlistQueriesResolvers,
     ...deviceQueriesResolvers,
   },
   Mutation: {

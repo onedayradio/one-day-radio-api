@@ -1,4 +1,4 @@
-import { AuthenticationError } from 'apollo-server-lambda'
+import { getUserFromToken } from 'src/shared'
 import { AppContext, SpotifyDevice } from '../../types'
 
 export const deviceType = `
@@ -13,14 +13,12 @@ export const devicesQueryTypes = `
 `
 
 export const deviceQueriesResolvers = {
-  loadSpotifyDevices: (
+  loadSpotifyDevices: async (
     root: unknown,
     args: unknown,
-    { devicesService, currentUser }: AppContext,
+    { devicesService, session, token }: AppContext,
   ): Promise<SpotifyDevice[]> => {
-    if (!currentUser) {
-      throw new AuthenticationError('Unauthorized!!')
-    }
+    const currentUser = await getUserFromToken(session, token)
     return devicesService.loadPlayerDevices(currentUser)
   },
 }

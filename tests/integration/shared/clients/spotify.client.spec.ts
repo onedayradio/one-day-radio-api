@@ -2,7 +2,8 @@ import request from 'request'
 import { expect } from 'chai'
 import sinon from 'sinon'
 import { SpotifyClient, SpotifyUnauthorizedError } from '../../../../src/shared'
-import { searchSongsMock } from '../../mock-data/spotify-api.mocks'
+import { searchSongsMock } from '../../fixtures/spotify-api.mocks'
+import { expectedSpotifySearchSongs } from '../../../integration/snapshots/spotify'
 
 describe('Spotify client', () => {
   it('should return token request options when passing a valid code', () => {
@@ -152,7 +153,7 @@ describe('Spotify client', () => {
   it('Should search for songs', async () => {
     sinon.stub(request, 'get').yields(null, { statusCode: 200 }, searchSongsMock)
     const searchResponse = await SpotifyClient.searchSong('access-token', 'raw deal')
-    expect(searchResponse).to.deep.equal(searchSongsMock)
+    expect(searchResponse).to.deep.equal(expectedSpotifySearchSongs)
     ;(request.get as any).restore()
   })
 
