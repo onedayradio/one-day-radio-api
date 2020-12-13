@@ -1,4 +1,4 @@
-import { getUserFromToken } from '../../shared'
+import { validateUserAuth } from '../../shared'
 import { AppContext, User } from '../../types'
 
 export const userType = `
@@ -29,7 +29,7 @@ export const userQueriesResolvers = {
     args: unknown,
     { session, token }: AppContext,
   ): Promise<User> => {
-    const currentUser = await getUserFromToken(session, token)
+    const currentUser = await validateUserAuth(session, token)
     return currentUser
   },
 }

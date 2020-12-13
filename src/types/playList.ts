@@ -40,15 +40,20 @@ export interface PlaylistArgs {
 }
 
 export interface PlayOnDeviceArgs {
-  genreId: number
+  playlistId: number
   deviceId: string
 }
 
 export interface AddSongToPlaylistMutationArgs {
-  genreId: number
+  playlistId: number
   song: Song
 }
 
 export interface LoadPlaylistSongsArgs {
-  genreId: number
+  playlistId: number
+}
+
+export interface SearchSongsArgs {
+  playlistId: number
+  searchText: string
 }

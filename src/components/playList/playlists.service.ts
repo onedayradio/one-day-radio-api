@@ -42,9 +42,9 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
     return this.create(playlistData)
   }
 
-  async addSongToPlaylist(userId: number, genreId: number, song: Song): Promise<PlaylistSong> {
+  async addSongToPlaylist(userId: number, playlistId: number, song: Song): Promise<PlaylistSong> {
     const maxSongsAllowedPerUser = getValueAsInt('max_user_songs_per_playlist')
-    const playlist = await this.getByGenreIdOrCreate(genreId)
+    const playlist = await this.loadById({ id: playlistId })
     const userSongs = await this.loadActiveSongsByUser(playlist.id, userId)
     if (userSongs.length >= maxSongsAllowedPerUser) {
       throw new Error('User has reached max amount of songs for this playlist')
@@ -109,10 +109,10 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
     }
   }
 
-  async playOnDevice(user: User, genreId: number, deviceId: string): Promise<boolean> {
-    const playlist = await this.dao.loadByGenreId(genreId)
+  async playOnDevice(user: User, playlistId: number, deviceId: string): Promise<boolean> {
+    const playlist = await this.dao.loadById({ id: playlistId })
     if (!playlist || !playlist.spotifyId) {
-      throw new Error(`Playlist for the genre Id ${genreId} does not exists!`)
+      throw new Error(`Playlist with id ${playlistId} does not exists!`)
     }
     return this.spotifyService.playOnDevice(user, playlist.spotifyId, deviceId)
   }

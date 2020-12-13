@@ -1,4 +1,4 @@
-import { getUserFromToken } from 'src/shared'
+import { validateUserAuth } from '../../shared'
 import {
   AppContext,
   PlaylistArgs,
@@ -7,6 +7,8 @@ import {
   PlayOnDeviceArgs,
   LoadPlaylistSongsArgs,
   PlaylistSong,
+  SearchSong,
+  SearchSongsArgs,
 } from '../../types'
 
 export const playlistType = `
@@ -23,7 +25,7 @@ export const playlistType = `
   }
 
   type Song {
-    id: String!
+    id: String
     name: String
     spotifyId: String
     spotifyUri: String
@@ -53,7 +55,7 @@ export const playlistType = `
   }
 
   type Playlist {
-    id: String!
+    id: Int!
     name: String
     description: String
     spotifyId: String
@@ -63,7 +65,8 @@ export const playlistType = `
 
 export const playlistQueryTypes = `
   loadPlaylist(genreId: Int): Playlist
-  loadPlaylistSongs(genreId: String, searchText: String, perPage: Int, currentPage: Int): PlaylistSong[]
+  loadPlaylistSongs(playlistId: Int): [PlaylistSong]
+  searchSongs(playlistId: Int, searchText: String): [PlaylistSong]
 `
 
 export const playlistQueriesResolvers = {
@@ -72,39 +75,47 @@ export const playlistQueriesResolvers = {
     { genreId }: PlaylistArgs,
     { playlistService, session, token }: AppContext,
   ): Promise<Playlist> => {
-    await getUserFromToken(session, token)
+    await validateUserAuth(session, token)
     return playlistService.getByGenreIdOrCreate(genreId)
   },
   loadPlaylistSongs: async (
     root: unknown,
-    { genreId }: LoadPlaylistSongsArgs,
+    { playlistId }: LoadPlaylistSongsArgs,
     { playlistService, session, token }: AppContext,
   ): Promise<PlaylistSong[]> => {
-    await getUserFromToken(session, token)
-    return playlistService.loadAllPlaylistActiveSongsByGenre(genreId)
+    await validateUserAuth(session, token)
+    return playlistService.loadAllPlaylistActiveSongs(playlistId)
+  },
+  searchSongs: async (
+    root: unknown,
+    { playlistId, searchText }: SearchSongsArgs,
+    { playlistService, session, token }: AppContext,
+  ): Promise<SearchSong[]> => {
+    await validateUserAuth(session, token)
+    return playlistService.searchSongs(playlistId, searchText)
   },
 }
 
 export const playlistMutationTypes = `
-  addSongToPlaylist(genreId: Int, song: SongInput): PlaylistSong
-  playOnDevice(genreId: Int, deviceId: String): Boolean
+  addSongToPlaylist(playlistId: Int, song: SongInput): PlaylistSong
+  playOnDevice(playlistId: Int, deviceId: String): Boolean
 `
 
 export const playlistMutationsResolvers = {
   addSongToPlaylist: async (
     root: unknown,
-    { genreId, song }: AddSongToPlaylistMutationArgs,
+    { playlistId, song }: AddSongToPlaylistMutationArgs,
     { playlistService, session, token }: AppContext,
   ): Promise<PlaylistSong> => {
-    const currentUser = await getUserFromToken(session, token)
-    return playlistService.addSongToPlaylist(currentUser.id, genreId, song)
+    const currentUser = await validateUserAuth(session, token)
+    return playlistService.addSongToPlaylist(currentUser.id, playlistId, song)
   },
   playOnDevice: async (
     root: unknown,
-    { genreId, deviceId }: PlayOnDeviceArgs,
+    { playlistId, deviceId }: PlayOnDeviceArgs,
     { playlistService, session, token }: AppContext,
   ): Promise<boolean> => {
-    const currentUser = await getUserFromToken(session, token)
-    return playlistService.playOnDevice(currentUser, genreId, deviceId)
+    const currentUser = await validateUserAuth(session, token)
+    return playlistService.playOnDevice(currentUser, playlistId, deviceId)
   },
 }
