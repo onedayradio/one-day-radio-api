@@ -44,7 +44,7 @@ export const getTokenData = async (
   return tokenData
 }
 
-export const getUserFromToken = async (
+export const validateUserAuth = async (
   session: Session,
   token: string | undefined,
 ): Promise<User> => {

@@ -1,4 +1,4 @@
-import { getUserFromToken } from 'src/shared'
+import { validateUserAuth } from '../../shared'
 import { AppContext, SpotifyDevice } from '../../types'
 
 export const deviceType = `
@@ -18,7 +18,7 @@ export const deviceQueriesResolvers = {
     args: unknown,
     { devicesService, session, token }: AppContext,
   ): Promise<SpotifyDevice[]> => {
-    const currentUser = await getUserFromToken(session, token)
+    const currentUser = await validateUserAuth(session, token)
     return devicesService.loadPlayerDevices(currentUser)
   },
 }

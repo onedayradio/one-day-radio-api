@@ -109,18 +109,17 @@ describe('PlaylistsService', () => {
       const playlistService = new PlaylistsService(testsUtil.session)
       await playlistService.playOnDevice(juan, 1133, '4455')
     } catch (error) {
-      expect(error.message).to.equal('Playlist for the genre Id 1133 does not exists!')
+      expect(error.message).to.equal('Playlist with id 1133 does not exists!')
     }
   })
 
   it('should playOnDevice', async () => {
-    const genresService = new GenresService(testsUtil.session)
-    const allGenres = await genresService.loadAll({ orderBy: 'order' })
-    const heavyMetalGenre = allGenres[0]
     const usersService = new UsersService(testsUtil.session)
     const juan = await usersService.loadByEmail('juan@gmail.com')
     const playlistService = new PlaylistsService(testsUtil.session)
-    const response = await playlistService.playOnDevice(juan, heavyMetalGenre.id, '4455')
+    const playlists = await playlistService.loadAll()
+    const playlist1 = playlists[0]
+    const response = await playlistService.playOnDevice(juan, playlist1.id, '4455')
     expect(response).to.equal(true)
   })
 
@@ -212,11 +211,10 @@ describe('PlaylistsService', () => {
     try {
       const usersService = new UsersService(testsUtil.session)
       const juan = await usersService.loadByEmail('juan@gmail.com')
-      const genresService = new GenresService(testsUtil.session)
-      const allGenres = await genresService.loadAll({ orderBy: 'order' })
-      const heavyMetalGenre = allGenres[0]
       const playlistService = new PlaylistsService(testsUtil.session)
-      await playlistService.addSongToPlaylist(juan.id, heavyMetalGenre.id, testSong1)
+      const allPlaylists = await playlistService.loadAll()
+      const playlist1 = allPlaylists[0]
+      await playlistService.addSongToPlaylist(juan.id, playlist1.id, testSong1)
     } catch (error) {
       expect(error.message).to.equal('User has reached max amount of songs for this playlist')
     }
@@ -226,11 +224,10 @@ describe('PlaylistsService', () => {
     try {
       const usersService = new UsersService(testsUtil.session)
       const jose = await usersService.loadByEmail('jose.morales@gmail.com')
-      const genresService = new GenresService(testsUtil.session)
-      const allGenres = await genresService.loadAll({ orderBy: 'order' })
-      const heavyMetalGenre = allGenres[0]
       const playlistService = new PlaylistsService(testsUtil.session)
-      await playlistService.addSongToPlaylist(jose.id, heavyMetalGenre.id, testSong2)
+      const allPlaylists = await playlistService.loadAll()
+      const playlist1 = allPlaylists[0]
+      await playlistService.addSongToPlaylist(jose.id, playlist1.id, testSong2)
     } catch (error) {
       expect(error.message).to.equal(
         'Song Hallowed Be Thy Name by Iron Maiden is already in this playlist',
@@ -241,19 +238,14 @@ describe('PlaylistsService', () => {
   it('should add a song to playlist -> non existing song in db', async () => {
     const usersService = new UsersService(testsUtil.session)
     const jose = await usersService.loadByEmail('jose.morales@gmail.com')
-    const genresService = new GenresService(testsUtil.session)
-    const allGenres = await genresService.loadAll({ orderBy: 'order' })
-    const heavyMetalGenre = allGenres[0]
     const playlistService = new PlaylistsService(testsUtil.session)
-    const playlistSong = await playlistService.addSongToPlaylist(
-      jose.id,
-      heavyMetalGenre.id,
-      testSong1,
-    )
+    let allPlaylists = await playlistService.loadAll()
+    let playlist1 = allPlaylists[0]
+    const playlistSong = await playlistService.addSongToPlaylist(jose.id, playlist1.id, testSong1)
     expect(playlistSong).to.containSubset(expectedAddSong1)
 
-    const playlists = await playlistService.loadAll()
-    const playlist1 = playlists[0]
+    allPlaylists = await playlistService.loadAll()
+    playlist1 = allPlaylists[0]
     const activePlaylistSongs = await playlistService.loadAllPlaylistActiveSongs(playlist1.id)
     const spotifyIds = activePlaylistSongs.map((playlistSong) => playlistSong.song.spotifyId)
     expect(spotifyIds).to.deep.equal(['ava11', '1155', '4433', '1133', '1144'])
@@ -262,19 +254,14 @@ describe('PlaylistsService', () => {
   it('should add a song to playlist -> existing song in db', async () => {
     const usersService = new UsersService(testsUtil.session)
     const san = await usersService.loadByEmail('sandra.aguilar@gmail.com')
-    const genresService = new GenresService(testsUtil.session)
-    const allGenres = await genresService.loadAll({ orderBy: 'order' })
-    const heavyMetalGenre = allGenres[0]
     const playlistService = new PlaylistsService(testsUtil.session)
-    const playlistSong = await playlistService.addSongToPlaylist(
-      san.id,
-      heavyMetalGenre.id,
-      testSong3,
-    )
+    let allPlaylists = await playlistService.loadAll()
+    let playlist1 = allPlaylists[0]
+    const playlistSong = await playlistService.addSongToPlaylist(san.id, playlist1.id, testSong3)
     expect(playlistSong).to.containSubset(expectedAddSong2)
 
-    const playlists = await playlistService.loadAll()
-    const playlist1 = playlists[0]
+    allPlaylists = await playlistService.loadAll()
+    playlist1 = allPlaylists[0]
     const activePlaylistSongs = await playlistService.loadAllPlaylistActiveSongs(playlist1.id)
     const spotifyIds = activePlaylistSongs.map((playlistSong) => playlistSong.song.spotifyId)
     expect(spotifyIds).to.deep.equal(['5533', '1155', '4433', '1133', '1144'])
@@ -284,22 +271,17 @@ describe('PlaylistsService', () => {
     const usersService = new UsersService(testsUtil.session)
     const jose = await usersService.loadByEmail('jose.morales@gmail.com')
     const playlistService = new PlaylistsService(testsUtil.session)
-    const genresService = new GenresService(testsUtil.session)
-    const allGenres = await genresService.loadAll({ orderBy: 'order' })
-    const heavyMetalGenre = allGenres[0]
-    await playlistService.addSongToPlaylist(jose.id, heavyMetalGenre.id, testSong1)
+    let allPlaylists = await playlistService.loadAll()
+    let playlist1 = allPlaylists[0]
+    await playlistService.addSongToPlaylist(jose.id, playlist1.id, testSong1)
 
-    const playlists = await playlistService.loadAll()
-    const playlist1 = playlists[0]
+    allPlaylists = await playlistService.loadAll()
+    playlist1 = allPlaylists[0]
     let allPlaylistSongs = await playlistService.loadAllPlaylistActiveSongs(playlist1.id)
     let spotifyIds = allPlaylistSongs.map((playlistSong) => playlistSong.song.spotifyId)
     expect(spotifyIds).to.deep.equal(['ava11', '1155', '4433', '1133', '1144'])
 
-    const playlistSong = await playlistService.addSongToPlaylist(
-      jose.id,
-      heavyMetalGenre.id,
-      testSong4,
-    )
+    const playlistSong = await playlistService.addSongToPlaylist(jose.id, playlist1.id, testSong4)
     expect(playlistSong).to.containSubset(expectedAddSong3)
 
     allPlaylistSongs = await playlistService.loadAllPlaylistActiveSongs(playlist1.id)
