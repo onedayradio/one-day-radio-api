@@ -26,6 +26,7 @@ node_modules
 coverage
 
 TODO
+TODO.md
 
 migrations/db-config**/*.js
 !migrations/db-config.template.js

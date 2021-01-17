@@ -2,6 +2,9 @@
 # RUNNING PROJECT LOCALLY
 # ----------------------------
 
+preload-neo4j-watch: setup-local-db
+	export DOTENV_CONFIG_PATH=./scripts/.env; yarn preload-neo4j-watch
+
 local: setup-local-db
 	yarn
 	yarn start
