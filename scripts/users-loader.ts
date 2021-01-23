@@ -4,7 +4,7 @@ import { Session } from 'neo4j-driver'
 
 import { UsersService } from '../src/components/users/users.service'
 
-const AMOUNT_OF_USERS = 100
+const AMOUNT_OF_USERS = 190
 
 export interface UserPreload {
   email: string
@@ -19,14 +19,17 @@ export interface UserPreload {
 
 const emailDomains = ['gmail.com', 'gmail.com', 'gmail.com', 'yahoo.com']
 
-export const preloadUsers = async (session: Session): Promise<void> => {
-  console.log('preloading 100 users into Neo4J...')
+export const preloadUsers = async (session: Session): Promise<number[]> => {
+  console.log(`preloading ${AMOUNT_OF_USERS} users into Neo4J...`)
   const usersService = new UsersService(session)
   await removeAllUsers(usersService)
   const users = generateUsers()
+  const userIds = []
   for (const user of users) {
-    await usersService.create(user)
+    const newUser = await usersService.create(user)
+    userIds.push(newUser.id)
   }
+  return userIds
 }
 
 const generateUsers = () => {
