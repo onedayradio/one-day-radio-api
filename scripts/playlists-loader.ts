@@ -1,5 +1,8 @@
 import { Session } from 'neo4j-driver'
-import { PlaylistsService } from '../src/components'
+import { camelCase } from 'lodash'
+import fs from 'fs'
+
+import { PlaylistsService, SpotifyService } from '../src/components'
 import { Genre } from '../src/types'
 
 const spotifyPlaylistsIds = {
@@ -24,7 +27,9 @@ const spotifyPlaylistsIds = {
   Soul: '7Dun7STHf2hTyyO3UgKjru',
 }
 
-console.log(spotifyPlaylistsIds)
+console.log(spotifyPlaylistsIds !== null)
+
+let usersIndex = 0
 
 export const preloadPlaylists = async (
   session: Session,
@@ -34,7 +39,64 @@ export const preloadPlaylists = async (
   const playlistsService = new PlaylistsService(session)
   for (const genre of genres) {
     const playlist = await playlistsService.getByGenreIdOrCreate(genre.id)
-    console.log(`Playlist for genre ${genre.name}, spotifyId ${playlist.spotifyId}`)
-    break
+    const genreSongs = await loadGenreSongsFromJson(genre.name)
+    await addSongsToPlaylist(genre.name, genreSongs, playlist.id, userIds, session)
+    usersIndex += 10
   }
+}
+
+const loadGenreSongsFromJson = async (
+  genre: string,
+): Promise<{ name: string; artist: string }[] | null> => {
+  try {
+    const fileName = camelCase(genre)
+    const rawData = fs.readFileSync(`./scripts/songs/${fileName}.json`)
+    const songsData = JSON.parse(rawData.toString())
+    return songsData
+  } catch (error) {
+    // console.log(`Json file for genre ${genre} not found`)
+    return null
+  }
+}
+
+const addSongsToPlaylist = async (
+  genre: string,
+  songs: { name: string; artist: string }[] | null,
+  playlistId: number,
+  userIds: number[],
+  session: Session,
+) => {
+  if (!songs) {
+    return
+  }
+  let localUserIndex = usersIndex
+  let songsIndex = 0
+  const playlistsService = new PlaylistsService(session)
+  const spotifyService = new SpotifyService(session)
+  console.log(`Adding songs to playlist for genre ${genre} and playlistId: ${playlistId}`)
+  for (const song of songs) {
+    try {
+      const searchResponse = await spotifyService.searchSong(
+        `name:${song.name}+artist:${song.artist}`,
+      )
+      const songs = searchResponse.songs
+      if (!songs || songs.length === 0) {
+        console.log(`Didnt find song ${song.name} in Spotify`)
+        continue
+      }
+      const firstSong = songs[0]
+      const userId = userIds[localUserIndex]
+      console.log(
+        `Adding song ${firstSong.name}. songsIndex ${songsIndex}. userIndex ${localUserIndex}`,
+      )
+      await playlistsService.addSongToPlaylist(userId, playlistId, firstSong)
+      songsIndex++
+      // every 10 songs we use a different user
+      localUserIndex = songsIndex % 10 === 0 ? localUserIndex + 1 : localUserIndex
+    } catch (error) {
+      console.log(`Error adding song ${song.name} to playlist ${playlistId}`)
+    }
+  }
+  console.log('usersIndex', usersIndex)
+  return null
 }
