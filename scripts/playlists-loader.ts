@@ -54,7 +54,7 @@ const loadGenreSongsFromJson = async (
     const songsData = JSON.parse(rawData.toString())
     return songsData
   } catch (error) {
-    // console.log(`Json file for genre ${genre} not found`)
+    console.log(`Json file for genre ${genre} not found`)
     return null
   }
 }
@@ -76,12 +76,10 @@ const addSongsToPlaylist = async (
   console.log(`Adding songs to playlist for genre ${genre} and playlistId: ${playlistId}`)
   for (const song of songs) {
     try {
-      const searchResponse = await spotifyService.searchSong(
-        `name:${song.name}+artist:${song.artist}`,
-      )
+      const searchResponse = await spotifyService.searchSong(`${song.name} ${song.artist}`)
       const songs = searchResponse.songs
       if (!songs || songs.length === 0) {
-        console.log(`Didnt find song ${song.name} in Spotify`)
+        console.log(`Didnt find song ${song.name} by ${song.artist} in Spotify`)
         continue
       }
       const firstSong = songs[0]
