@@ -1,0 +1,402 @@
+[
+  {
+    "name": "Paranoid",
+    "artist": "Black Sabbath"
+  },
+  {
+    "name": "Hallowed Be Thy Name",
+    "artist": "Iron Maiden"
+  },
+  {
+    "name": "Master of Puppets",
+    "artist": "Metallica"
+  },
+  {
+    "name": "Ace of Spades",
+    "artist": "Motorhead"
+  },
+  {
+    "name": "Crazy Train",
+    "artist": "Ozzy Osbourne"
+  },
+  {
+    "name": "War Pigs",
+    "artist": "Black Sabbath"
+  },
+  {
+    "name": "Chapel of Ghouls",
+    "artist": "Morbid Angel"
+  },
+  {
+    "name": "Exciter",
+    "artist": "Judas Priest"
+  },
+  {
+    "name": "Jesu Dod",
+    "artist": "Burzum"
+  },
+  {
+    "name": "Nightfall",
+    "artist": "Blind Guardian"
+  },
+  {
+    "name": "Over the wall",
+    "artist": "Testament"
+  },
+  {
+    "name": "Tornado of Souls",
+    "artist": "Megadeth"
+  },
+  {
+    "name": "Mercyful Fate",
+    "artist": "Evil"
+  },
+  {
+    "name": "Neon Knights",
+    "artist": "Black Sabbath"
+  },
+  {
+    "name": "The Divine Wings of Tragedy",
+    "artist": "Symphony X"
+  },
+  {
+    "name": "Blinded by fear",
+    "artist": "At the Gates"
+  },
+  {
+    "name": "Opeth",
+    "artist": "Blackwater Park"
+  },
+  {
+    "name": "Heresy",
+    "artist": "Pantera"
+  },
+  {
+    "name": "Wasted Years",
+    "artist": "Iron Maiden"
+  },
+  {
+    "name": "Crystal Mountain",
+    "artist": "Death"
+  },
+  {
+    "name": "Kill the king",
+    "artist": "Rainbow"
+  },
+  {
+    "name": "Guardian",
+    "artist": "Fates Warning"
+  },
+  {
+    "name": "Screaming for Vengeance",
+    "artist": "Judas Priest"
+  },
+  {
+    "name": "Killers",
+    "artist": "Iron Maiden"
+  },
+  {
+    "name": "Eyes of a Stranger",
+    "artist": "Queensrÿche"
+  },
+  {
+    "name": "Sweet Leaf",
+    "artist": "Black Sabbath"
+  },
+  {
+    "name": "South of heaven",
+    "artist": "Slayer"
+  },
+  {
+    "name": "The last in line",
+    "artist": "Dio"
+  },
+  {
+    "name": "Heartwork",
+    "artist": "Carcass"
+  },
+  {
+    "name": "A fine day to die",
+    "artist": "Bathory"
+  },
+  {
+    "name": "Lucifer",
+    "artist": "Avantasia"
+  },
+  {
+    "name": "Keeper of the Seven Keys",
+    "artist": "Helloween"
+  },
+  {
+    "name": "Powerslave",
+    "artist": "Iron Maiden"
+  },
+  {
+    "name": "Battle Hymn",
+    "artist": "Manowar"
+  },
+  {
+    "name": "Hammer Smashed Face",
+    "artist": "Cannibal Corpse"
+  },
+  {
+    "name": "Bonded by Blood",
+    "artist": "Exodus"
+  },
+  {
+    "name": "I Am the Black Wizards",
+    "artist": "Emperor"
+  },
+  {
+    "name": "Pull Me Under",
+    "artist": "Dream Theater"
+  },
+  {
+    "name": "The Philosopher",
+    "artist": "Death"
+  },
+  {
+    "name": "Rainbow in the dark",
+    "artist": "Dio"
+  },
+  {
+    "name": "Infinite Dreams",
+    "artist": "Iron Maiden"
+  },
+  {
+    "name": "Hangar 18",
+    "artist": "Megadeth"
+  },
+  {
+    "name": "Queen of the Reich",
+    "artist": "Queensrÿche"
+  },
+  {
+    "name": "Mr. Crowley",
+    "artist": "Ozzy Osbourne"
+  },
+  {
+    "name": "Freezing Moon",
+    "artist": "Mayhem"
+  },
+  {
+    "name": "Caught in a Mosh",
+    "artist": "Anthrax"
+  },
+  {
+    "name": "Halloween",
+    "artist": "Helloween"
+  },
+  {
+    "name": "Symphony of Destruction",
+    "artist": "Megadeth"
+  },
+  {
+    "name": "Seasons in the Abyss",
+    "artist": "Slayer"
+  },
+  {
+    "name": "Black Metal",
+    "artist": "Venom"
+  },
+  {
+    "name": "For Whom the Bell Tolls",
+    "artist": "Metallica"
+  },
+  {
+    "name": "Children of the Grave",
+    "artist": "Black Sabbath"
+  },
+  {
+    "name": "Pull the Plug",
+    "artist": "Death"
+  },
+  {
+    "name": "You've Got Another Thing Comin'",
+    "artist": "Judas Priest"
+  },
+  {
+    "name": "Symptom of the Universe",
+    "artist": "Black Sabbath"
+  },
+  {
+    "name": "Rime of the Ancient Mariner",
+    "artist": "Iron Maiden"
+  },
+  {
+    "name": "The Oath",
+    "artist": "Mercyful Fate"
+  },
+  {
+    "name": "Phantom of the Opera",
+    "artist": "Iron Maiden"
+  },
+  {
+    "name": "Holy Diver",
+    "artist": "Dio"
+  },
+  {
+    "name": "Witching Hour",
+    "artist": "Venom"
+  },
+  {
+    "name": "Cemetery Gates",
+    "artist": "Pantera"
+  },
+  {
+    "name": "Peace Sells",
+    "artist": "Megadeth"
+  },
+  {
+    "name": "Fade to Black",
+    "artist": "Metallica"
+  },
+  {
+    "name": "The Hellion/Electric Eye",
+    "artist": "Judas Priest"
+  },
+  {
+    "name": "Sabbath Bloody Sabbath",
+    "artist": "Black Sabbath"
+  },
+  {
+    "name": "A question of heaven",
+    "artist": "Iced Earth"
+  },
+  {
+    "name": "Heaven and Hell",
+    "artist": "Black Sabbath"
+  },
+  {
+    "name": "Holy Wars... The Punishment Due",
+    "artist": "Megadeth"
+  },
+  {
+    "name": "One",
+    "artist": "Metallica"
+  },
+  {
+    "name": "Stargazer",
+    "artist": "Rainbow"
+  },
+  {
+    "name": "Raining Blood",
+    "artist": "Slayer"
+  },
+  {
+    "name": "Victim of Changes",
+    "artist": "Judas Priest"
+  },
+  {
+    "name": "Black Sabbath",
+    "artist": "Black Sabbath"
+  },
+  {
+    "name": "Angel of Death",
+    "artist": "Slayer"
+  },
+  {
+    "name": "Beyond the Realms of Death",
+    "artist": "Judas Priest"
+  },
+  {
+    "name": "Cowboys from Hell",
+    "artist": "Pantera"
+  },
+  {
+    "name": "Stand 4 what u r",
+    "artist": "Accept"
+  },
+  {
+    "name": "Hoy gano yo",
+    "artist": "Warcry"
+  },
+  {
+    "name": "La vieja guardia",
+    "artist": "Warcry"
+  },
+  {
+    "name": "War Ensemble",
+    "artist": "Slayer"
+  },
+  {
+    "name": "Metropolis Part I",
+    "artist": "Dream Theater"
+  },
+  {
+    "name": "I am the Black Wizards",
+    "artist": "Emperor"
+  },
+  {
+    "name": "Transilvanian Hunger",
+    "artist": "Darkthrone"
+  },
+  {
+    "name": "Battery",
+    "artist": "Metallica"
+  },
+  {
+    "name": "Man on the Silver Mountain",
+    "artist": "Rainbow"
+  },
+  {
+    "name": "Strike of the Beast",
+    "artist": "Exodus"
+  },
+  {
+    "name": "Zombie Ritual",
+    "artist": "Death"
+  },
+  {
+    "name": "Abigail",
+    "artist": "King Diamond"
+  },
+  {
+    "name": "The Toxic Waltz",
+    "artist": "Exodus"
+  },
+  {
+    "name": "Refuse / Resist",
+    "artist": "Sepultura"
+  },
+  {
+    "name": "Forty six & 2",
+    "artist": "Tool"
+  },
+  {
+    "name": "The greatest show on earth",
+    "artist": "Nightwish"
+  },
+  {
+    "name": "Demon of the Fall",
+    "artist": "Opeth"
+  },
+  {
+    "name": "Lateralus",
+    "artist": "Tool"
+  },
+  {
+    "name": "Rational Gaze",
+    "artist": "Meshuggah"
+  },
+  {
+    "name": "Ghost of Perdition",
+    "artist": "Opeth"
+  },
+  {
+    "name": "Vicarious",
+    "artist": "Tool"
+  },
+  {
+    "name": "Bleed",
+    "artist": "Meshuggah"
+  },
+  {
+    "name": "L'Enfant Sauvage",
+    "artist": "Gojira"
+  },
+  {
+    "name": "Playing with fire",
+    "artist": "Stratovarius"
+  }
+]

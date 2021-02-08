@@ -270,7 +270,6 @@ export class SpotifyClient {
 
   static async doSpotifyRequest(options: RequestOptions, method = 'get'): Promise<any> {
     const response = await doRequest(options, method)
-
     if (response && response.error && response.error.status === UNAUTHORIZED_STATUS) {
       throw new SpotifyUnauthorizedError(response.error.message)
     } else if (response && response.error) {

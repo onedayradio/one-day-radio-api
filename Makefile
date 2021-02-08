@@ -7,6 +7,13 @@ local: setup-local-db
 	yarn start
 
 # ----------------------------
+# PRELOADING NEO4J DATABASE
+# ----------------------------
+
+preload-neo4j-watch: setup-local-db
+	export DOTENV_CONFIG_PATH=./scripts/.env; yarn preload-neo4j-watch
+
+# ----------------------------
 # SETTING UP LOCAL DATABASE
 # ----------------------------
 

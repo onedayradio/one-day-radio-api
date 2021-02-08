@@ -36,6 +36,7 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
   async getByGenreIdOrCreate(genreId: number): Promise<Playlist> {
     const playlist = await this.dao.loadByGenreId(genreId)
     if (playlist) {
+      console.log(`Playlist already created for genreId: ${genreId}`)
       return playlist
     }
     const playlistData = await this.createPlaylistData(genreId)
