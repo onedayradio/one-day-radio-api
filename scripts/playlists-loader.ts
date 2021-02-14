@@ -37,15 +37,25 @@ export const preloadPlaylists = async (
   genres: Genre[],
 ): Promise<void> => {
   const playlistsService = new PlaylistsService(session)
+  const spotifyService = new SpotifyService(session)
   for (const genre of genres) {
     const playlist = await playlistsService.getByGenreIdOrCreate(genre.id)
+    const currentSpotifyPlaylistSongs = await spotifyService.getPlaylistItems(
+      playlist.spotifyId,
+      0,
+      10,
+    )
+    if (currentSpotifyPlaylistSongs.total > 0) {
+      console.log(`Playlist for genre ${genre.name} already processed. Skipping...`)
+      continue
+    }
     const genreSongs = await loadGenreSongsFromJson(genre.name)
     await addSongsToPlaylist(genre.name, genreSongs, playlist.id, userIds, session)
     usersIndex += 10
   }
 }
 
-const loadGenreSongsFromJson = async (
+export const loadGenreSongsFromJson = async (
   genre: string,
 ): Promise<{ name: string; artist: string }[] | null> => {
   try {
@@ -59,13 +69,13 @@ const loadGenreSongsFromJson = async (
   }
 }
 
-const addSongsToPlaylist = async (
+export const addSongsToPlaylist = async (
   genre: string,
   songs: { name: string; artist: string }[] | null,
   playlistId: number,
   userIds: number[],
   session: Session,
-) => {
+): Promise<void> => {
   if (!songs) {
     return
   }
@@ -96,5 +106,4 @@ const addSongsToPlaylist = async (
     }
   }
   console.log('usersIndex', usersIndex)
-  return null
 }
