@@ -6,7 +6,7 @@ import { PlaylistsService, SpotifyService } from '../src/components'
 import { Genre } from '../src/types'
 
 const spotifyPlaylistsIds = {
-  Blues: '2ZTj5pvbmXeMBpXpDpCPNc',
+  Blues: '0exXppqE1XvIFPYuNLgVRm',
   Chill: '2Npnm7DydgyVmyAtjqUnfH',
   Classical: '4mqTkNs9cXkV4awN9gLC9N',
   Country: '3rz7NUSb8vKpwXKp9gacz7',

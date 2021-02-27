@@ -5,7 +5,7 @@ CREATE (:User { firstname:'Juan', lastname: 'Morales', email: 'juan.morales@gmai
 CREATE (:User { firstname:'Pablo', lastname: 'Gonzalez', email: 'pablo.gonzalez@gmail.com' })
 // GENRES & PLAYLISTS
 CREATE (blues:Genre { name:'Blues', order:1, maxSongs:200 })
-CREATE (:Playlist { name: 'One day Radio. Blues playlist', description: 'This playlist has been created for you by the community. One day Radio. Blues playlist', genreId: ID(blues), spotifyId: '2ZTj5pvbmXeMBpXpDpCPNc' })
+CREATE (:Playlist { name: 'One day Radio. Blues playlist', description: 'This playlist has been created for you by the community. One day Radio. Blues playlist', genreId: ID(blues), spotifyId: '0exXppqE1XvIFPYuNLgVRm' })
 
 CREATE (chill:Genre { name: 'Chill', order: 2, maxSongs: 200 })
 CREATE (:Playlist { name: 'One day Radio. Chill playlist', description: 'This playlist has been created for you by the community. One day Radio. Chill playlist', genreId: ID(chill), spotifyId: '2Npnm7DydgyVmyAtjqUnfH' })
