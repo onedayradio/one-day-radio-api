@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server-lambda'
 import { Context, APIGatewayProxyEvent, APIGatewayProxyCallback } from 'aws-lambda'
 
 import { schema, context, plugins } from './graphql'
-import { createNeo4JDriver } from './shared'
+import { createNeo4JDriver, getValue } from './shared'
 
 const apolloServer = new ApolloServer({
   schema,
@@ -24,7 +24,6 @@ export const handler = (
   context: Context,
   callback: APIGatewayProxyCallback,
 ): void => {
-  console.log('working so far...')
   context.callbackWaitsForEmptyEventLoop = false
   cachedNeo4JDriver = createNeo4JDriver(cachedNeo4JDriver)
   graphqlHandler(event as any, context, callback)

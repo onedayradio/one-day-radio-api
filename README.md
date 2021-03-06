@@ -6,7 +6,7 @@ The one day radio API
 
 ### Step by step instructions:
 
-1. Make a copy of `.env-template` and name it `.env-local`
+1. Make a copy of `.env-template` and name it `.env`
 2. Fill this file with appropriate values (for local dev usually whatever is in the template file is just what you need)
 3. Run `nvm use` to install the nodejs supported. In case you don't use nvm or any node version manager, please check the `.nvmrc` file and install the correct node version manually.
 4. On your terminal run `make local`. Running this will spin up a local neo4j database, it will feed the database with some users and will start the serverless project offline.

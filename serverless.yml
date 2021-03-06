@@ -1,5 +1,6 @@
 service: one-day-radio-api
 app: one-day-radio-api
+useDotenv: true
 
 provider:
   name: aws
@@ -7,6 +8,9 @@ provider:
   stage: local
   timeout: 60
   region: us-east-1
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    shouldStartNameWithService: true
   environment:
     neo4j_url: ${ssm:/onedayradio/${self:custom.myStage}/neo4j_url}
     neo4j_username: ${ssm:/onedayradio/${self:custom.myStage}/neo4j_username~true}
