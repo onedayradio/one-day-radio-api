@@ -7,6 +7,16 @@ local: setup-local-db
 	yarn start
 
 # ----------------------------
+# WEB SCRAPPING
+# ----------------------------
+
+web-scrapper:
+	export DOTENV_CONFIG_PATH=./scripts/.env; yarn webscrapper
+
+web-scrapper-watch:
+	export DOTENV_CONFIG_PATH=./scripts/.env; yarn webscrapper-watch
+
+# ----------------------------
 # PRELOADING NEO4J DATABASE
 # ----------------------------
 

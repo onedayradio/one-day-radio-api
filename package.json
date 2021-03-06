@@ -16,7 +16,9 @@
     "test:watch": "cross-env NODE_ENV=test ts-mocha --paths --timeout 20000 --recursive --watch --extension ts -p tsconfig.json tests/**/*.spec.ts",
     "test:coverage": "nyc --reporter=html --reporter=text --reporter=text-summary yarn test",
     "preload-neo4j": "ts-node-dev ./scripts/neo4j-loader.ts",
-    "preload-neo4j-watch": "ts-node-dev --respawn ./scripts/neo4j-loader.ts"
+    "preload-neo4j-watch": "ts-node-dev --respawn ./scripts/neo4j-loader.ts",
+    "webscrapper": "ts-node-dev ./scripts/scrapper.ts",
+    "webscrapper-watch": "ts-node-dev --respawn ./scripts/scrapper.ts"
   },
   "husky": {
     "hooks": {
@@ -73,6 +75,7 @@
     "mocha": "8.2.1",
     "nyc": "15.1.0",
     "prettier": "2.2.1",
+    "scrape-it": "5.3.1",
     "serverless": "2.15.0",
     "serverless-offline": "6.8.0",
     "serverless-offline-ssm": "5.2.0",
