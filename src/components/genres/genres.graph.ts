@@ -10,7 +10,7 @@ export const genreType = `
 
 export const genresQueryTypes = `
   loadAllGenres: [Genre]
-  loadGenre(genreId: String): Genre
+  loadGenre(genreId: Int): Genre
 `
 
 export const genreQueriesResolvers = {

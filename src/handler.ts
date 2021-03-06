@@ -2,7 +2,7 @@ import { ApolloServer } from 'apollo-server-lambda'
 import { Context, APIGatewayProxyEvent, APIGatewayProxyCallback } from 'aws-lambda'
 
 import { schema, context, plugins } from './graphql'
-import { createNeo4JDriver, getValue } from './shared'
+import { createNeo4JDriver } from './shared'
 
 const apolloServer = new ApolloServer({
   schema,

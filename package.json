@@ -18,7 +18,8 @@
     "preload-neo4j": "ts-node-dev ./scripts/neo4j-loader.ts",
     "preload-neo4j-watch": "ts-node-dev --respawn ./scripts/neo4j-loader.ts",
     "webscrapper": "ts-node-dev ./scripts/scrapper.ts",
-    "webscrapper-watch": "ts-node-dev --respawn ./scripts/scrapper.ts"
+    "webscrapper-watch": "ts-node-dev --respawn ./scripts/scrapper.ts",
+    "prepare": "husky install"
   },
   "husky": {
     "hooks": {
