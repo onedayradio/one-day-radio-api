@@ -24,7 +24,8 @@ export const handler = (
   context: Context,
   callback: APIGatewayProxyCallback,
 ): void => {
+  console.log('working so far...')
   context.callbackWaitsForEmptyEventLoop = false
   cachedNeo4JDriver = createNeo4JDriver(cachedNeo4JDriver)
-  graphqlHandler(event, context, callback)
+  graphqlHandler(event as any, context, callback)
 }
