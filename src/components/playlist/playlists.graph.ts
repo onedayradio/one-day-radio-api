@@ -64,7 +64,7 @@ export const playlistType = `
 `
 
 export const playlistQueryTypes = `
-  loadPlaylist(genreId: Int): Playlist
+  loadPlaylist(playlistId: Int): Playlist
   loadPlaylistSongs(playlistId: Int): [PlaylistSong]
   searchSongs(playlistId: Int, searchText: String): [PlaylistSong]
 `
@@ -72,11 +72,11 @@ export const playlistQueryTypes = `
 export const playlistQueriesResolvers = {
   loadPlaylist: async (
     root: unknown,
-    { genreId }: PlaylistArgs,
+    { playlistId }: PlaylistArgs,
     { playlistService, session, token }: AppContext,
   ): Promise<Playlist> => {
     await validateUserAuth(session, token)
-    return playlistService.getByGenreIdOrCreate(genreId)
+    return playlistService.loadById({ id: playlistId })
   },
   loadPlaylistSongs: async (
     root: unknown,

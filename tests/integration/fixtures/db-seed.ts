@@ -13,6 +13,8 @@ CREATE (heavyMetalGenre:Genre { name: 'Heavy Metal', order: 1, maxSongs: 5, crea
 CREATE (:Genre { name: 'Rock', order: 3, maxSongs: 200, created: datetime() })
 CREATE (:Genre { name: 'Pop', order: 4, maxSongs: 200, created: datetime() })
 CREATE (playlist1:Playlist { name: 'One day Radio. Heavy Metal playlist', spotifyId: '11', description: 'This playlist has been created for you by the community. One day Radio. Heavy Metal playlist', genreId: ID(heavyMetalGenre), created: datetime() })
+CREATE (heavyMetalGenre)-[:HAS_PLAYLIST]->(playlist1)
+
 CREATE (juancaSong1: Song { spotifyId: '1133', spotifyUri: 'http://a-spotify-song-uri.com', name: 'Hallowed Be Thy Name', artistSpotifyIds: 'im11', artistsNames: 'Iron Maiden', albumSpotifyId: 'imalbum11', albumName: 'The Number of the Beast', albumImage300: 'http://some300image' })
 CREATE (juancaSong2: Song { spotifyId: '1144', spotifyUri: 'http://a-spotify-song-uri2.com', name: 'Infinite Dreams', artistSpotifyIds: 'im11', artistsNames: 'Iron Maiden', albumSpotifyId: 'imalbum33', albumName: 'Piece of Mind', albumImage300: 'http://some300image' })
 CREATE (juancaSong3: Song { spotifyId: '1155', spotifyUri: 'http://a-spotify-song-uri3.com', name: 'From The Ashes', artistSpotifyIds: 'gr11', artistsNames: 'Gamma Ray', albumSpotifyId: 'gralbum11', albumName: 'Heading for Tomorrow', albumImage300: 'http://some300image' })

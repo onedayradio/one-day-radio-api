@@ -5,6 +5,7 @@ export const genreType = `
   type Genre {
     id: String!
     name: String
+    playlistId: String
   }
 `
 

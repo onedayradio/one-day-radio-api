@@ -27,7 +27,30 @@ const spotifyPlaylistsIds = {
   Soul: '7Dun7STHf2hTyyO3UgKjru',
 }
 
+const spotifyTestEnvPlaylistIds = {
+  Blues: '0Np5XNyiRJE5RQHRJjXKRZ',
+  Chill: '0esjbe8oJjT73bRWIqlZSU',
+  Classical: '5Mh9hPLwWy0HoIvUn2aqM9',
+  Country: '5yl8fVwFyIp1Vj19uphS7d',
+  Electronic: '6TI982RbnUXqv7GCHr6cAx',
+  Funk: '7DEGd8FyxeA3yEl2MPvEg7',
+  'Heavy Metal': '2x3yu5txW2IpqH9AihnHcS',
+  'Hip Hop': '6HswfLHtPYUaAj7JD9HEIK',
+  Indie: '56WyFyn0ZROlAO434bE24v',
+  Jazz: '1a4lmrvTvNMV2fWB460JJX',
+  Latin: '11P5yrfWAIG7ojkuGOzyZm',
+  Pop: '48g1jWlR7e6eM3QEMQcFVq',
+  Punk: '5zTpB68MEk6F8nRNkPS2ek',
+  'R&B': '7KlsYo1biWhOEw5bqhJB51',
+  Reggae: '1epjKELZ0QNSZqQcSaSvAX',
+  Rock: '4bUKf446jDc5jRlpKp0Xz9',
+  'Rock en Español': '2hKJnecMuebytIt0ryDkMT',
+  Romance: '4tandKUfWJ512KCmo8tCNo',
+  Soul: '6EPXMsvFMDBoYaiyxBq2Z9',
+}
+
 console.log(spotifyPlaylistsIds !== null)
+console.log(spotifyTestEnvPlaylistIds !== null)
 
 let usersIndex = 0
 
@@ -45,6 +68,7 @@ export const preloadPlaylists = async (
       0,
       10,
     )
+    console.log(`genre ${genre.name}, spotifyId ${playlist.spotifyId}`)
     if (currentSpotifyPlaylistSongs.total > 0) {
       console.log(`Playlist for genre ${genre.name} already processed. Skipping...`)
       continue
@@ -102,7 +126,7 @@ export const addSongsToPlaylist = async (
       // every 10 songs we use a different user
       localUserIndex = songsIndex % 10 === 0 ? localUserIndex + 1 : localUserIndex
     } catch (error) {
-      console.log(`Error adding song ${song.name} to playlist ${playlistId}`)
+      console.log(`Error adding song ${song.name} to playlist ${playlistId}`, error)
     }
   }
   console.log('usersIndex', usersIndex)

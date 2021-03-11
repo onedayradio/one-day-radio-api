@@ -36,7 +36,7 @@ export interface PlaylistData {
 }
 
 export interface PlaylistArgs {
-  genreId: number
+  playlistId: number
 }
 
 export interface PlayOnDeviceArgs {

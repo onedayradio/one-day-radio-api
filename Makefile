@@ -6,6 +6,9 @@ local: setup-local-db
 	yarn
 	yarn start
 
+test-watch:
+	yarn test:watch
+
 # ----------------------------
 # WEB SCRAPPING
 # ----------------------------

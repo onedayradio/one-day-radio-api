@@ -3,6 +3,7 @@ export interface Genre {
   name: string
   order: number
   maxSongs: number
+  playlistId: number
 }
 
 export interface LoadGenreArgs {
