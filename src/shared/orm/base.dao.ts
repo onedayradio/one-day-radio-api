@@ -7,7 +7,7 @@ import { DaoArgs, LoadAllArgs, LoadByIdArgs, LoadByIdsArgs } from '../../types'
 export class BaseDao<EntityType> {
   session: Session
   queryHelper: QueryHelper
-  schema: ObjectSchema
+  schema: ObjectSchema<any, any, any, any>
   label: string
 
   constructor({ session, schema, label }: DaoArgs) {

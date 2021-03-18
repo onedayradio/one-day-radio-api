@@ -26,5 +26,5 @@ export const handler = (
 ): void => {
   context.callbackWaitsForEmptyEventLoop = false
   cachedNeo4JDriver = createNeo4JDriver(cachedNeo4JDriver)
-  graphqlHandler(event, context, callback)
+  graphqlHandler(event as any, context, callback)
 }

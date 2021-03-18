@@ -68,6 +68,10 @@ describe('GenresService', () => {
     const allGenres = await genresService.loadAll({ orderBy: 'order' })
     const genre = await genresService.loadById({ id: allGenres[0].id })
     expect(genre.name).to.equal('Heavy Metal')
+    expect(genre.playlistId).not.to.be.null
+    const punkGenre = await genresService.loadById({ id: allGenres[1].id })
+    expect(punkGenre.name).to.equal('Punk')
+    expect(punkGenre.playlistId).to.be.null
   })
 
   it('should throw error if trying to find a genre with an invalid id', async () => {
@@ -85,6 +89,7 @@ describe('GenresService', () => {
     const genresLoaded = await genresService.loadAll({ orderBy: 'order' })
     expect(genresLoaded.length).to.equal(4)
     expect(genresLoaded[0].name).to.equal('Heavy Metal')
+    expect(genresLoaded[0].playlistId).not.to.be.null
     expect(genresLoaded[1].name).to.equal('Punk')
     expect(genresLoaded[2].name).to.equal('Rock')
     expect(genresLoaded[3].name).to.equal('Pop')

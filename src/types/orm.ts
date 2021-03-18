@@ -3,7 +3,7 @@ import { ObjectSchema } from 'yup'
 
 export interface DaoArgs {
   session: Session
-  schema: ObjectSchema
+  schema: ObjectSchema<any, any, any, any>
   label: string
 }
 

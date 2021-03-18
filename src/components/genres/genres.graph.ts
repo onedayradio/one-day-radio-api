@@ -5,12 +5,13 @@ export const genreType = `
   type Genre {
     id: String!
     name: String
+    playlistId: String
   }
 `
 
 export const genresQueryTypes = `
   loadAllGenres: [Genre]
-  loadGenre(genreId: String): Genre
+  loadGenre(genreId: Int): Genre
 `
 
 export const genreQueriesResolvers = {
