@@ -1,16 +1,39 @@
 service: one-day-radio-api
 app: one-day-radio-api
+useDotenv: true
 
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: dev
-  timeout: 30
+  stage: local
+  timeout: 60
+  region: us-east-1
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    shouldStartNameWithService: true
+  environment:
+    neo4j_url: ${ssm:/onedayradio/${self:custom.myStage}/neo4j_url}
+    neo4j_username: ${ssm:/onedayradio/${self:custom.myStage}/neo4j_username~true}
+    neo4j_password: ${ssm:/onedayradio/${self:custom.myStage}/neo4j_password~true}
+    frontend_url: ${ssm:/onedayradio/${self:custom.myStage}/frontend_url}
+    spotify_redirect_url: ${ssm:/onedayradio/${self:custom.myStage}/spotify_redirect_url}
+    spotify_refresh_token: ${ssm:/onedayradio/${self:custom.myStage}/spotify_refresh_token}
+    spotify_one_day_radio_user_id: ${ssm:/onedayradio/${self:custom.myStage}/spotify_one_day_radio_user_id}
+    spotify_client_id: ${ssm:/onedayradio/${self:custom.myStage}/spotify_client_id}
+    spotify_client_secret: ${ssm:/onedayradio/${self:custom.myStage}/spotify_client_secret~true}
+    spotify_scopes: ${ssm:/onedayradio/${self:custom.myStage}/spotify_scopes}
+    token_secret: ${ssm:/onedayradio/${self:custom.myStage}/token_secret~true}
+    token_expiration: ${ssm:/onedayradio/${self:custom.myStage}/token_expiration}
+    security_salt_rounds: ${ssm:/onedayradio/${self:custom.myStage}/security_salt_rounds}
+    max_user_songs_per_playlist: ${ssm:/onedayradio/${self:custom.myStage}/max_user_songs_per_playlist}
 
 custom:
   myStage: ${opt:stage, self:provider.stage}
   serverless-offline:
     useChildProcesses: true
+  serverless-offline-ssm:
+    stages:
+      - local
 
 functions:
   graphql:
@@ -20,16 +43,20 @@ functions:
           path: graphql
           method: post
           cors: true
-    environment:
-      mongodb_url: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_url}
-      mongodb_username: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_username}
-      mongodb_password: ${ssm:/onedayradio/${self:custom.myStage}/mongodb_password~true}
-      token_secret: ${ssm:/onedayradio/${self:custom.myStage}/token_secret~true}
-      token_expiration: ${ssm:/onedayradio/${self:custom.myStage}/token_expiration}
-      security_salt_rounds: ${ssm:/onedayradio/${self:custom.myStage}/security_salt_rounds}
-      mailgun_apikey: ${ssm:/onedayradio/${self:custom.myStage}/mailgun_apikey~true}
-      mailgun_domain: ${ssm:/onedayradio/${self:custom.myStage}/mailgun_domain}
-      support_email: ${ssm:/onedayradio/${self:custom.myStage}/support_email}
+  spotifyAuth:
+    handler: src/spotify-auth-handler.authorize
+    events:
+      - http:
+          path: spotify/auth
+          method: get
+          cors: true
+  spotifyAuthCallback:
+    handler: src/spotify-auth-callback.authCallback
+    events:
+      - http:
+          path: spotify/auth/callback
+          method: get
+          cors: true
 
 plugins:
   - serverless-offline-ssm

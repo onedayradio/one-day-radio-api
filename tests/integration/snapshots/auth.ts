@@ -5,6 +5,10 @@ export const expectedSignUpSocialNewUser = {
     firstname: 'new firstname',
     lastname: 'new lastname',
     email: 'new@gmail.com',
+    spotifyData: {
+      accessToken: 'accesstoken',
+      refreshToken: 'refreshtoken',
+    },
   },
 }
 
@@ -14,5 +18,9 @@ export const expectedSignUpSocialExistingUser = {
     firstname: 'Juan',
     lastname: 'Morales',
     email: 'juan@gmail.com',
+    spotifyData: {
+      accessToken: 'accesstoken',
+      refreshToken: 'refreshtoken',
+    },
   },
 }

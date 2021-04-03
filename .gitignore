@@ -6,6 +6,7 @@ node_modules
 
 # IDE files
 .vscode
+.idea
 
 # typescript build files
 .build
@@ -14,7 +15,9 @@ node_modules
 *.log
 
 .env
-.env-prd
+.env-prod
+.env-local
+.env-dev
 
 .nyc_output
 
@@ -23,3 +26,7 @@ node_modules
 coverage
 
 TODO
+TODO.md
+
+migrations/db-config**/*.js
+!migrations/db-config.template.js

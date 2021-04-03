@@ -1,13 +1,8 @@
-import { DBUser, User } from './users'
+import { User } from './users'
 
 export interface DecodedToken {
-  userId: string
+  userId: number
   userRoles?: string[]
-}
-
-export interface AuthResponse {
-  user: DBUser
-  token: string
 }
 
 export interface AuthSocialArgs {

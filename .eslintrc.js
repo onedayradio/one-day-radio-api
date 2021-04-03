@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
@@ -11,6 +12,7 @@ module.exports = {
   rules: {
     'prettier/prettier': 2,
     '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/no-extra-semi': 0,
     '@typescript-eslint/member-delimiter-style': [
       'error',
       {

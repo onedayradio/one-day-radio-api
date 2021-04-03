@@ -4,27 +4,32 @@ networks:
     external:
       name: onedayradio
 services:
-  mongo-seed:
+  neo4j-seed:
     build:
-      context: ./local-db
-      dockerfile: mongo-seed/Dockerfile
-    container_name: mongo-seed
-    command: ['./wait-for-it.sh', 'mongodb:27017', '--', './mongo-seed.sh']
+      context: ./localdb
+      dockerfile: Dockerfile
+    container_name: neo4j-seed
+    command: ['./wait-for-it.sh', 'neo4j:7474', '--', './neo4j-seed.sh']
     depends_on:
-      - mongodb
+      - neo4j
     networks:
       - onedayradio
-
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j
+    restart: unless-stopped
+    networks:
+      - onedayradio
     ports:
-      - 27017:27017
-    expose:
-      - '27017'
-    command: mongod
-    networks:
-      - onedayradio
+      - 7474:7474
+      - 7687:7687
+    volumes:
+      - $HOME/neo4j/data:/data \
+      - $HOME/neo4j/logs:/logs \
+      - $HOME/neo4j/import:/var/lib/neo4j/import \
+      - $HOME/neo4j/plugins:/plugins \
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=onedayradio-admin
-      - MONGO_INITDB_ROOT_PASSWORD=password
+      - NEO4J_AUTH=neo4j/test
+      - NEO4J_dbms_memory_pagecache_size=1G
+      - NEO4J_dbms.memory.heap.initial_size=1G
+      - NEO4J_dbms_memory_heap_max__size=1G

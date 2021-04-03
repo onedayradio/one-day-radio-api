@@ -11,7 +11,8 @@
     "baseUrl": ".",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["node_modules/@types", "./src/types"]
+    "typeRoots": ["node_modules/@types", "./src/types"],
+    "resolveJsonModule": true
   },
   "compileOnSave": true,
   "include": ["src", "tests"],

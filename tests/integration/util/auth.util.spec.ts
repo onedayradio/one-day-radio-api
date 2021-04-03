@@ -2,28 +2,40 @@ import { expect } from 'chai'
 
 import { generateToken, validateToken, getTokenData } from '../../../src/shared'
 import { DecodedToken } from '../../../src/types'
-import { testsSetup } from '../tests.util'
+import { TestsUtil } from '../tests.util'
 
 const testUser = {
-  _id: '1',
+  id: 1,
   firstname: 'Juan Carlos',
   lastname: 'Morales',
   email: 'juan@gmail.com',
 }
 
+const testsUtil = new TestsUtil()
+
 describe('AuthUtil', () => {
   beforeEach((done: any) => {
-    void testsSetup(done)
+    testsUtil.setupData().then(() => done())
+  })
+
+  afterEach((done: any) => {
+    testsUtil.closeSession().then(() => {
+      done()
+    })
+  })
+
+  after((done) => {
+    testsUtil.closeDriverAndSession().then(() => done())
   })
 
   it('should decode valid tokens', async () => {
-    const token = await generateToken(testUser._id)
+    const token = await generateToken(testUser.id)
     const decodedToken = await validateToken(`bearer ${token}`)
-    expect(decodedToken.userId).to.equal(testUser._id)
+    expect(decodedToken.userId).to.equal(testUser.id)
   })
 
   it('should decode valid tokens when passing no userRoles', async () => {
-    const token = await generateToken(testUser._id)
+    const token = await generateToken(testUser.id)
     expect(token).not.to.be.undefined
   })
 
@@ -57,8 +69,8 @@ describe('AuthUtil', () => {
   })
 
   it('should return tokenData if valid token is provided', async () => {
-    const token = await generateToken(testUser._id)
+    const token = await generateToken(testUser.id)
     const decodedToken = (await getTokenData(`bearer ${token}`)) as DecodedToken
-    expect(decodedToken.userId).to.equal(testUser._id)
+    expect(decodedToken.userId).to.equal(testUser.id)
   })
 })

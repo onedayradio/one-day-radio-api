@@ -1,12 +1,13 @@
 import { ApolloServer } from 'apollo-server-lambda'
 import { Context, APIGatewayProxyEvent, APIGatewayProxyCallback } from 'aws-lambda'
 
-import { schema, context } from './graphql'
-import { initConnection } from './database'
+import { schema, context, plugins } from './graphql'
+import { createNeo4JDriver } from './shared'
 
 const apolloServer = new ApolloServer({
   schema,
   context,
+  plugins,
 })
 
 const graphqlHandler = apolloServer.createHandler({
@@ -16,7 +17,7 @@ const graphqlHandler = apolloServer.createHandler({
   },
 })
 
-const connect = initConnection()
+let cachedNeo4JDriver: any = null
 
 export const handler = (
   event: APIGatewayProxyEvent,
@@ -24,5 +25,6 @@ export const handler = (
   callback: APIGatewayProxyCallback,
 ): void => {
   context.callbackWaitsForEmptyEventLoop = false
-  connect.then(() => graphqlHandler(event, context, callback))
+  cachedNeo4JDriver = createNeo4JDriver(cachedNeo4JDriver)
+  graphqlHandler(event as any, context, callback)
 }
