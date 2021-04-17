@@ -57,7 +57,7 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
     const playlistGenre = await this.genresService.loadById({ id: playlist.genreId })
     const allPlaylistSongs = await this.loadAllPlaylistActiveSongs(playlist.id)
     if (allPlaylistSongs.length >= playlistGenre.maxSongs) {
-      const { song: oldestSong } = allPlaylistSongs[allPlaylistSongs.length - 1]
+      const { song: oldestSong } = allPlaylistSongs[0]
       await this.spotifyService.removeSongFromPlaylist(playlist.spotifyId, oldestSong.spotifyUri)
       await this.removeSongFromPlaylist(playlist.id, oldestSong.id)
     }
@@ -110,12 +110,19 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
     }
   }
 
-  async playOnDevice(user: User, playlistId: number, deviceId: string): Promise<boolean> {
+  async playOnDevice(user: User, playlistId: number, deviceId?: string): Promise<boolean> {
     const playlist = await this.dao.loadById({ id: playlistId })
     if (!playlist || !playlist.spotifyId) {
       throw new Error(`Playlist with id ${playlistId} does not exists!`)
     }
-    return this.spotifyService.playOnDevice(user, playlist.spotifyId, deviceId)
+    const playlistSongs = await this.loadAllPlaylistActiveSongs(playlistId)
+    const { song: oldestSong } = playlistSongs[0]
+    return this.spotifyService.playOnDevice(
+      user,
+      playlist.spotifyId,
+      oldestSong.spotifyUri,
+      deviceId,
+    )
   }
 
   createPlaylistDescription(name: string): string {

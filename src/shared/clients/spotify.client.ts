@@ -162,14 +162,21 @@ export class SpotifyClient {
 
   static async playOnDevice(
     accessToken: string,
-    deviceId: string,
     contextUri: string,
+    spotifySongUri: string,
+    deviceId?: string,
   ): Promise<void> {
+    const url = deviceId
+      ? `${BASE_API_URL}/me/player/play?device_id=${deviceId}`
+      : `${BASE_API_URL}/me/player/play`
     const options = {
-      url: `${BASE_API_URL}/me/player/play?device_id=${deviceId}`,
+      url,
       headers: { Authorization: 'Bearer ' + accessToken },
       body: {
         context_uri: contextUri,
+        offset: {
+          uri: spotifySongUri,
+        },
       },
       json: true,
     }
