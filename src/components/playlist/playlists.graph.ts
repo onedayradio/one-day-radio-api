@@ -98,7 +98,7 @@ export const playlistQueriesResolvers = {
 
 export const playlistMutationTypes = `
   addSongToPlaylist(playlistId: Int, song: SongInput): PlaylistSong
-  playOnDevice(playlistId: Int, deviceId: String): Boolean
+  playOnDevice(playlistId: Int, spotifySongUri: String, spotifyDeviceId: String): Boolean
 `
 
 export const playlistMutationsResolvers = {
@@ -112,10 +112,10 @@ export const playlistMutationsResolvers = {
   },
   playOnDevice: async (
     root: unknown,
-    { playlistId, deviceId }: PlayOnDeviceArgs,
+    { playlistId, spotifyDeviceId, spotifySongUri }: PlayOnDeviceArgs,
     { playlistService, session, token }: AppContext,
   ): Promise<boolean> => {
     const currentUser = await validateUserAuth(session, token)
-    return playlistService.playOnDevice(currentUser, playlistId, deviceId)
+    return playlistService.playOnDevice(currentUser, playlistId, spotifySongUri, spotifyDeviceId)
   },
 }

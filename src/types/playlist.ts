@@ -41,7 +41,8 @@ export interface PlaylistArgs {
 
 export interface PlayOnDeviceArgs {
   playlistId: number
-  deviceId?: string
+  spotifyDeviceId?: string
+  spotifySongUri?: string
 }
 
 export interface AddSongToPlaylistMutationArgs {

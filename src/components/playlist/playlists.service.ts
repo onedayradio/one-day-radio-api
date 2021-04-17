@@ -110,18 +110,27 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
     }
   }
 
-  async playOnDevice(user: User, playlistId: number, deviceId?: string): Promise<boolean> {
+  async playOnDevice(
+    user: User,
+    playlistId: number,
+    spotifySongUri?: string,
+    spotifyDeviceId?: string,
+  ): Promise<boolean> {
     const playlist = await this.dao.loadById({ id: playlistId })
     if (!playlist || !playlist.spotifyId) {
       throw new Error(`Playlist with id ${playlistId} does not exists!`)
     }
-    const playlistSongs = await this.loadAllPlaylistActiveSongs(playlistId)
-    const { song: oldestSong } = playlistSongs[0]
+    let finalSpotifySongUri = spotifySongUri
+    if (!finalSpotifySongUri) {
+      const playlistSongs = await this.loadAllPlaylistActiveSongs(playlistId)
+      const { song: oldestSong } = playlistSongs[0]
+      finalSpotifySongUri = oldestSong.spotifyUri
+    }
     return this.spotifyService.playOnDevice(
       user,
       playlist.spotifyId,
-      oldestSong.spotifyUri,
-      deviceId,
+      finalSpotifySongUri,
+      spotifyDeviceId,
     )
   }
 
