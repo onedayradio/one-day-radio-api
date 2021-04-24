@@ -2,7 +2,7 @@ import { Session } from 'neo4j-driver'
 import * as base64Image from 'node-base64-image'
 
 import { PlaylistsDao } from './playlists.dao'
-import { BaseService, Constants, errorsLogger, getValueAsInt } from '../../shared'
+import { BaseService, Constants, errorsLogger } from '../../shared'
 import { PlaylistSchema } from './palylist.schema'
 import { Playlist, PlaylistData, PlaylistSong, SearchSong, Song, User } from '../../types'
 import { GenresService } from '../genres/genres.service'
@@ -44,12 +44,7 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
   }
 
   async addSongToPlaylist(userId: number, playlistId: number, song: Song): Promise<PlaylistSong> {
-    const maxSongsAllowedPerUser = getValueAsInt('max_user_songs_per_playlist')
     const playlist = await this.loadById({ id: playlistId })
-    const userSongs = await this.loadActiveSongsByUser(playlist.id, userId)
-    if (userSongs.length >= maxSongsAllowedPerUser) {
-      throw new Error('User has reached max amount of songs for this playlist')
-    }
     const [songDuplicateData] = await this.playlistContains(playlist.id, [song.spotifyId])
     if (songDuplicateData.duplicate) {
       throw new Error(`Song ${song.name} by ${song.artistsNames} is already in this playlist`)

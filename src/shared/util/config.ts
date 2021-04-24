@@ -17,7 +17,6 @@ const defaults = {
     spotify_scopes: 'some scopes',
     frontend_url: 'http://localhost:3001',
     port: 5678,
-    max_user_songs_per_playlist: 3,
   },
 }
 

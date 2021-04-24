@@ -207,19 +207,6 @@ describe('PlaylistsService', () => {
     expect(removedSong).to.containSubset(expectedRemovedSong)
   })
 
-  it('should not add song to playlist if max songs allowed per user has been reached', async () => {
-    try {
-      const usersService = new UsersService(testsUtil.session)
-      const juan = await usersService.loadByEmail('juan@gmail.com')
-      const playlistService = new PlaylistsService(testsUtil.session)
-      const allPlaylists = await playlistService.loadAll()
-      const playlist1 = allPlaylists[0]
-      await playlistService.addSongToPlaylist(juan.id, playlist1.id, testSong1)
-    } catch (error) {
-      expect(error.message).to.equal('User has reached max amount of songs for this playlist')
-    }
-  })
-
   it('should not add song to playlist if the song is present and active in the playlist', async () => {
     try {
       const usersService = new UsersService(testsUtil.session)
