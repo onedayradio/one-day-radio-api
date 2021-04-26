@@ -25,7 +25,6 @@ provider:
     token_secret: ${ssm:/onedayradio/${self:custom.myStage}/token_secret~true}
     token_expiration: ${ssm:/onedayradio/${self:custom.myStage}/token_expiration}
     security_salt_rounds: ${ssm:/onedayradio/${self:custom.myStage}/security_salt_rounds}
-    max_user_songs_per_playlist: ${ssm:/onedayradio/${self:custom.myStage}/max_user_songs_per_playlist}
 
 custom:
   myStage: ${opt:stage, self:provider.stage}
