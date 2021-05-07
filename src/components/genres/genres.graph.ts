@@ -1,5 +1,4 @@
 import { AppContext, LoadGenreArgs, Genre } from '../../types'
-import { validateUserAuth } from '../../shared'
 
 export const genreType = `
   type Genre {
@@ -18,18 +17,16 @@ export const genreQueriesResolvers = {
   loadAllGenres: async (
     root: unknown,
     args: unknown,
-    { genresService, token, session }: AppContext,
+    { genresService }: AppContext,
   ): Promise<Genre[]> => {
-    await validateUserAuth(session, token)
     return genresService.loadAll({ orderBy: 'order' })
   },
 
   loadGenre: async (
     root: unknown,
     { genreId }: LoadGenreArgs,
-    { genresService, session, token }: AppContext,
+    { genresService }: AppContext,
   ): Promise<Genre> => {
-    await validateUserAuth(session, token)
     return genresService.loadById({ id: genreId })
   },
 }
