@@ -52,7 +52,7 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
     const playlistGenre = await this.genresService.loadById({ id: playlist.genreId })
     const allPlaylistSongs = await this.loadAllPlaylistActiveSongs(playlist.id)
     if (allPlaylistSongs.length >= playlistGenre.maxSongs) {
-      const { song: oldestSong } = allPlaylistSongs[0]
+      const { song: oldestSong } = allPlaylistSongs[allPlaylistSongs.length - 1]
       await this.spotifyService.removeSongFromPlaylist(playlist.spotifyId, oldestSong.spotifyUri)
       await this.removeSongFromPlaylist(playlist.id, oldestSong.id)
     }
@@ -118,7 +118,7 @@ export class PlaylistsService extends BaseService<Playlist, PlaylistsDao> {
     let finalSpotifySongUri = spotifySongUri
     if (!finalSpotifySongUri) {
       const playlistSongs = await this.loadAllPlaylistActiveSongs(playlistId)
-      const { song: oldestSong } = playlistSongs[0]
+      const { song: oldestSong } = playlistSongs[playlistSongs.length - 1]
       finalSpotifySongUri = oldestSong.spotifyUri
     }
     return this.spotifyService.playOnDevice(
