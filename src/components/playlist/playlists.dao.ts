@@ -33,7 +33,7 @@ export class PlaylistsDao extends BaseDao<Playlist> {
     MATCH (playlist:Playlist)-[playlistHasSong:HAS_SONG]->(playlistSongs:Song)<-[userSharedSong:SHARED_SONG]-(user:User)
     WHERE ID(playlist) = $playlistId and playlistHasSong.active = true and userSharedSong.active = true
     RETURN { song: playlistSongs{.*, id: ID(playlistSongs)}, sharedBy: user{.*, id: ID(user)}, sharedOn: userSharedSong.date, active: playlistHasSong.active} as playlistSongs
-    ORDER BY playlistSongs.sharedOn ASC
+    ORDER BY playlistSongs.sharedOn DESC
     `
   }
 

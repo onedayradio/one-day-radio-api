@@ -176,7 +176,7 @@ describe('PlaylistsService', () => {
     const songsSpotifyIds = playlistSongs.map(({ song }) => song.spotifyId)
     expect(playlistSongs).to.containSubset(expectedAllActiveSongs)
     playlistSongs.forEach((song) => expect(song.sharedOn).not.to.be.undefined)
-    expect(songsSpotifyIds).to.deep.equal(['1144', '1133', '4433', '1155'])
+    expect(songsSpotifyIds).to.deep.equal(['1155', '4433', '1133', '1144'])
   })
 
   it('should load all playlist active songs by genreId', async () => {
@@ -190,7 +190,7 @@ describe('PlaylistsService', () => {
     const songsSpotifyIds = playlistSongs.map(({ song }) => song.spotifyId)
     expect(playlistSongs).to.containSubset(expectedAllActiveSongs)
     playlistSongs.forEach((song) => expect(song.sharedOn).not.to.be.undefined)
-    expect(songsSpotifyIds).to.deep.equal(['1144', '1133', '4433', '1155'])
+    expect(songsSpotifyIds).to.deep.equal(['1155', '4433', '1133', '1144'])
   })
 
   it('should remove a song from a playlist', async () => {
@@ -235,7 +235,7 @@ describe('PlaylistsService', () => {
     playlist1 = allPlaylists[0]
     const activePlaylistSongs = await playlistService.loadAllPlaylistActiveSongs(playlist1.id)
     const spotifyIds = activePlaylistSongs.map((playlistSong) => playlistSong.song.spotifyId)
-    expect(spotifyIds).to.deep.equal(['1144', '1133', '4433', '1155', 'ava11'])
+    expect(spotifyIds).to.deep.equal(['ava11', '1155', '4433', '1133', '1144'])
   })
 
   it('should add a song to playlist -> existing song in db', async () => {
@@ -251,7 +251,7 @@ describe('PlaylistsService', () => {
     playlist1 = allPlaylists[0]
     const activePlaylistSongs = await playlistService.loadAllPlaylistActiveSongs(playlist1.id)
     const spotifyIds = activePlaylistSongs.map((playlistSong) => playlistSong.song.spotifyId)
-    expect(spotifyIds).to.deep.equal(['1144', '1133', '4433', '1155', '5533'])
+    expect(spotifyIds).to.deep.equal(['5533', '1155', '4433', '1133', '1144'])
   })
 
   it('should add a song to a playlist -> max songs per playlist reached (should remove oldest and add new song)', async () => {
@@ -266,14 +266,14 @@ describe('PlaylistsService', () => {
     playlist1 = allPlaylists[0]
     let allPlaylistSongs = await playlistService.loadAllPlaylistActiveSongs(playlist1.id)
     let spotifyIds = allPlaylistSongs.map((playlistSong) => playlistSong.song.spotifyId)
-    expect(spotifyIds).to.deep.equal(['1144', '1133', '4433', '1155', 'ava11'])
+    expect(spotifyIds).to.deep.equal(['ava11', '1155', '4433', '1133', '1144'])
 
     const playlistSong = await playlistService.addSongToPlaylist(jose.id, playlist1.id, testSong4)
     expect(playlistSong).to.containSubset(expectedAddSong3)
 
     allPlaylistSongs = await playlistService.loadAllPlaylistActiveSongs(playlist1.id)
     spotifyIds = allPlaylistSongs.map((playlistSong) => playlistSong.song.spotifyId)
-    expect(spotifyIds).to.deep.equal(['1133', '4433', '1155', 'ava11', 'warcry11'])
+    expect(spotifyIds).to.deep.equal(['warcry11', 'ava11', '1155', '4433', '1133'])
   })
 
   it('it should search songs', async () => {

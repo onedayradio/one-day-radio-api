@@ -81,17 +81,15 @@ export const playlistQueriesResolvers = {
   loadPlaylistSongs: async (
     root: unknown,
     { playlistId }: LoadPlaylistSongsArgs,
-    { playlistService, session, token }: AppContext,
+    { playlistService }: AppContext,
   ): Promise<PlaylistSong[]> => {
-    await validateUserAuth(session, token)
     return playlistService.loadAllPlaylistActiveSongs(playlistId)
   },
   searchSongs: async (
     root: unknown,
     { playlistId, searchText }: SearchSongsArgs,
-    { playlistService, session, token }: AppContext,
+    { playlistService }: AppContext,
   ): Promise<SearchSong[]> => {
-    await validateUserAuth(session, token)
     return playlistService.searchSongs(playlistId, searchText)
   },
 }
