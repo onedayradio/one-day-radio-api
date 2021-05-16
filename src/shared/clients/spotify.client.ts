@@ -39,12 +39,12 @@ export class SpotifyClient {
     code,
     refreshToken,
   }: TokenRequestOptionsParams): TokenRequestOptions {
-    const spotifyRedirectUrl = getValue('spotify_redirect_url')
     const clientId = getValue('spotify_client_id')
     const clientSecret = getValue('spotify_client_secret')
     const authBuffer = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
     let optionsForm: TokenRequestOptionsForm = { ['grant_type']: grantType }
     if (code) {
+      const spotifyRedirectUrl = getValue('spotify_redirect_url')
       optionsForm = {
         ...optionsForm,
         ['redirect_uri']: spotifyRedirectUrl,
@@ -278,8 +278,10 @@ export class SpotifyClient {
   static async doSpotifyRequest(options: RequestOptions, method = 'get'): Promise<any> {
     const response = await doRequest(options, method)
     if (response && response.error && response.error.status === UNAUTHORIZED_STATUS) {
+      console.log('Spotify unauthorized error...', JSON.stringify(response))
       throw new SpotifyUnauthorizedError(response.error.message)
     } else if (response && response.error) {
+      console.log('Spotify unexpected error stringify', JSON.stringify(response))
       throw new Error(response.error.message)
     }
     return response
