@@ -12,6 +12,7 @@ provider:
   apiGateway:
     shouldStartNameWithService: true
   environment:
+    NODE_ENV: ${ssm:/onedayradio/${self:custom.myStage}/node_env}
     neo4j_url: ${ssm:/onedayradio/${self:custom.myStage}/neo4j_url}
     neo4j_username: ${ssm:/onedayradio/${self:custom.myStage}/neo4j_username~true}
     neo4j_password: ${ssm:/onedayradio/${self:custom.myStage}/neo4j_password~true}
