@@ -1,4 +1,4 @@
-import { Session, isInt } from 'neo4j-driver'
+import { Session, isInt, isDateTime } from 'neo4j-driver'
 import { isPlainObject } from 'lodash'
 
 interface QueryArgs {
@@ -41,7 +41,7 @@ export class QueryHelper {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   isDate(value: any): boolean {
-    if (value && value.timeZoneId !== undefined) {
+    if (isDateTime(value)) {
       return true
     }
     return false
